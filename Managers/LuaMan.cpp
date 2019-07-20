@@ -50,16 +50,26 @@ extern "C"
 #undef int64_t
 #undef uint64_t
 
+#ifdef max
+#undef max
+#endif
+
 // LuaBind
 #include "luabind/luabind.hpp"
 #include "luabind/operator.hpp"
 #include "luabind/adopt_policy.hpp"
+#include "luabind/detail/policy.hpp"
 #include "luabind/out_value_policy.hpp"
 #include "luabind/iterator_policy.hpp"
 #include "luabind/return_reference_to_policy.hpp"
 // Boost
 //#include "boost/detail/shared_ptr_nmt.hpp"
 //#include "boost/shared_ptr.hpp"
+
+
+template <typename... T>
+using joined =
+typename luabind::meta::join<T...>::type;
 
 #include <string>
 using namespace std;
@@ -100,7 +110,7 @@ using namespace luabind;
 namespace luabind
 {
     template<class T>
-    T * get_pointer(boost::shared_ptr<T> &p)
+    T * get_pointer(std::shared_ptr<T> &p)
     {
         return p.get();
     }
@@ -319,18 +329,17 @@ LUAENTITYCAST(TerrainObject)
         .property("ClassName", &TYPE::GetClassName)
 
 #define CONCRETELUABINDING(TYPE, PARENT) \
-    def((string("Create") + string(#TYPE)).c_str(), (TYPE *(*)(string, string))&Create##TYPE, adopt(result)), \
-    def((string("Create") + string(#TYPE)).c_str(), (TYPE *(*)(string))&Create##TYPE, adopt(result)), \
-    def((string("Random") + string(#TYPE)).c_str(), (TYPE *(*)(string, int))&Random##TYPE, adopt(result)), \
-    def((string("Random") + string(#TYPE)).c_str(), (TYPE *(*)(string, string))&Random##TYPE, adopt(result)), \
-    def((string("Random") + string(#TYPE)).c_str(), (TYPE *(*)(string))&Random##TYPE, adopt(result)), \
+    def((string("Create") + string(#TYPE)).c_str(), (TYPE *(*)(string, string))&Create##TYPE, luabind::adopt_policy<0>()), \
+    def((string("Create") + string(#TYPE)).c_str(), (TYPE *(*)(string))&Create##TYPE, luabind::adopt_policy<0>()), \
+    def((string("Random") + string(#TYPE)).c_str(), (TYPE *(*)(string, int))&Random##TYPE, luabind::adopt_policy<0>()), \
+    def((string("Random") + string(#TYPE)).c_str(), (TYPE *(*)(string, string))&Random##TYPE, luabind::adopt_policy<0>()), \
+    def((string("Random") + string(#TYPE)).c_str(), (TYPE *(*)(string))&Random##TYPE, luabind::adopt_policy<0>()), \
     def((string("To") + string(#TYPE)).c_str(), (TYPE *(*)(Entity *))&To##TYPE), \
     def((string("To") + string(#TYPE)).c_str(), (const TYPE *(*)(const Entity *))&ToConst##TYPE), \
     def((string("Is") + string(#TYPE)).c_str(), (bool(*)(const Entity *))&Is##TYPE), \
     class_<TYPE, PARENT/*, boost::shared_ptr<Entity> */>(#TYPE) \
-        .def("Clone", &Clone##TYPE, adopt(result)) \
+        .def("Clone", &Clone##TYPE, luabind::adopt_policy<0>()) \
         .property("ClassName", &TYPE::GetClassName)
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Other misc adapters to eliminate/emulate default parameters etc
@@ -699,7 +708,6 @@ int LuaMan::Create()
                 value("LOOPWHENOPENCLOSE", 5),
                 value("PINGPONGOPENCLOSE", 6)
             ]
-            /*.property("Material", &MOSprite::GetMaterial)*/
             .property("Diameter", &MOSprite::GetDiameter)
             .property("BoundingBox", &MOSprite::GetBoundingBox)
             .property("FrameCount", &MOSprite::GetFrameCount)
@@ -723,13 +731,10 @@ int LuaMan::Create()
 			.def("GetExitWoundPresetName", &MOSprite::GetExitWoundPresetName),
 
         CONCRETELUABINDING(MOSParticle, MOSprite)
-            /*.property("Material", &MOSParticle::GetMaterial)*/
             .property("Framerate", &MOSParticle::GetFramerate, &MOSParticle::SetFramerate)
-//            .property("Atom", &MOSParticle::GetAtom, &MOSParticle:SetAtom)
             .property("IsGold", &MOSParticle::IsGold),
 
         CONCRETELUABINDING(MOSRotating, MOSprite)
-            /*.property("Material", &MOSRotating::GetMaterial)*/
             .property("RecoilForce", &MOSRotating::GetRecoilForce)
             .property("RecoilOffset", &MOSRotating::GetRecoilOffset)
             .property("IsGold", &MOSRotating::IsGold)
@@ -738,7 +743,7 @@ int LuaMan::Create()
 			.property("GibImpulseLimit", &MOSRotating::GetGibImpulseLimit, &MOSRotating::SetGibImpulseLimit)
 			.property("DamageMultiplier", &MOSRotating::GetDamageMultiplier, &MOSRotating::SetDamageMultiplier)
 			.property("WoundCount", &MOSRotating::GetWoundCount)
-            .def_readwrite("Wounds", &MOSRotating::m_Emitters, return_stl_iterator)
+            .def_readwrite("Wounds", &MOSRotating::m_Emitters, luabind::return_stl_iterator())
             .def("AddRecoil", &MOSRotating::AddRecoil)
             .def("SetRecoil", &MOSRotating::SetRecoil)
             .def("IsRecoiled", &MOSRotating::IsRecoiled)
@@ -750,7 +755,7 @@ int LuaMan::Create()
             .def("MoveOutOfTerrain", &MOSRotating::MoveOutOfTerrain)
             .def("ApplyForces", &MOSRotating::ApplyForces)
             .def("ApplyImpulses", &MOSRotating::ApplyImpulses)
-            .def("AttachEmitter", &MOSRotating::AttachEmitter, adopt(_2))
+            .def("AttachEmitter", &MOSRotating::AttachEmitter, luabind::adopt_policy<2>())
 			.def("RemoveWounds", &MOSRotating::RemoveWounds)
             .def("IsOnScenePoint", &MOSRotating::IsOnScenePoint)
             .def("EraseFromTerrain", &MOSRotating::EraseFromTerrain)
@@ -766,8 +771,8 @@ int LuaMan::Create()
             .def("StringValueExists", &MOSRotating::StringValueExists)
             .def("NumberValueExists", &MOSRotating::NumberValueExists)
             .def("ObjectValueExists", &MOSRotating::ObjectValueExists)
-			.def_readwrite("Attachables", &MOSRotating::m_Attachables, return_stl_iterator)
-			.def_readwrite("Emitters", &MOSRotating::m_Emitters, return_stl_iterator),
+			.def_readwrite("Attachables", &MOSRotating::m_Attachables, luabind::return_stl_iterator())
+			.def_readwrite("Emitters", &MOSRotating::m_Emitters, luabind::return_stl_iterator()),
 
         CONCRETELUABINDING(Attachable, MOSRotating)
             .def("GetRootParent", (MovableObject * (Attachable::*)())&Attachable::GetRootParent)
@@ -822,7 +827,7 @@ int LuaMan::Create()
             .def("TriggerBurst", &AEmitter::TriggerBurst)
             .def("IsSetToBurst", &AEmitter::IsSetToBurst)
             .def("CanTriggerBurst", &AEmitter::CanTriggerBurst)
-			.def_readwrite("Emissions", &AEmitter::m_EmissionList, return_stl_iterator),
+			.def_readwrite("Emissions", &AEmitter::m_EmissionList, luabind::return_stl_iterator()),
 
 
         CONCRETELUABINDING(Actor, MOSRotating)
@@ -924,7 +929,7 @@ int LuaMan::Create()
             .def("RemoveMovePathBeginning", &Actor::RemoveMovePathBeginning)
             .def("RemoveMovePathEnd", &Actor::RemoveMovePathEnd)
             .property("Perceptiveness", &Actor::GetPerceptiveness, &Actor::SetPerceptiveness)
-            .def("AddInventoryItem", &Actor::AddInventoryItem, adopt(_2))
+            .def("AddInventoryItem", &Actor::AddInventoryItem, luabind::adopt_policy<2>())
             .def("RemoveInventoryItem", &Actor::RemoveInventoryItem)
             .def("SwapNextInventory", &Actor::SwapNextInventory)
             .def("SwapPrevInventory", &Actor::SwapPrevInventory)
@@ -938,8 +943,8 @@ int LuaMan::Create()
             .def("UpdateMovePath", &Actor::UpdateMovePath)
             .property("MovePathSize", &Actor::GetMovePathSize)
             .def_readwrite("MOMoveTarget", &Actor::m_pMOMoveTarget)
-            .def_readwrite("MovePath", &Actor::m_MovePath, return_stl_iterator)
-            .def_readwrite("Inventory", &Actor::m_Inventory, return_stl_iterator)
+            .def_readwrite("MovePath", &Actor::m_MovePath, luabind::return_stl_iterator())
+            .def_readwrite("Inventory", &Actor::m_Inventory, luabind::return_stl_iterator())
             .def("SetAlarmPoint", &Actor::AlarmPoint)
             .def("GetAlarmPoint", &Actor::GetAlarmPoint)
             .property("AimDistance", &Actor::GetAimDistance, &Actor::SetAimDistance)
@@ -1465,12 +1470,12 @@ int LuaMan::Create()
             .def("GetTotalModuleCount", &PresetMan::GetTotalModuleCount)
             .def("GetOfficialModuleCount", &PresetMan::GetOfficialModuleCount)
             .def("AddPreset", &PresetMan::AddEntityPreset)
-			.def_readwrite("Modules", &PresetMan::m_pDataModules, return_stl_iterator)
+			.def_readwrite("Modules", &PresetMan::m_pDataModules, luabind::return_stl_iterator())
 			// Disambiguate overloaded member funcs
             .def("GetPreset", (const Entity *(PresetMan::*)(string, string, int))&PresetMan::GetEntityPreset)
             .def("GetPreset", (const Entity *(PresetMan::*)(string, string, string))&PresetMan::GetEntityPreset)
-            .def("GetLoadout", (Actor * (PresetMan::*)(std::string, std::string, bool))&PresetMan::GetLoadout, adopt(result))
-            .def("GetLoadout", (Actor * (PresetMan::*)(std::string, int, bool))&PresetMan::GetLoadout, adopt(result))
+            .def("GetLoadout", (Actor * (PresetMan::*)(std::string, std::string, bool))&PresetMan::GetLoadout, luabind::adopt_policy<0>())
+            .def("GetLoadout", (Actor * (PresetMan::*)(std::string, int, bool))&PresetMan::GetLoadout, luabind::adopt_policy<0>())
             .def("GetRandomOfGroup", &PresetMan::GetRandomOfGroup)
             .def("GetRandomOfGroupInModuleSpace", &PresetMan::GetRandomOfGroupInModuleSpace)
             .def("GetEntityDataLocation", &PresetMan::GetEntityDataLocation)
@@ -1624,50 +1629,50 @@ int LuaMan::Create()
             .def_readwrite("Right", &IntRect::m_Right)
             .def_readwrite("Bottom", &IntRect::m_Bottom),
 
-        CONCRETELUABINDING(Scene, Entity)
-            .enum_("PlacedObjectSets")
-            [
-                value("PLACEONLOAD", 0),
-                value("BLUEPRINT", 1),
-                value("AIPLAN", 2),
-                value("PLACEDSETSCOUNT", 3)
-            ]
-            .property("Location", &Scene::GetLocation, &Scene::SetLocation)
-//            .property("Terrain", &Scene::GetTerrain)
-            .property("Dimensions", &Scene::GetDimensions)
-            .property("Width", &Scene::GetWidth)
-            .property("Height", &Scene::GetHeight)
-            .property("WrapsX", &Scene::WrapsX)
-            .property("WrapsY", &Scene::WrapsY)
-            .property("TeamOwnership", &Scene::GetTeamOwnership, &Scene::SetTeamOwnership)
-            .def("GetBuildBudget", &Scene::GetBuildBudget)
-            .def("SetBuildBudget", &Scene::SetBuildBudget)
-            .def("IsScanScheduled", &Scene::IsScanScheduled)
-            .def("SetScheduledScan", &Scene::SetScheduledScan)
-            .def("ClearPlacedObjectSet", &Scene::ClearPlacedObjectSet)
-            .def("PlaceResidentBrain", &Scene::PlaceResidentBrain)
-            .def("PlaceResidentBrains", &Scene::PlaceResidentBrains)
-            .def("RetrieveResidentBrains", &Scene::RetrieveResidentBrains)
-            .def("GetResidentBrain", &Scene::GetResidentBrain)
-            .def("SetResidentBrain", &Scene::SetResidentBrain)
-            .def("SetArea", &Scene::SetArea)
-            .def("HasArea", &Scene::HasArea)
-            .def("GetArea", &Scene::GetArea)
-			.def("GetOptionalArea", &Scene::GetOptionalArea)
-			.def("WithinArea", &Scene::WithinArea)
-            .property("GlobalAcc", &Scene::GetGlobalAcc, &Scene::SetGlobalAcc)
-			.property("GlocalAcc", &Scene::GetGlobalAcc, &Scene::SetGlobalAcc)
-			.def("ResetPathFinding", &Scene::ResetPathFinding)
-            .def("UpdatePathFinding", &Scene::UpdatePathFinding)
-            .def("PathFindingUpdated", &Scene::PathFindingUpdated)
-            .def("CalculatePath", &Scene::CalculateScenePath)
-            .def_readwrite("ScenePath", &Scene::m_ScenePath, return_stl_iterator)
-			.def_readwrite("Deployments", &Scene::m_Deployments, return_stl_iterator)
-			.property("ScenePathSize", &Scene::GetScenePathSize),
+				CONCRETELUABINDING(Scene, Entity)
+				.enum_("PlacedObjectSets")
+				[
+					value("PLACEONLOAD", 0),
+					value("BLUEPRINT", 1),
+					value("AIPLAN", 2),
+					value("PLACEDSETSCOUNT", 3)
+				]
+			.property("Location", &Scene::GetLocation, &Scene::SetLocation)
+				//            .property("Terrain", &Scene::GetTerrain)
+				.property("Dimensions", &Scene::GetDimensions)
+				.property("Width", &Scene::GetWidth)
+				.property("Height", &Scene::GetHeight)
+				.property("WrapsX", &Scene::WrapsX)
+				.property("WrapsY", &Scene::WrapsY)
+				.property("TeamOwnership", &Scene::GetTeamOwnership, &Scene::SetTeamOwnership)
+				.def("GetBuildBudget", &Scene::GetBuildBudget)
+				.def("SetBuildBudget", &Scene::SetBuildBudget)
+				.def("IsScanScheduled", &Scene::IsScanScheduled)
+				.def("SetScheduledScan", &Scene::SetScheduledScan)
+				.def("ClearPlacedObjectSet", &Scene::ClearPlacedObjectSet)
+				.def("PlaceResidentBrain", &Scene::PlaceResidentBrain)
+				.def("PlaceResidentBrains", &Scene::PlaceResidentBrains)
+				.def("RetrieveResidentBrains", &Scene::RetrieveResidentBrains)
+				.def("GetResidentBrain", &Scene::GetResidentBrain)
+				.def("SetResidentBrain", &Scene::SetResidentBrain)
+				.def("SetArea", &Scene::SetArea)
+				.def("HasArea", &Scene::HasArea)
+				.def("GetArea", &Scene::GetArea)
+				.def("GetOptionalArea", &Scene::GetOptionalArea)
+				.def("WithinArea", &Scene::WithinArea)
+				.property("GlobalAcc", &Scene::GetGlobalAcc, &Scene::SetGlobalAcc)
+				.property("GlocalAcc", &Scene::GetGlobalAcc, &Scene::SetGlobalAcc)
+				.def("ResetPathFinding", &Scene::ResetPathFinding)
+				.def("UpdatePathFinding", &Scene::UpdatePathFinding)
+				.def("PathFindingUpdated", &Scene::PathFindingUpdated)
+				.def("CalculatePath", &Scene::CalculateScenePath)
+				.def_readwrite("ScenePath", &Scene::m_ScenePath, luabind::return_stl_iterator())
+				.def_readwrite("Deployments", &Scene::m_Deployments, luabind::return_stl_iterator())
+				.property("ScenePathSize", &Scene::GetScenePathSize),
 
 		ABSTRACTLUABINDING(Deployment, SceneObject)
-			.def("CreateDeployedActor", (Actor * (Deployment::*)())&Deployment::CreateDeployedActor, adopt(result))
-			.def("CreateDeployedObject", (SceneObject * (Deployment::*)())&Deployment::CreateDeployedObject, adopt(result))
+			.def("CreateDeployedActor", (Actor * (Deployment::*)())&Deployment::CreateDeployedActor, luabind::adopt_policy<0>())
+			.def("CreateDeployedObject", (SceneObject * (Deployment::*)())&Deployment::CreateDeployedObject, luabind::adopt_policy<0>())
 			.def("GetLoadoutName", &Deployment::GetLoadoutName)
 			.property("SpawnRadius", &Deployment::GetSpawnRadius)
 			.property("ID", &Deployment::GetID)
@@ -1733,9 +1738,9 @@ int LuaMan::Create()
             .def("FindAltitude", &SceneMan::FindAltitude)
             .def("MovePointToGround", &SceneMan::MovePointToGround)
             .def("IsWithinBounds", &SceneMan::IsWithinBounds)
-            .def("ForceBounds", (bool (SceneMan::*)(int &, int &))&SceneMan::ForceBounds)
-            .def("ForceBounds", (bool (SceneMan::*)(Vector &))&SceneMan::ForceBounds)//, out_value(_2))
-            .def("WrapPosition", (bool (SceneMan::*)(int &, int &))&SceneMan::WrapPosition)
+//FIX			//.def("ForceBounds", (bool (SceneMan::*)(int &, int &))&SceneMan::ForceBounds)
+			.def("ForceBounds", (bool (SceneMan::*)(Vector &))&SceneMan::ForceBounds)//, out_value(_2))
+//FIX			//.def("WrapPosition", (bool (SceneMan::*)(int &, int &))&SceneMan::WrapPosition)
             .def("WrapPosition", (bool (SceneMan::*)(Vector &))&SceneMan::WrapPosition)//, out_value(_2))
             .def("SnapPosition", &SceneMan::SnapPosition)
             .def("ShortestDistance", &SceneMan::ShortestDistance)
@@ -1748,7 +1753,7 @@ int LuaMan::Create()
             .def("ClearPostEffects", &SceneMan::ClearPostEffects),
 
 		class_<DataModule>("DataModule")
-			.def_readwrite("Presets", &DataModule::m_EntityList, return_stl_iterator)
+			.def_readwrite("Presets", &DataModule::m_EntityList, luabind::return_stl_iterator())
 			.property("FileName", &DataModule::GetFileName)
 			.property("FriendlyName", &DataModule::GetFriendlyName),
 
@@ -1913,11 +1918,7 @@ int LuaMan::Create()
             .def("SwitchToPrevActor", &Activity::SwitchToPrevActor)
             .property("Difficulty", &Activity::GetDifficulty, &Activity::SetDifficulty)
             .def("IsPlayerTeam", &Activity::IsPlayerTeam)
-            .def("ResetMessageTimer", &Activity::ResetMessageTimer)
-// These are defined later in GAScripted
-/*            .def("Start", &Activity::Start)
-            .def("Pause", &Activity::Pause)
-            .def("End", &Activity::End)*/,
+            .def("ResetMessageTimer", &Activity::ResetMessageTimer),
 
         class_<GUIBanner>("GUIBanner")
             .enum_("AnimMode")
@@ -2016,7 +2017,7 @@ int LuaMan::Create()
             .def("AddPieMenuSlice", &GameActivity::AddPieMenuSlice)
             .def("AlterPieMenuSlice", &GameActivity::AlterPieMenuSlice)
             .def("RemovePieMenuSlice", &GameActivity::RemovePieMenuSlice)
-			.def_readwrite("PieMenuSlices", &GameActivity::m_CurrentPieMenuSlices, return_stl_iterator),
+			.def_readwrite("PieMenuSlices", &GameActivity::m_CurrentPieMenuSlices, luabind::return_stl_iterator()),
 		
 		class_<PieMenuGUI::Slice>("Slice")
 			.enum_("Direction")
@@ -2084,11 +2085,11 @@ int LuaMan::Create()
             .property("DefaultActivityType", &ActivityMan::GetDefaultActivityType, &ActivityMan::SetDefaultActivityType)
             .property("DefaultActivityName", &ActivityMan::GetDefaultActivityName, &ActivityMan::SetDefaultActivityName)
             // Transfers ownership of the Activity to start into the ActivityMan, adopts ownership (_1 is the this ptr)
-            .def("SetStartActivity", &ActivityMan::SetStartActivity, adopt(_2))
+            .def("SetStartActivity", &ActivityMan::SetStartActivity, luabind::adopt_policy<2>())
             .def("GetStartActivity", &ActivityMan::GetStartActivity)
             .def("GetActivity", &ActivityMan::GetActivity)
             // Transfers ownership of the Activity to start into the ActivityMan, adopts ownership (_1 is the this ptr)
-            .def("StartActivity", (int (ActivityMan::*)(Activity *))&ActivityMan::StartActivity, adopt(_2))
+            .def("StartActivity", (int (ActivityMan::*)(Activity *))&ActivityMan::StartActivity, luabind::adopt_policy<2>())
             .def("StartActivity", (int (ActivityMan::*)(string, string))&ActivityMan::StartActivity)
             .def("RestartActivity", &ActivityMan::RestartActivity)
             .def("PauseActivity", &ActivityMan::PauseActivity)
@@ -2113,7 +2114,7 @@ int LuaMan::Create()
             .def("GetTeamOfPlayer", &MetaMan::GetTeamOfPlayer)
             .def("GetPlayer", &MetaMan::GetPlayer)
             .def("GetMetaPlayerOfInGamePlayer", &MetaMan::GetMetaPlayerOfInGamePlayer)
-            .def_readwrite("Players", &MetaMan::m_Players, return_stl_iterator),
+            .def_readwrite("Players", &MetaMan::m_Players, luabind::return_stl_iterator()),
 
         class_<AlarmEvent>("AlarmEvent")
             .def(constructor<>())
@@ -2132,13 +2133,13 @@ int LuaMan::Create()
             .def("GetPrevActorInGroup", &MovableMan::GetPrevActorInGroup)
             .def("GetNextTeamActor", &MovableMan::GetNextTeamActor)
             .def("GetPrevTeamActor", &MovableMan::GetPrevTeamActor)
-            .def("GetClosestTeamActor", &MovableMan::GetClosestTeamActor)
-            .def("GetClosestEnemyActor", &MovableMan::GetClosestEnemyActor)
+//FIX            //.def("GetClosestTeamActor", &MovableMan::GetClosestTeamActor)
+//FIX            //.def("GetClosestEnemyActor", &MovableMan::GetClosestEnemyActor)
             .def("GetFirstTeamActor", &MovableMan::GetFirstTeamActor)
-            .def("GetClosestActor", &MovableMan::GetClosestActor)
-            .def("GetClosestBrainActor", &MovableMan::GetClosestBrainActor)
+//FIX            //.def("GetClosestActor", &MovableMan::GetClosestActor)
+//FIX            //.def("GetClosestBrainActor", &MovableMan::GetClosestBrainActor)
             .def("GetFirstBrainActor", &MovableMan::GetFirstBrainActor)
-            .def("GetClosestOtherBrainActor", &MovableMan::GetClosestOtherBrainActor)
+//FIX            //.def("GetClosestOtherBrainActor", &MovableMan::GetClosestOtherBrainActor)
             .def("GetFirstOtherBrainActor", &MovableMan::GetFirstOtherBrainActor)
             .def("GetUnassignedBrain", &MovableMan::GetUnassignedBrain)
             .def("GetParticleCount", &MovableMan::GetParticleCount)
@@ -2148,10 +2149,10 @@ int LuaMan::Create()
             .property("ScriptedEntity", &MovableMan::GetScriptedEntity, &MovableMan::SetScriptedEntity)
             .def("SortTeamRoster", &MovableMan::SortTeamRoster)
 			.def("ChangeActorTeam", &MovableMan::ChangeActorTeam)
-			.def("AddMO", &AddMO, adopt(_2))
-            .def("AddActor", &AddActor, adopt(_2))
-            .def("AddItem", &AddItem, adopt(_2))
-            .def("AddParticle", &AddParticle, adopt(_2))
+			.def("AddMO", &AddMO, luabind::adopt_policy<2>())
+            .def("AddActor", &AddActor, luabind::adopt_policy<2>())
+            .def("AddItem", &AddItem, luabind::adopt_policy<2>())
+            .def("AddParticle", &AddParticle, luabind::adopt_policy<2>())
             .def("RemoveActor", &MovableMan::RemoveActor)
             .def("RemoveItem", &MovableMan::RemoveItem)
             .def("RemoveParticle", &MovableMan::RemoveParticle)
@@ -2167,14 +2168,14 @@ int LuaMan::Create()
             .def("IsParticleSettlingEnabled", &MovableMan::IsParticleSettlingEnabled)
             .def("EnableParticleSettling", &MovableMan::EnableParticleSettling)
             .def("IsMOSubtractionEnabled", &MovableMan::IsMOSubtractionEnabled)
-            .def_readwrite("Actors", &MovableMan::m_Actors, return_stl_iterator)
-            .def_readwrite("Items", &MovableMan::m_Items, return_stl_iterator)
-            .def_readwrite("Particles", &MovableMan::m_Particles, return_stl_iterator)
-            .def_readwrite("AddedActors", &MovableMan::m_AddedActors, return_stl_iterator)
-            .def_readwrite("AddedItems", &MovableMan::m_AddedItems, return_stl_iterator)
-            .def_readwrite("AddedParticles", &MovableMan::m_AddedParticles, return_stl_iterator)
-            .def_readwrite("AlarmEvents", &MovableMan::m_AlarmEvents, return_stl_iterator)
-            .def_readwrite("AddedAlarmEvents", &MovableMan::m_AddedAlarmEvents, return_stl_iterator),
+            .def_readwrite("Actors", &MovableMan::m_Actors, luabind::return_stl_iterator())
+            .def_readwrite("Items", &MovableMan::m_Items, luabind::return_stl_iterator())
+            .def_readwrite("Particles", &MovableMan::m_Particles, luabind::return_stl_iterator())
+            .def_readwrite("AddedActors", &MovableMan::m_AddedActors, luabind::return_stl_iterator())
+            .def_readwrite("AddedItems", &MovableMan::m_AddedItems, luabind::return_stl_iterator())
+            .def_readwrite("AddedParticles", &MovableMan::m_AddedParticles, luabind::return_stl_iterator())
+            .def_readwrite("AlarmEvents", &MovableMan::m_AlarmEvents, luabind::return_stl_iterator())
+            .def_readwrite("AddedAlarmEvents", &MovableMan::m_AddedAlarmEvents, luabind::return_stl_iterator()),
 
         class_<ConsoleMan>("ConsoleManager")
             .def("PrintString", &ConsoleMan::PrintString)
@@ -2197,7 +2198,7 @@ int LuaMan::Create()
 			.property("RecommendedMOIDCount", &SettingsMan::RecommendedMOIDCount),
 
         // NOT a member function, so adopting _1 instead of the _2 for the first param, since there's no "this" pointer!!
-        def("DeleteEntity", &DeleteEntity, adopt(_1)),
+        def("DeleteEntity", &DeleteEntity, luabind::adopt_policy<1>()),
         def("PosRand", &PosRand),
         def("NormalRand", &NormalRand),
         def("RangeRand", &RangeRand),
