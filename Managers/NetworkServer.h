@@ -20,7 +20,6 @@
 #include "NetworkClient.h"
 #include "NatPunchthroughClient.h"
 
-#include "boost\thread.hpp"
 #include <mutex>
 
 #include "TimerMan.h"
@@ -244,7 +243,7 @@ namespace RTE
 			RakNet::SystemAddress InternalId;
 			int ResX;
 			int ResY;
-			boost::thread * pSendThread;
+			std::thread * pSendThread;
 			std::string PlayerName;
 		};
 
