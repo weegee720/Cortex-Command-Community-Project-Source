@@ -311,6 +311,9 @@ public:
 
     Actor * GetClosestTeamActor(int team, int player, const Vector &scenePoint, int maxRadius, float &getDistance, const Actor *pExcludeThis = 0);
 
+	Actor * GetClosestTeamActor(int team, int player, const Vector &scenePoint, int maxRadius, float *getDistance, const Actor *pExcludeThis = 0)
+	{ float f = *getDistance; Actor * result = GetClosestTeamActor(team, player, scenePoint, maxRadius, f, pExcludeThis); *getDistance = f; return result; }
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Method:          GetClosestEnemyActor
@@ -358,6 +361,9 @@ public:
 //                  excluded one was found within the radius of the point, 0 is returned.
 
     Actor * GetClosestActor(Vector &scenePoint, int maxRadius, float &getDistance, const Actor *pExcludeThis = 0);
+
+	Actor * GetClosestActor(Vector &scenePoint, int maxRadius, float *getDistance, const Actor *pExcludeThis = 0)
+	{ float f = *getDistance; Actor * result = GetClosestActor(scenePoint, maxRadius, f, pExcludeThis); *getDistance = f; return result; }
 
 
 //////////////////////////////////////////////////////////////////////////////////////////

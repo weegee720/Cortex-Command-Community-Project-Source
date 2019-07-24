@@ -20,7 +20,6 @@
 #include <list>
 #include <queue>
 
-
 // *** TEMP
 //#include "resource.h"
 
@@ -1443,6 +1442,8 @@ public:
 
     bool ForceBounds(int &posX, int &posY);
 
+	bool ForceBounds(int *posX, int *posY) { int x = *posX; int y = *posY; bool result = ForceBounds(x, y); *posX = x; *posY = y; return result; };
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Method:          ForceBounds
@@ -1464,6 +1465,9 @@ public:
 // Return value:    Whether wrapping was performed or not.
 
     bool WrapPosition(int &posX, int &posY);
+
+	bool WrapPosition(int *posX, int *posY) { int x = *posX; int y = *posY; bool result = WrapPosition(x, y); *posX = x; *posY = y; return result; };
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////

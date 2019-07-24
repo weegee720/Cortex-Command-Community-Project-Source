@@ -62,6 +62,7 @@ extern "C"
 #include "luabind/out_value_policy.hpp"
 #include "luabind/iterator_policy.hpp"
 #include "luabind/return_reference_to_policy.hpp"
+
 // Boost
 //#include "boost/detail/shared_ptr_nmt.hpp"
 //#include "boost/shared_ptr.hpp"
@@ -70,6 +71,7 @@ extern "C"
 template <typename... T>
 using joined =
 typename luabind::meta::join<T...>::type;
+
 
 #include <string>
 using namespace std;
@@ -1738,9 +1740,9 @@ int LuaMan::Create()
             .def("FindAltitude", &SceneMan::FindAltitude)
             .def("MovePointToGround", &SceneMan::MovePointToGround)
             .def("IsWithinBounds", &SceneMan::IsWithinBounds)
-//FIX			//.def("ForceBounds", (bool (SceneMan::*)(int &, int &))&SceneMan::ForceBounds)
+			.def("ForceBounds", (bool (SceneMan::*)(int *, int *))&SceneMan::ForceBounds)
 			.def("ForceBounds", (bool (SceneMan::*)(Vector &))&SceneMan::ForceBounds)//, out_value(_2))
-//FIX			//.def("WrapPosition", (bool (SceneMan::*)(int &, int &))&SceneMan::WrapPosition)
+            .def("WrapPosition", (bool (SceneMan::*)(int *, int *))&SceneMan::WrapPosition)
             .def("WrapPosition", (bool (SceneMan::*)(Vector &))&SceneMan::WrapPosition)//, out_value(_2))
             .def("SnapPosition", &SceneMan::SnapPosition)
             .def("ShortestDistance", &SceneMan::ShortestDistance)
@@ -2133,13 +2135,13 @@ int LuaMan::Create()
             .def("GetPrevActorInGroup", &MovableMan::GetPrevActorInGroup)
             .def("GetNextTeamActor", &MovableMan::GetNextTeamActor)
             .def("GetPrevTeamActor", &MovableMan::GetPrevTeamActor)
-//FIX            //.def("GetClosestTeamActor", &MovableMan::GetClosestTeamActor)
-//FIX            //.def("GetClosestEnemyActor", &MovableMan::GetClosestEnemyActor)
+            .def("GetClosestTeamActor", (Actor * (MovableMan::*)(int , int , const Vector &, int , float *, const Actor *))&MovableMan::GetClosestTeamActor)
+			.def("GetClosestEnemyActor", &MovableMan::GetClosestEnemyActor)
             .def("GetFirstTeamActor", &MovableMan::GetFirstTeamActor)
-//FIX            //.def("GetClosestActor", &MovableMan::GetClosestActor)
-//FIX            //.def("GetClosestBrainActor", &MovableMan::GetClosestBrainActor)
+			.def("GetClosestActor", (Actor * (MovableMan::*)(Vector &, int, float *, const Actor *))&MovableMan::GetClosestActor)
+			.def("GetClosestBrainActor", &MovableMan::GetClosestBrainActor)
             .def("GetFirstBrainActor", &MovableMan::GetFirstBrainActor)
-//FIX            //.def("GetClosestOtherBrainActor", &MovableMan::GetClosestOtherBrainActor)
+			.def("GetClosestOtherBrainActor", &MovableMan::GetClosestOtherBrainActor)
             .def("GetFirstOtherBrainActor", &MovableMan::GetFirstOtherBrainActor)
             .def("GetUnassignedBrain", &MovableMan::GetUnassignedBrain)
             .def("GetParticleCount", &MovableMan::GetParticleCount)
