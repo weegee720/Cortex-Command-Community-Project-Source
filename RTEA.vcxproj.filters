@@ -70,6 +70,9 @@
     <Filter Include="System\LZ4">
       <UniqueIdentifier>{fc693771-7e01-473d-aa69-fce744a0bdc3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="System\luabind">
+      <UniqueIdentifier>{2f961417-e10f-47d0-8835-860ffe072e64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ccicon.ico">
@@ -2103,6 +2106,69 @@
     </ClCompile>
     <ClCompile Include="Entities\MultiplayerServerLobby.cpp">
       <Filter>Entities\Activities</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\class.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\class_info.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\class_registry.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\class_rep.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\create_class.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\error.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\exception_handler.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\function.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\function_introspection.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\headertest.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\inheritance.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\link_compatibility.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\object_rep.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\open.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\operator.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\pcall.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\scope.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\set_package_preload.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\stack_content_by_name.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\weak_ref.cpp">
+      <Filter>System\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="System\luabind\wrapper_base.cpp">
+      <Filter>System\luabind</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
