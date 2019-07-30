@@ -542,6 +542,8 @@ protected:
     bool m_WillIdle;
     // Wether this Arm reaached the reach target last Update.
     bool m_DidReach;
+    // The amount of impulse force needed on this to deatch it from the host actor. Overrides JointStrength of held device to allow handling it from actor side.
+    float m_GripStrength;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
