@@ -967,9 +967,37 @@ void HDFirearm::Update()
             m_RecoilOffset.SetMagnitude(1.25);
         }
 
-// TODO: This is broken, revise")
+        // Recoil force transfer
         if (m_pParent)
+        {
+            // Pass values to parent. This does not apply any forces.
             m_pParent->SetRecoil(m_RecoilForce, m_RecoilOffset, m_Recoiled);
+            // Get actor currently holding device
+            Actor *pRootParent = dynamic_cast<Actor *>(GetRootParent());
+
+            if (pRootParent)
+            {
+                // For ACrab class, apply recoil forces directly to device parent
+                if (pRootParent->GetClassName() == "ACrab")
+                    m_pParent->AddImpulseForce(m_RecoilForce, m_RecoilOffset);
+                else
+                {
+                    // If recoil forces are higher than device joint can contain
+                    if (m_RecoilForce.GetMagnitude() > m_JointStrength)
+                    {
+                        // Apply recoil forces to device that will force it to detach
+                        AddImpulseForce(m_RecoilForce, m_RecoilOffset);
+                        // Apply remaining recoil forces to parent
+                        m_pParent->AddImpulseForce(m_RecoilForce - m_RecoilForce.SetMagnitude(m_JointStrength), m_RecoilOffset);
+                        // Trigger unstable status on actor that held device for a knockback effect
+                        pRootParent->SetStatus(Actor::UNSTABLE);
+                    }
+                    else
+                        // If recoil forces are lower than device joint can contain, apply forces directly to actor holding device
+                        pRootParent->AddImpulseForce(m_RecoilForce, m_RecoilOffset);
+                }
+            }
+        }
         else
             m_ImpulseForces.push_back(make_pair(m_RecoilForce, m_RecoilOffset));
 
