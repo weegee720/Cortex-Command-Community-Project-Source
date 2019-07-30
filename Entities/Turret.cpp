@@ -336,11 +336,6 @@ void Turret::Update()
             pHeldDev->SetJointPos(m_Pos + pHeldDev->GetParentOffset().GetXFlipped(m_HFlipped) * m_Rotation);
             pHeldDev->SetRotAngle(m_Rotation.GetRadAngle() + m_MountedRotOffset);
             pHeldDev->Update();
-// Looks strange
-//            if (pHeldDev->IsRecoiled())
-//                m_pParent->AddImpulseForce(pHeldDev->GetRecoilForce());
-//            else
-                m_Recoiled = false;
 
             // Apply forces and detach if necessary
             // OBSERVE the memeber pointer is what gets set to 0!$@#$@
