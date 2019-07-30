@@ -45,6 +45,7 @@ void Arm::Clear()
     m_MoveSpeed = 0;
     m_WillIdle = true;
     m_DidReach = false;
+    m_GripStrength = -1;
 }
 
 /*
@@ -87,6 +88,7 @@ int Arm::Create(const Arm &reference)
     m_TargetPoint = reference.m_TargetPoint;
     m_IdleOffset = reference.m_IdleOffset;
     m_MoveSpeed = reference.m_MoveSpeed;
+    m_GripStrength = reference.m_GripStrength;
 
     return 0;
 }
@@ -127,6 +129,8 @@ int Arm::ReadProperty(std::string propName, Reader &reader)
         reader >> m_WillIdle;
     else if (propName == "MoveSpeed")
         reader >> m_MoveSpeed;
+    else if (propName == "GripStrength")
+        reader >> m_GripStrength;
     else
         // See if the base class(es) can find a match instead
         return Attachable::ReadProperty(propName, reader);
@@ -157,6 +161,8 @@ int Arm::Save(Writer &writer) const
     writer << m_WillIdle;
     writer.NewProperty("MoveSpeed");
     writer << m_MoveSpeed;
+    writer.NewProperty("GripStrength");
+    writer << m_GripStrength;
 
     return 0;
 }
@@ -454,6 +460,15 @@ void Arm::Update()
         HeldDevice *pHeldDev = dynamic_cast<HeldDevice *>(m_pHeldMO);
         if (pHeldDev && !dynamic_cast<ThrownDevice *>(m_pHeldMO))
         {
+            // Check whether GripStrength is defined. If not, do nothing to preserve compatibility
+            if (m_GripStrength != -1)
+            {
+                // Override HeldDevice JointStrength with GripStrength
+                pHeldDev->SetJointStrength(m_GripStrength);
+                // Override JointStiffness because we have RecoilTransmission
+                pHeldDev->SetJointStiffness(1);
+            }
+
             // Indicate that the arm wasn't reaching for anything this frame.
             m_DidReach = false;
             pHeldDev->SetHFlipped(m_HFlipped);
@@ -490,10 +505,6 @@ void Arm::Update()
             pHeldDev->SetJointPos(m_JointPos.GetFloored() + m_HandOffset);
             pHeldDev->SetRotAngle(m_Rotation.GetRadAngle());
             pHeldDev->Update();
-            if (pHeldDev->IsRecoiled())
-                m_pParent->AddImpulseForce(pHeldDev->GetRecoilForce());
-            else
-                m_Recoiled = false;
 
             m_Rotation = (m_HFlipped ? PI : 0) + handAngle;
 
