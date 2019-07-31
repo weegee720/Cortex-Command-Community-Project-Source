@@ -91,6 +91,10 @@ int HDFirearm::Create()
 
     if (m_pFlash)
         m_pFlash->SetParentOffset(m_MuzzleOff);
+    
+    // If both JointStiffness and RecoilTransmission are defined as something other than 1, default to RecoilTransmission so we don't have double force reduction/increase.
+    if (m_JointStiffness != 1 && m_RecoilTransmission != 1)
+        m_JointStiffness = 1;
 
     return 0;
 }

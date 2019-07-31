@@ -462,12 +462,8 @@ void Arm::Update()
         {
             // Check whether GripStrength is defined. If not, do nothing to preserve compatibility
             if (m_GripStrength != -1)
-            {
                 // Override HeldDevice JointStrength with GripStrength
                 pHeldDev->SetJointStrength(m_GripStrength);
-                // Override JointStiffness because we have RecoilTransmission
-                pHeldDev->SetJointStiffness(1);
-            }
 
             // Indicate that the arm wasn't reaching for anything this frame.
             m_DidReach = false;
