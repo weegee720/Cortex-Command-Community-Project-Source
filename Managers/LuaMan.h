@@ -378,6 +378,7 @@ enum ServerResult
 
 	void ClearUserModuleCache();
 
+	void CreateSolState(lua_State * L);
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Protected member variable and method declarations
@@ -389,6 +390,7 @@ protected:
 
     // The master parent script state
     lua_State *m_pMasterState;
+
     // Description of the last error that occurred in the script execution
     std::string m_LastError;
     // The next unique preset ID to hand out to the next Preset that wants to define some functions

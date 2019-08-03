@@ -63,10 +63,15 @@ extern "C"
 #include "luabind/iterator_policy.hpp"
 #include "luabind/return_reference_to_policy.hpp"
 
+
+#define SOL_ALL_SAFETIES_ON 1
+#include <sol/sol.hpp>
+
 // Boost
 //#include "boost/detail/shared_ptr_nmt.hpp"
 //#include "boost/shared_ptr.hpp"
 
+sol::state_view * g_pSolLuaState = 0;
 
 template <typename... T>
 using joined =
@@ -133,6 +138,18 @@ namespace RTE
 {
 
 const string LuaMan::m_ClassName = "LuaMan";
+
+int use_sol2(lua_State* L)
+{
+	g_LuaMan.CreateSolState(L);
+	return 0;
+}
+
+void LuaMan::CreateSolState(lua_State * L)
+{
+	g_pSolLuaState = new sol::state_view(L);
+	g_pSolLuaState->script("print('Sol2 Initialized')");
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -432,6 +449,22 @@ void LuaMan::Clear()
 //////////////////////////////////////////////////////////////////////////////////////////
 // Description:     Makes the LuaMan object ready for use.
 
+
+Vector * _NewVectorFloat(float x, float y)
+{
+	return new Vector(x, y);
+}
+
+Vector * _NewVectorVector(Vector & v)
+{
+	return new Vector(v);
+}
+
+Vector * _NewVectorDefault()
+{
+	return new Vector();
+}
+
 int LuaMan::Create()
 {
     // Create the master state
@@ -467,16 +500,88 @@ int LuaMan::Create()
 	lua_call(m_pMasterState, 1, 0);
 
 
+	lua_pushcclosure(m_pMasterState, &use_sol2, 0);
+	lua_setglobal(m_pMasterState, "use_sol2");
+
+	if (luaL_dostring(m_pMasterState, "use_sol2()")) {
+		lua_error(m_pMasterState);
+		return -1;
+	}
+
+
     // From LuaBind documentation:
     // As mentioned in the Lua documentation, it is possible to pass an error handler function to lua_pcall().
     // Luabind makes use of lua_pcall() internally when calling member functions and free functions.
     // It is possible to set the error handler function that Luabind will use globally:
     //set_pcall_callback(&AddFileAndLineToError);
 
+
+	sol::usertype<Vector> Vector_ = g_pSolLuaState->new_usertype<Vector>("Vector",
+		sol::constructors<Vector(), 
+		Vector(Vector &), 
+		Vector(float, float)>(),
+		sol::call_constructor, sol::constructors<Vector(), Vector(Vector &), Vector(float, float)>()
+		//sol::call_constructor, sol::constructor_list<Vector>()
+		//sol::call_constructor, sol::overload(&_NewVectorVector, &_NewVectorVector, &_NewVectorFloat)
+	);
+
+	//Vector_[sol::meta_function::call_construct] = sol::overload(&_NewVectorFloat, &_NewVectorVector, &_NewVectorVector);
+	//Vector_[sol::meta_function::call] = &_NewVectorFloat;
+	//Vector_[sol::meta_function::call_function] = &_NewVectorFloat;
+
+	Vector_[sol::meta_function::equal_to] = sol::resolve<bool(const Vector&, const Vector&)>(RTE::operator==);
+	Vector_[sol::meta_function::unary_minus] = sol::resolve<Vector()>(&Vector::operator-);
+	Vector_[sol::meta_function::addition] = sol::resolve<Vector(const Vector &, const Vector &)>(&RTE::operator -);
+	Vector_[sol::meta_function::addition] = sol::resolve<Vector(const Vector &, const Vector &)>(&RTE::operator +);
+	Vector_[sol::meta_function::multiplication] = &Vector::operator *;
+	Vector_[sol::meta_function::division] = &Vector::operator /;
+
+	Vector_["ClassName"] = sol::property(&Vector::GetClassName);
+	Vector_["RoundedX"] = sol::property(&Vector::GetRoundIntX);
+	Vector_["RoundedY"] = sol::property(&Vector::GetRoundIntY);
+	Vector_["Rounded"] = sol::property(&Vector::GetRounded);
+	Vector_["FlooredX"] = sol::property(&Vector::GetFloorIntX);
+	Vector_["FlooredY"] = sol::property(&Vector::GetFloorIntY);
+	Vector_["Floored"] = sol::property(&Vector::GetFloored);
+	Vector_["CeilingedX"] = sol::property(&Vector::GetCeilingIntX);
+	Vector_["CeilingedY"] = sol::property(&Vector::GetCeilingIntY);
+	Vector_["Ceilinged"] = sol::property(&Vector::GetCeilinged);
+	Vector_["Magnitude"] = sol::property(&Vector::GetMagnitude);
+	Vector_["SetMagnitude"] = &Vector::SetMagnitude;
+	Vector_["Largest"] = sol::property(&Vector::GetLargest);
+	Vector_["Smallest"] = sol::property(&Vector::GetSmallest);
+	Vector_["Normalized"] = sol::property(&Vector::GetNormalized);
+	Vector_["Perpendicular"] = sol::property(&Vector::GetPerpendicular);
+	Vector_["GetXFlipped"] = &Vector::GetXFlipped;
+	Vector_["GetYFlipped"] = &Vector::GetYFlipped;
+	Vector_["AbsRadAngle"] = sol::property(&Vector::GetAbsRadAngle);
+	Vector_["AbsDegAngle"] = sol::property(&Vector::GetAbsDegAngle);
+	Vector_["CapMagnitude"] = &Vector::CapMagnitude;
+	Vector_["FlipX"] = &Vector::FlipX;
+	Vector_["FlipY"] = &Vector::FlipY;
+	Vector_["IsZero"] = &Vector::IsZero;
+	Vector_["IsOpposedTo"] = &Vector::IsOpposedTo;
+	Vector_["Dot"] = &Vector::Dot;
+	Vector_["Cross"] = &Vector::Cross;
+	Vector_["Round"] = &Vector::Round;
+	Vector_["ToHalf"] = &Vector::ToHalf;
+	Vector_["Floor"] = &Vector::Floor;
+	Vector_["Ceiling"] = &Vector::Ceiling;
+	Vector_["Normalize"] = &Vector::Normalize;
+	Vector_["Perpendicularize"] = &Vector::Perpendicularize;
+	Vector_["Reset"] = &Vector::Reset;
+	Vector_["RadRotate"] = &Vector::RadRotate;
+	Vector_["DegRotate"] = &Vector::DegRotate;
+	Vector_["AbsRotateTo"] = &Vector::AbsRotateTo;
+	// For whatever reasons binding simply as variable breaks the VS 2017 compiler
+	Vector_["X"] = sol::property(&Vector::GetX, &Vector::SetX);
+	Vector_["Y"] = sol::property(&Vector::GetY, &Vector::SetY);
+	Vector_["SetXY"] = &Vector::SetXY;//*/
+
     // Declare all useful classes in the master state
     module(m_pMasterState)
     [
-        class_<Vector>("Vector")
+        /*class_<Vector>("Vector")
             .def(luabind::constructor<>())
             .def(luabind::constructor<float, float>())
             .def(self == other<const Vector &>())
@@ -524,7 +629,7 @@ int LuaMan::Create()
             .def("AbsRotateTo", &Vector::AbsRotateTo)
             .def_readwrite("X", &Vector::m_X)
             .def_readwrite("Y", &Vector::m_Y)
-            .def("SetXY", &Vector::SetXY),
+            .def("SetXY", &Vector::SetXY),//*/
 
         class_<Box>("Box")
             .def(constructor<>())
