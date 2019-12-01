@@ -347,6 +347,12 @@ LUAENTITYCAST(TerrainObject)
     class_<TYPE, PARENT/*, boost::shared_ptr<Entity> */>(#TYPE) \
         .property("ClassName", &TYPE::GetClassName)
 
+#define ABSTRACTLUABINDING_SOL(TYPE, PARENT) \
+    g_pSolLuaState->set((string("To") + string(#TYPE)).c_str(), To##TYPE); \
+	g_pSolLuaState->set((string("To") + string(#TYPE)).c_str(), ToConst##TYPE); \
+	sol::usertype<TYPE> Bind = g_pSolLuaState->new_usertype<TYPE>(#TYPE, sol::no_constructor); \
+	Bind["ClassName"] = &TYPE::GetClassName;
+
 #define CONCRETELUABINDING(TYPE, PARENT) \
     def((string("Create") + string(#TYPE)).c_str(), (TYPE *(*)(string, string))&Create##TYPE, luabind::adopt_policy<0>()), \
     def((string("Create") + string(#TYPE)).c_str(), (TYPE *(*)(string))&Create##TYPE, luabind::adopt_policy<0>()), \
@@ -359,6 +365,19 @@ LUAENTITYCAST(TerrainObject)
     class_<TYPE, PARENT/*, boost::shared_ptr<Entity> */>(#TYPE) \
         .def("Clone", &Clone##TYPE, luabind::adopt_policy<0>()) \
         .property("ClassName", &TYPE::GetClassName)
+
+#define CONCRETELUABINDING_SOL(TYPE, PARENT) \
+	g_pSolLuaState->set((string("Create") + string(#TYPE)).c_str(), (TYPE *(*)(string, string))Create##TYPE); \
+	g_pSolLuaState->set((string("Create") + string(#TYPE)).c_str(), (TYPE *(*)(string))Create##TYPE); \
+	g_pSolLuaState->set((string("Random") + string(#TYPE)).c_str(), (TYPE *(*)(string, int))Random##TYPE); \
+	g_pSolLuaState->set((string("Random") + string(#TYPE)).c_str(), (TYPE *(*)(string, string))Random##TYPE); \
+	g_pSolLuaState->set((string("Random") + string(#TYPE)).c_str(), (TYPE *(*)(string))Random##TYPE); \
+	g_pSolLuaState->set((string("To") + string(#TYPE)).c_str(), To##TYPE); \
+	g_pSolLuaState->set((string("To") + string(#TYPE)).c_str(), ToConst##TYPE); \
+	g_pSolLuaState->set((string("Is") + string(#TYPE)).c_str(), Is##TYPE); \
+	sol::usertype<TYPE> Bind = g_pSolLuaState->new_usertype<TYPE>(#TYPE, sol::no_constructor); \
+	Bind["ClassName"] = &TYPE::GetClassName;
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Other misc adapters to eliminate/emulate default parameters etc
@@ -449,22 +468,6 @@ void LuaMan::Clear()
 //////////////////////////////////////////////////////////////////////////////////////////
 // Description:     Makes the LuaMan object ready for use.
 
-
-Vector * _NewVectorFloat(float x, float y)
-{
-	return new Vector(x, y);
-}
-
-Vector * _NewVectorVector(Vector & v)
-{
-	return new Vector(v);
-}
-
-Vector * _NewVectorDefault()
-{
-	return new Vector();
-}
-
 int LuaMan::Create()
 {
     // Create the master state
@@ -515,68 +518,1036 @@ int LuaMan::Create()
     // It is possible to set the error handler function that Luabind will use globally:
     //set_pcall_callback(&AddFileAndLineToError);
 
+	///////////////////////////////////////////////////////////////////////////
+	// Vector
+	///////////////////////////////////////////////////////////////////////////
+	{
+		/*class_<Vector>("Vector")
+				   .def(luabind::constructor<>())
+				   .def(luabind::constructor<float, float>())
+				   .def(self == other<const Vector &>())
+				   .def(const_self + other<const Vector &>())
+				   .def(const_self - other<const Vector &>())
+				   .def(const_self * float())
+				   .def(const_self / float())
+				   .def(tostring(const_self))
+				   .property("ClassName", &Vector::GetClassName)
+				   .property("RoundedX", &Vector::GetRoundIntX)
+				   .property("RoundedY", &Vector::GetRoundIntY)
+				   .property("Rounded", &Vector::GetRounded)
+				   .property("FlooredX", &Vector::GetFloorIntX)
+				   .property("FlooredY", &Vector::GetFloorIntY)
+				   .property("Floored", &Vector::GetFloored)
+				   .property("CeilingedX", &Vector::GetCeilingIntX)
+				   .property("CeilingedY", &Vector::GetCeilingIntY)
+				   .property("Ceilinged", &Vector::GetCeilinged)
+				   .property("Magnitude", &Vector::GetMagnitude)
+				   .def("SetMagnitude", &Vector::SetMagnitude)
+				   .property("Largest", &Vector::GetLargest)
+				   .property("Smallest", &Vector::GetSmallest)
+				   .property("Normalized", &Vector::GetNormalized)
+				   .property("Perpendicular", &Vector::GetPerpendicular)
+				   .def("GetXFlipped", &Vector::GetXFlipped)
+				   .def("GetYFlipped", &Vector::GetYFlipped)
+				   .property("AbsRadAngle", &Vector::GetAbsRadAngle)
+				   .property("AbsDegAngle", &Vector::GetAbsDegAngle)
+				   .def("CapMagnitude", &Vector::CapMagnitude)
+				   .def("FlipX", &Vector::FlipX)
+				   .def("FlipY", &Vector::FlipY)
+				   .def("IsZero", &Vector::IsZero)
+				   .def("IsOpposedTo", &Vector::IsOpposedTo)
+				   .def("Dot", &Vector::Dot)
+				   .def("Cross", &Vector::Cross)
+				   .def("Round", &Vector::Round)
+				   .def("ToHalf", &Vector::ToHalf)
+				   .def("Floor", &Vector::Floor)
+				   .def("Ceiling", &Vector::Ceiling)
+				   .def("Normalize", &Vector::Normalize)
+				   .def("Perpendicularize", &Vector::Perpendicularize)
+				   .def("Reset", &Vector::Reset)
+				   .def("RadRotate", &Vector::RadRotate)
+				   .def("DegRotate", &Vector::DegRotate)
+				   .def("AbsRotateTo", &Vector::AbsRotateTo)
+				   .def_readwrite("X", &Vector::m_X)
+				   .def_readwrite("Y", &Vector::m_Y)
+				   .def("SetXY", &Vector::SetXY),//*/
 
-	sol::usertype<Vector> Vector_ = g_pSolLuaState->new_usertype<Vector>("Vector",
-		sol::constructors<Vector(), 
-		Vector(Vector &), 
-		Vector(float, float)>(),
-		sol::call_constructor, sol::constructors<Vector(), Vector(Vector &), Vector(float, float)>()
-		//sol::call_constructor, sol::constructor_list<Vector>()
-		//sol::call_constructor, sol::overload(&_NewVectorVector, &_NewVectorVector, &_NewVectorFloat)
-	);
 
-	//Vector_[sol::meta_function::call_construct] = sol::overload(&_NewVectorFloat, &_NewVectorVector, &_NewVectorVector);
-	//Vector_[sol::meta_function::call] = &_NewVectorFloat;
-	//Vector_[sol::meta_function::call_function] = &_NewVectorFloat;
 
-	Vector_[sol::meta_function::equal_to] = sol::resolve<bool(const Vector&, const Vector&)>(RTE::operator==);
-	Vector_[sol::meta_function::unary_minus] = sol::resolve<Vector()>(&Vector::operator-);
-	Vector_[sol::meta_function::addition] = sol::resolve<Vector(const Vector &, const Vector &)>(&RTE::operator -);
-	Vector_[sol::meta_function::addition] = sol::resolve<Vector(const Vector &, const Vector &)>(&RTE::operator +);
-	Vector_[sol::meta_function::multiplication] = &Vector::operator *;
-	Vector_[sol::meta_function::division] = &Vector::operator /;
+		sol::usertype<Vector> Bind = g_pSolLuaState->new_usertype<Vector>("Vector",
+			sol::constructors<Vector(), Vector(float, float)>(),
+			sol::call_constructor, sol::constructors<Vector(), Vector(Vector &), Vector(float, float)>()
+		);
 
-	Vector_["ClassName"] = sol::property(&Vector::GetClassName);
-	Vector_["RoundedX"] = sol::property(&Vector::GetRoundIntX);
-	Vector_["RoundedY"] = sol::property(&Vector::GetRoundIntY);
-	Vector_["Rounded"] = sol::property(&Vector::GetRounded);
-	Vector_["FlooredX"] = sol::property(&Vector::GetFloorIntX);
-	Vector_["FlooredY"] = sol::property(&Vector::GetFloorIntY);
-	Vector_["Floored"] = sol::property(&Vector::GetFloored);
-	Vector_["CeilingedX"] = sol::property(&Vector::GetCeilingIntX);
-	Vector_["CeilingedY"] = sol::property(&Vector::GetCeilingIntY);
-	Vector_["Ceilinged"] = sol::property(&Vector::GetCeilinged);
-	Vector_["Magnitude"] = sol::property(&Vector::GetMagnitude);
-	Vector_["SetMagnitude"] = &Vector::SetMagnitude;
-	Vector_["Largest"] = sol::property(&Vector::GetLargest);
-	Vector_["Smallest"] = sol::property(&Vector::GetSmallest);
-	Vector_["Normalized"] = sol::property(&Vector::GetNormalized);
-	Vector_["Perpendicular"] = sol::property(&Vector::GetPerpendicular);
-	Vector_["GetXFlipped"] = &Vector::GetXFlipped;
-	Vector_["GetYFlipped"] = &Vector::GetYFlipped;
-	Vector_["AbsRadAngle"] = sol::property(&Vector::GetAbsRadAngle);
-	Vector_["AbsDegAngle"] = sol::property(&Vector::GetAbsDegAngle);
-	Vector_["CapMagnitude"] = &Vector::CapMagnitude;
-	Vector_["FlipX"] = &Vector::FlipX;
-	Vector_["FlipY"] = &Vector::FlipY;
-	Vector_["IsZero"] = &Vector::IsZero;
-	Vector_["IsOpposedTo"] = &Vector::IsOpposedTo;
-	Vector_["Dot"] = &Vector::Dot;
-	Vector_["Cross"] = &Vector::Cross;
-	Vector_["Round"] = &Vector::Round;
-	Vector_["ToHalf"] = &Vector::ToHalf;
-	Vector_["Floor"] = &Vector::Floor;
-	Vector_["Ceiling"] = &Vector::Ceiling;
-	Vector_["Normalize"] = &Vector::Normalize;
-	Vector_["Perpendicularize"] = &Vector::Perpendicularize;
-	Vector_["Reset"] = &Vector::Reset;
-	Vector_["RadRotate"] = &Vector::RadRotate;
-	Vector_["DegRotate"] = &Vector::DegRotate;
-	Vector_["AbsRotateTo"] = &Vector::AbsRotateTo;
-	// For whatever reasons binding simply as variable breaks the VS 2017 compiler
-	Vector_["X"] = sol::property(&Vector::GetX, &Vector::SetX);
-	Vector_["Y"] = sol::property(&Vector::GetY, &Vector::SetY);
-	Vector_["SetXY"] = &Vector::SetXY;//*/
+		Bind[sol::meta_function::equal_to] = sol::resolve<bool(const Vector&, const Vector&)>(RTE::operator==);
+		Bind[sol::meta_function::unary_minus] = sol::resolve<Vector()>(&Vector::operator-);
+		Bind[sol::meta_function::addition] = sol::resolve<Vector(const Vector &, const Vector &)>(&RTE::operator -);
+		Bind[sol::meta_function::addition] = sol::resolve<Vector(const Vector &, const Vector &)>(&RTE::operator +);
+		Bind[sol::meta_function::multiplication] = &Vector::operator *;
+		Bind[sol::meta_function::division] = &Vector::operator /;
+
+		Bind["ClassName"] = sol::property(&Vector::GetClassName);
+		Bind["RoundedX"] = sol::property(&Vector::GetRoundIntX);
+		Bind["RoundedY"] = sol::property(&Vector::GetRoundIntY);
+		Bind["Rounded"] = sol::property(&Vector::GetRounded);
+		Bind["FlooredX"] = sol::property(&Vector::GetFloorIntX);
+		Bind["FlooredY"] = sol::property(&Vector::GetFloorIntY);
+		Bind["Floored"] = sol::property(&Vector::GetFloored);
+		Bind["CeilingedX"] = sol::property(&Vector::GetCeilingIntX);
+		Bind["CeilingedY"] = sol::property(&Vector::GetCeilingIntY);
+		Bind["Ceilinged"] = sol::property(&Vector::GetCeilinged);
+		Bind["Magnitude"] = sol::property(&Vector::GetMagnitude);
+		Bind["SetMagnitude"] = &Vector::SetMagnitude;
+		Bind["Largest"] = sol::property(&Vector::GetLargest);
+		Bind["Smallest"] = sol::property(&Vector::GetSmallest);
+		Bind["Normalized"] = sol::property(&Vector::GetNormalized);
+		Bind["Perpendicular"] = sol::property(&Vector::GetPerpendicular);
+		Bind["GetXFlipped"] = &Vector::GetXFlipped;
+		Bind["GetYFlipped"] = &Vector::GetYFlipped;
+		Bind["AbsRadAngle"] = sol::property(&Vector::GetAbsRadAngle);
+		Bind["AbsDegAngle"] = sol::property(&Vector::GetAbsDegAngle);
+		Bind["CapMagnitude"] = &Vector::CapMagnitude;
+		Bind["FlipX"] = &Vector::FlipX;
+		Bind["FlipY"] = &Vector::FlipY;
+		Bind["IsZero"] = &Vector::IsZero;
+		Bind["IsOpposedTo"] = &Vector::IsOpposedTo;
+		Bind["Dot"] = &Vector::Dot;
+		Bind["Cross"] = &Vector::Cross;
+		Bind["Round"] = &Vector::Round;
+		Bind["ToHalf"] = &Vector::ToHalf;
+		Bind["Floor"] = &Vector::Floor;
+		Bind["Ceiling"] = &Vector::Ceiling;
+		Bind["Normalize"] = &Vector::Normalize;
+		Bind["Perpendicularize"] = &Vector::Perpendicularize;
+		Bind["Reset"] = &Vector::Reset;
+		Bind["RadRotate"] = &Vector::RadRotate;
+		Bind["DegRotate"] = &Vector::DegRotate;
+		Bind["AbsRotateTo"] = &Vector::AbsRotateTo;
+		// For whatever reasons binding simply as variable breaks the VS 2017 compiler
+		Bind["X"] = sol::property(&Vector::GetX, &Vector::SetX);
+		Bind["Y"] = sol::property(&Vector::GetY, &Vector::SetY);
+		Bind["SetXY"] = &Vector::SetXY;
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	// Box
+	///////////////////////////////////////////////////////////////////////////
+
+		/*class_<Box>("Box")
+			.def(constructor<>())
+			.def(constructor<const Vector &, const Vector &>())
+			.def(constructor<float, float, float, float>())
+			.def(constructor<const Vector &, float, float>())
+			.def(constructor<const Box &>())
+			.def(self == other<const Box &>())
+			.property("ClassName", &Box::GetClassName)
+			.property("Corner", &Box::GetCorner, &Box::SetCorner)
+			.property("Width", &Box::GetWidth, &Box::SetWidth)
+			.property("Height", &Box::GetHeight, &Box::SetHeight)
+			.property("Center", &Box::GetCenter, &Box::SetCenter)
+			.property("Area", &Box::GetArea)
+			.def("GetRandomPoint", &Box::GetRandomPoint)
+			.def("Unflip", &Box::Unflip)
+			.def("WithinBox", &Box::WithinBox)
+			.def("WithinBoxX", &Box::WithinBoxX)
+			.def("WithinBoxY", &Box::WithinBoxY)
+			.def("GetWithinBoxX", &Box::GetWithinBoxX)
+			.def("GetWithinBoxY", &Box::GetWithinBoxY)
+			.def("GetWithinBox", &Box::GetWithinBox), */
+
+
+	{
+		sol::usertype<Box> Bind = g_pSolLuaState->new_usertype<Box>("Box",
+			sol::constructors<Box(), Box(const Vector &, const Vector &), Box(float, float, float, float), Box(const Vector &, float, float), Box(const Box &)>(),
+			sol::call_constructor, sol::constructors<Box(), Box(const Vector &, const Vector &), Box(float, float, float, float), Box(const Vector &, float, float), Box(const Box &)>()
+			);
+
+		Bind[sol::meta_function::equal_to] = sol::resolve<bool(const Box&, const Box&)>(RTE::operator==);
+
+		Bind["ClassName"] = &Box::GetClassName;
+		Bind["Corner"] = sol::property(&Box::GetCorner, &Box::SetCorner);
+		Bind["Width"] = sol::property(&Box::GetWidth, &Box::SetWidth);
+		Bind["Height"] = sol::property(&Box::GetHeight, &Box::SetHeight);
+		Bind["Center"] = sol::property(&Box::GetCenter, &Box::SetCenter);
+		Bind["Area"] = sol::property(&Box::GetArea);
+		Bind["GetRandomPoint"] = &Box::GetRandomPoint;
+		Bind["Unflip"] = &Box::Unflip;
+		Bind["WithinBox"] = &Box::WithinBox;
+		Bind["WithinBoxX"] = &Box::WithinBoxX;
+		Bind["WithinBoxY"] = &Box::WithinBoxY;
+		Bind["GetWithinBoxX"] = &Box::GetWithinBoxX;
+		Bind["GetWithinBoxY"] = &Box::GetWithinBoxY;
+		Bind["GetWithinBox"] = &Box::GetWithinBox;
+	}
+
+
+	///////////////////////////////////////////////////////////////////////////
+	// Area
+	///////////////////////////////////////////////////////////////////////////
+	{
+		/*class_<Scene::Area>("Area")
+			.def(constructor<>())
+			.def(constructor<string>())
+			.def(constructor<const Scene::Area &>())
+			.def("Reset", &Scene::Area::Reset)
+			.property("ClassName", &Scene::Area::GetClassName)
+			.property("Name", &Scene::Area::GetName)
+			.def("AddBox", &Scene::Area::AddBox)
+			.def("HasNoArea", &Scene::Area::HasNoArea)
+			.def("IsInside", &Scene::Area::IsInside)
+			.def("GetBoxInside", &Scene::Area::GetBoxInside)
+			.def("RemoveBoxInside", &Scene::Area::RemoveBoxInside)
+			.def("GetCenterPoint", &Scene::Area::GetCenterPoint)
+			.def("GetRandomPoint", &Scene::Area::GetRandomPoint), */
+
+		sol::usertype<Scene::Area> Bind = g_pSolLuaState->new_usertype<Scene::Area>("Area",
+			sol::constructors<Scene::Area(), Scene::Area(string), Scene::Area(const Scene::Area &)>(),
+			sol::call_constructor, sol::constructors<Scene::Area(), Scene::Area(string), Scene::Area(const Scene::Area &)>()
+		);
+
+		Bind["Reset"] = &Scene::Area::Reset;
+		Bind["ClassName"] = sol::property(&Scene::Area::GetClassName);
+		Bind["Name"] = sol::property(&Scene::Area::GetName);
+		Bind["AddBox"] = &Scene::Area::AddBox;
+		Bind["HasNoArea"] = &Scene::Area::HasNoArea;
+		Bind["IsInside"] = &Scene::Area::IsInside;
+		Bind["GetBoxInside"] = &Scene::Area::GetBoxInside;
+		Bind["RemoveBoxInside"] = &Scene::Area::RemoveBoxInside;
+		Bind["GetCenterPoint"] = &Scene::Area::GetCenterPoint;
+		Bind["GetRandomPoint"] = &Scene::Area::GetRandomPoint;
+	}
+
+
+	///////////////////////////////////////////////////////////////////////////
+	// Entity
+	///////////////////////////////////////////////////////////////////////////
+	{
+		/*class_<Entity>("Entity")
+			.def("Clone", &CloneEntity)
+			.def("Reset", &Entity::Reset)
+			.def(tostring(const_self))
+			.property("ClassName", &Entity::GetClassName)
+			.property("PresetName", &Entity::GetPresetName, &Entity::SetPresetName)
+			.def("GetModuleAndPresetName", &Entity::GetModuleAndPresetName)
+			.property("IsOriginalPreset", &Entity::IsOriginalPreset)
+			.property("ModuleID", &Entity::GetModuleID)
+			.property("RandomWeight", &Entity::GetRandomWeight)
+			.def("AddToGroup", &Entity::AddToGroup)
+			.def("IsInGroup", (bool (Entity::*)(const string &))&Entity::IsInGroup),*/
+
+		sol::usertype<Entity> Bind = g_pSolLuaState->new_usertype<Entity>("Entity", sol::no_constructor);
+
+		Bind["Clone"] = &CloneEntity;
+		Bind["Reset"] = &Entity::Reset;
+		Bind["ClassName"] = sol::property(&Entity::GetClassName);
+		Bind["PresetName"] = sol::property(&Entity::GetPresetName, &Entity::SetPresetName);
+		Bind["GetModuleAndPresetName"] = &Entity::GetModuleAndPresetName;
+		Bind["IsOriginalPreset"] = sol::property(&Entity::IsOriginalPreset);
+		Bind["ModuleID"] = sol::property(&Entity::GetModuleID);
+		Bind["RandomWeight"] = sol::property(&Entity::GetRandomWeight);
+		Bind["AddToGroup"] = &Entity::AddToGroup;
+		Bind["IsInGroup"] = &Entity::IsInGroup;
+	}
+
+
+	///////////////////////////////////////////////////////////////////////////
+	// Sound
+	///////////////////////////////////////////////////////////////////////////
+	{
+		/*class_<Sound>("Sound")
+			.def(constructor<>())
+			.def("IsPlaying", &Sound::IsBeingPlayed)
+			.def("Stop", &Sound::Stop)
+			.def("UpdateDistance", &Sound::UpdateAttenuation),
+			//.property("Loops", &Sound::GetLoopSetting, &Sound::SetLoopSetting),*/
+
+
+		sol::usertype<Sound> Bind = g_pSolLuaState->new_usertype<Sound>("Sound", sol::no_constructor);
+
+		Bind["IsPlaying"] = &Sound::IsBeingPlayed;
+		Bind["Stop"] = &Sound::Stop;
+		Bind["UpdateDistance"] = &Sound::UpdateAttenuation;
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	// SceneOnject
+	///////////////////////////////////////////////////////////////////////////
+	{
+		/*ABSTRACTLUABINDING(SceneObject, Entity)
+			.property("Pos", &SceneObject::GetPos, &SceneObject::SetPos)
+			.property("HFlipped", &SceneObject::IsHFlipped, &SceneObject::SetHFlipped)
+			.property("RotAngle", &SceneObject::GetRotAngle, &SceneObject::SetRotAngle)
+			.property("Team", &SceneObject::GetTeam, &SceneObject::SetTeam)
+			.property("PlacedByPlayer", &SceneObject::GetPlacedByPlayer, &SceneObject::SetPlacedByPlayer)
+			.def("GetGoldValue", &SceneObject::GetGoldValueOld)
+			.def("GetGoldValue", &SceneObject::GetGoldValue)
+			.def("SetGoldValue", &SceneObject::SetGoldValue)
+			.def("GetGoldValueString", &SceneObject::GetGoldValueString)
+			.def("GetTotalValue", &SceneObject::GetTotalValueOld)
+			.def("GetTotalValue", &SceneObject::GetTotalValue)
+			.property("IsBuyable", &SceneObject::IsBuyable)
+			.def("IsOnScenePoint", &SceneObject::IsOnScenePoint),*/
+
+		ABSTRACTLUABINDING_SOL(SceneObject, Entity);
+
+		Bind["Pos"] = sol::property(&SceneObject::GetPos, &SceneObject::SetPos);
+		Bind["HFlipped"] = sol::property(&SceneObject::IsHFlipped, &SceneObject::SetHFlipped);
+		Bind["RotAngle"] = sol::property(&SceneObject::GetRotAngle, &SceneObject::SetRotAngle);
+		Bind["Team"] = sol::property(&SceneObject::GetTeam, &SceneObject::SetTeam);
+		Bind["PlacedByPlayer"] = sol::property(&SceneObject::GetPlacedByPlayer, &SceneObject::SetPlacedByPlayer);
+		Bind["GetGoldValue"] = &SceneObject::GetGoldValueOld;
+		Bind["GetGoldValue"] = &SceneObject::GetGoldValue;
+		Bind["SetGoldValue"] = &SceneObject::SetGoldValue;
+		Bind["GetGoldValueString"] = &SceneObject::GetGoldValueString;
+		Bind["GetTotalValue"] = &SceneObject::GetTotalValueOld;
+		Bind["GetTotalValue"] = &SceneObject::GetTotalValue;
+		Bind["IsBuyable"] = sol::property(&SceneObject::IsBuyable);
+		Bind["IsOnScenePoint"] = &SceneObject::IsOnScenePoint;
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	// MovableObject
+	///////////////////////////////////////////////////////////////////////////
+	{
+		/*ABSTRACTLUABINDING(MovableObject, SceneObject)
+			.property("Material", &MovableObject::GetMaterial)
+			.def("ReloadScripts", &MovableObject::ReloadScripts)
+			.property("Mass", &MovableObject::GetMass, &MovableObject::SetMass)
+			.property("Pos", &MovableObject::GetPos, &MovableObject::SetPos)
+			.property("Vel", &MovableObject::GetVel, &MovableObject::SetVel)
+			.property("AngularVel", &MovableObject::GetAngularVel, &MovableObject::SetAngularVel)
+			.property("Radius", &MovableObject::GetRadius)
+			.property("Diameter", &MovableObject::GetDiameter)
+			.property("Scale", &MovableObject::GetScale, &MovableObject::SetScale)
+			.property("EffectRotAngle", &MovableObject::GetEffectRotAngle, &MovableObject::SetEffectRotAngle)
+			.property("GlobalAccScalar", &MovableObject::GetGlobalAccScalar, &MovableObject::SetGlobalAccScalar)
+			.property("AirResistance", &MovableObject::GetAirResistance, &MovableObject::SetAirResistance)
+			.property("AirThreshold", &MovableObject::GetAirThreshold, &MovableObject::SetAirThreshold)
+			.property("Age", &MovableObject::GetAge, &MovableObject::SetAge)
+			.property("Lifetime", &MovableObject::GetLifetime, &MovableObject::SetLifetime)
+			.property("ID", &MovableObject::GetID)
+			.property("UniqueID", &MovableObject::GetUniqueID)
+			.property("RootID", &MovableObject::GetRootID)
+			.property("MOIDFootprint", &MovableObject::GetMOIDFootprint)
+			.property("Sharpness", &MovableObject::GetSharpness, &MovableObject::SetSharpness)
+			.def("GetAltitude", &MovableObject::GetAltitude)
+			.property("AboveHUDPos", &MovableObject::GetAboveHUDPos)
+			.property("HitsMOs", &MovableObject::HitsMOs, &MovableObject::SetToHitMOs)
+			.property("GetsHitByMOs", &MovableObject::GetsHitByMOs, &MovableObject::SetToGetHitByMOs)
+			.property("IgnoresTeamHits", &MovableObject::IgnoresTeamHits, &MovableObject::SetIgnoresTeamHits)
+			.property("IgnoresWhichTeam", &MovableObject::IgnoresWhichTeam)
+			.property("IgnoreTerrain", &MovableObject::IgnoreTerrain, &MovableObject::SetIgnoreTerrain)
+			.def("SetWhichMOToNotHit", &MovableObject::SetWhichMOToNotHit)
+			.property("ToSettle", &MovableObject::ToSettle, &MovableObject::SetToSettle)
+			.property("ToDelete", &MovableObject::ToDelete, &MovableObject::SetToDelete)
+			.def("IsSetToDelete", &MovableObject::IsSetToDelete)
+			.property("MissionCritical", &MovableObject::IsMissionCritical, &MovableObject::SetMissionCritical)
+			.def("IsMissionCritical", &MovableObject::IsMissionCritical)
+			.property("HUDVisible", &MovableObject::GetHUDVisible, &MovableObject::SetHUDVisible)
+			.def("IsGeneric", &MovableObject::IsGeneric)
+			.def("IsActor", &MovableObject::IsActor)
+			.def("IsDevice", &MovableObject::IsDevice)
+			.def("IsHeldDevice", &MovableObject::IsHeldDevice)
+			.def("IsThrownDevice", &MovableObject::IsThrownDevice)
+			.def("IsGold", &MovableObject::IsGold)
+			.def("IsThrownDevice", &MovableObject::IsThrownDevice)
+			.def("HasObject", &MovableObject::HasObject)
+			.def("HasObjectInGroup", &MovableObject::HasObjectInGroup)
+			.def("AddForce", &MovableObject::AddForce)
+			.def("AddAbsForce", &MovableObject::AddAbsForce)
+			.def("AddImpulseForce", &MovableObject::AddImpulseForce)
+			.def("AddAbsImpulseForce", &MovableObject::AddAbsImpulseForce)
+			.def("ClearForces", &MovableObject::ClearForces)
+			.def("ClearImpulseForces", &MovableObject::ClearImpulseForces)
+			.def("GetForcesCount", &MovableObject::GetForcesCount)
+			.def("GetForceVector", &MovableObject::GetForceVector)
+			.def("GetForceOffset", &MovableObject::GetForceOffset)
+			.def("SetForceVector", &MovableObject::SetForceVector)
+			.def("SetForceOffset", &MovableObject::SetForceOffset)
+			.def("GetImpulsesCount", &MovableObject::GetImpulsesCount)
+			.def("GetImpulseVector", &MovableObject::GetImpulseVector)
+			.def("GetImpulseOffset", &MovableObject::GetImpulseOffset)
+			.def("SetImpulseVector", &MovableObject::SetImpulseVector)
+			.def("SetImpulseOffset", &MovableObject::SetImpulseOffset)
+			.property("PinStrength", &MovableObject::GetPinStrength, &MovableObject::SetPinStrength)
+			.def("RestDetection", &MovableObject::RestDetection)
+			.def("NotResting", &MovableObject::NotResting)
+			.def("IsAtRest", &MovableObject::IsAtRest)
+			.def("MoveOutOfTerrain", &MovableObject::MoveOutOfTerrain)
+			.def("RotateOffset", &MovableObject::RotateOffset)
+			.property("DamageOnCollision", &MovableObject::DamageOnCollision, &MovableObject::SetDamageOnCollision)
+			.property("DamageOnPenetration", &MovableObject::DamageOnPenetration, &MovableObject::SetDamageOnPenetration)
+			.property("WoundDamageMultiplier", &MovableObject::WoundDamageMultiplier, &MovableObject::SetWoundDamageMultiplier)
+			.property("HitWhatMOID", &MovableObject::HitWhatMOID)
+			.property("HitWhatTerrMaterial", &MovableObject::HitWhatTerrMaterial)
+			.property("ProvidesPieMenuContext", &MovableObject::ProvidesPieMenuContext, &MovableObject::SetProvidesPieMenuContext)
+			.def_readwrite("PieMenuActor", &MovableObject::m_pPieMenuActor)
+			.property("HitWhatParticleUniqueID", &MovableObject::HitWhatParticleUniqueID),*/
+
+		ABSTRACTLUABINDING_SOL(MovableObject, SceneObject);
+
+		Bind["Material"] = sol::property(&MovableObject::GetMaterial);
+		Bind["ReloadScripts"] = &MovableObject::ReloadScripts;
+		Bind["Mass"] = sol::property(&MovableObject::GetMass, &MovableObject::SetMass);
+		Bind["Pos"] = sol::property(&MovableObject::GetPos, &MovableObject::SetPos);
+		Bind["Vel"] = sol::property(&MovableObject::GetVel, &MovableObject::SetVel);
+		Bind["AngularVel"] = sol::property(&MovableObject::GetAngularVel, &MovableObject::SetAngularVel);
+		Bind["Radius"] = sol::property(&MovableObject::GetRadius);
+		Bind["Diameter"] = sol::property(&MovableObject::GetDiameter);
+		Bind["Scale"] = sol::property(&MovableObject::GetScale, &MovableObject::SetScale);
+		Bind["EffectRotAngle"] = sol::property(&MovableObject::GetEffectRotAngle, &MovableObject::SetEffectRotAngle);
+		Bind["GlobalAccScalar"] = sol::property(&MovableObject::GetGlobalAccScalar, &MovableObject::SetGlobalAccScalar);
+		Bind["AirResistance"] = sol::property(&MovableObject::GetAirResistance, &MovableObject::SetAirResistance);
+		Bind["AirThreshold"] = sol::property(&MovableObject::GetAirThreshold, &MovableObject::SetAirThreshold);
+		Bind["Age"] = sol::property(&MovableObject::GetAge, &MovableObject::SetAge);
+		Bind["Lifetime"] = sol::property(&MovableObject::GetLifetime, &MovableObject::SetLifetime);
+		Bind["ID"] = sol::property(&MovableObject::GetID);
+		Bind["UniqueID"] = sol::property(&MovableObject::GetUniqueID);
+		Bind["RootID"] = sol::property(&MovableObject::GetRootID);
+		Bind["MOIDFootprint"] = sol::property(&MovableObject::GetMOIDFootprint);
+		Bind["Sharpness"] = sol::property(&MovableObject::GetSharpness, &MovableObject::SetSharpness);
+		Bind["GetAltitude"] = &MovableObject::GetAltitude;
+		Bind["AboveHUDPos"] = sol::property(&MovableObject::GetAboveHUDPos);
+		Bind["HitsMOs"] = sol::property(&MovableObject::HitsMOs, &MovableObject::SetToHitMOs);
+		Bind["GetsHitByMOs"] = sol::property(&MovableObject::GetsHitByMOs, &MovableObject::SetToGetHitByMOs);
+		Bind["IgnoresTeamHits"] = sol::property(&MovableObject::IgnoresTeamHits, &MovableObject::SetIgnoresTeamHits);
+		Bind["IgnoresWhichTeam"] = sol::property(&MovableObject::IgnoresWhichTeam);
+		Bind["IgnoreTerrain"] = sol::property(&MovableObject::IgnoreTerrain, &MovableObject::SetIgnoreTerrain);
+		Bind["SetWhichMOToNotHit"] = &MovableObject::SetWhichMOToNotHit;
+		Bind["ToSettle"] = sol::property(&MovableObject::ToSettle, &MovableObject::SetToSettle);
+		Bind["ToDelete"] = sol::property(&MovableObject::ToDelete, &MovableObject::SetToDelete);
+		Bind["IsSetToDelete"] = &MovableObject::IsSetToDelete;
+		Bind["MissionCritical"] = sol::property(&MovableObject::IsMissionCritical, &MovableObject::SetMissionCritical);
+		Bind["IsMissionCritical"] = &MovableObject::IsMissionCritical;
+		Bind["HUDVisible"] = sol::property(&MovableObject::GetHUDVisible, &MovableObject::SetHUDVisible);
+		Bind["IsGeneric"] = &MovableObject::IsGeneric;
+		Bind["IsActor"] = &MovableObject::IsActor;
+		Bind["IsDevice"] = &MovableObject::IsDevice;
+		Bind["IsHeldDevice"] = &MovableObject::IsHeldDevice;
+		Bind["IsThrownDevice"] = &MovableObject::IsThrownDevice;
+		Bind["IsGold"] = &MovableObject::IsGold;
+		Bind["IsThrownDevice"] = &MovableObject::IsThrownDevice;
+		Bind["HasObject"] = &MovableObject::HasObject;
+		Bind["HasObjectInGroup"] = &MovableObject::HasObjectInGroup;
+		Bind["AddForce"] = &MovableObject::AddForce;
+		Bind["AddAbsForce"] = &MovableObject::AddAbsForce;
+		Bind["AddImpulseForce"] = &MovableObject::AddImpulseForce;
+		Bind["AddAbsImpulseForce"] = &MovableObject::AddAbsImpulseForce;
+		Bind["ClearForces"] = &MovableObject::ClearForces;
+		Bind["ClearImpulseForces"] = &MovableObject::ClearImpulseForces;
+		Bind["GetForcesCount"] = &MovableObject::GetForcesCount;
+		Bind["GetForceVector"] = &MovableObject::GetForceVector;
+		Bind["GetForceOffset"] = &MovableObject::GetForceOffset;
+		Bind["SetForceVector"] = &MovableObject::SetForceVector;
+		Bind["SetForceOffset"] = &MovableObject::SetForceOffset;
+		Bind["GetImpulsesCount"] = &MovableObject::GetImpulsesCount;
+		Bind["GetImpulseVector"] = &MovableObject::GetImpulseVector;
+		Bind["GetImpulseOffset"] = &MovableObject::GetImpulseOffset;
+		Bind["SetImpulseVector"] = &MovableObject::SetImpulseVector;
+		Bind["SetImpulseOffset"] = &MovableObject::SetImpulseOffset;
+		Bind["PinStrength"] = sol::property(&MovableObject::GetPinStrength, &MovableObject::SetPinStrength);
+		Bind["RestDetection"] = &MovableObject::RestDetection;
+		Bind["NotResting"] = &MovableObject::NotResting;
+		Bind["IsAtRest"] = &MovableObject::IsAtRest;
+		Bind["MoveOutOfTerrain"] = &MovableObject::MoveOutOfTerrain;
+		Bind["RotateOffset"] = &MovableObject::RotateOffset;
+		Bind["DamageOnCollision"] = sol::property(&MovableObject::DamageOnCollision, &MovableObject::SetDamageOnCollision);
+		Bind["DamageOnPenetration"] = sol::property(&MovableObject::DamageOnPenetration, &MovableObject::SetDamageOnPenetration);
+		Bind["WoundDamageMultiplier"] = sol::property(&MovableObject::WoundDamageMultiplier, &MovableObject::SetWoundDamageMultiplier);
+		Bind["HitWhatMOID"] = sol::property(&MovableObject::HitWhatMOID);
+		Bind["HitWhatTerrMaterial"] = sol::property(&MovableObject::HitWhatTerrMaterial);
+		Bind["ProvidesPieMenuContext"] = sol::property(&MovableObject::ProvidesPieMenuContext, &MovableObject::SetProvidesPieMenuContext);
+		Bind["PieMenuActor"] = sol::property(&MovableObject::GetPieMenuActor, &MovableObject::SetPieMenuActor);
+		Bind["HitWhatParticleUniqueID"] = sol::property(&MovableObject::HitWhatParticleUniqueID);
+	}
+
+	{
+		/*class_<Material, Entity>("Material")
+		.property("ID", &Material::GetId)
+		.property("Restitution", &Material::GetRestitution)
+		.property("Bounce", &Material::GetRestitution)
+		.property("Friction", &Material::GetFriction)
+		.property("Stickiness", &Material::GetStickiness)
+		.property("Strength", &Material::GetStrength)
+		.property("StructuralIntegrity", &Material::GetStrength)
+		.property("DensityKGPerVolumeL", &Material::GetVolumeDensity)
+		.property("DensityKGPerPixel", &Material::GetPixelDensity)
+		.property("SettleMaterial", &Material::GetSettleMaterial)
+		.property("SpawnMaterial", &Material::GetSpawnMaterial)
+		.property("TransformsInto", &Material::GetSpawnMaterial)
+		.property("IsScrap", &Material::IsScrap),*/
+
+		sol::usertype<Material> Bind = g_pSolLuaState->new_usertype<Material>("Material", sol::no_constructor);
+
+		Bind["ID"]  = &Material::GetId;
+		Bind["Restitution"]  = &Material::GetRestitution;
+		Bind["Bounce"]  = &Material::GetRestitution;
+		Bind["Friction"]  = &Material::GetFriction;
+		Bind["Stickiness"]  = &Material::GetStickiness;
+		Bind["Strength"]  = &Material::GetStrength;
+		Bind["StructuralIntegrity"]  = &Material::GetStrength;
+		Bind["DensityKGPerVolumeL"]  = &Material::GetVolumeDensity;
+		Bind["DensityKGPerPixel"]  = &Material::GetPixelDensity;
+		Bind["SettleMaterial"]  = &Material::GetSettleMaterial;
+		Bind["SpawnMaterial"]  = &Material::GetSpawnMaterial;
+		Bind["TransformsInto"]  = &Material::GetSpawnMaterial;
+		Bind["IsScrap"]  = &Material::IsScrap;
+	}
+
+	{
+		//CONCRETELUABINDING(MOPixel, MovableObject),
+//            .property("Material", &MOPixel::GetMaterial),
+//            .property("Framerate", &MOPixel::GetFramerate, &MOPixel::SetFramerate)
+//            .property("Atom", &MOPixel::GetAtom, &MOPixel:SetAtom)
+//            .property("IsGold", &MOPixel::IsGold),
+
+
+		CONCRETELUABINDING_SOL(MOPixel, MovableObject);
+	}
+
+	{
+		/*CONCRETELUABINDING(TerrainObject, SceneObject)
+			.def("GetBitmapOffset", &TerrainObject::GetBitmapOffset)
+			.def("GetBitmapWidth", &TerrainObject::GetBitmapWidth)
+			.def("GetBitmapHeight", &TerrainObject::GetBitmapHeight),*/
+
+		CONCRETELUABINDING_SOL(TerrainObject, SceneObject);
+
+		Bind["GetBitmapOffset"] = &TerrainObject::GetBitmapOffset;
+		Bind["GetBitmapWidth"] = &TerrainObject::GetBitmapWidth;
+		Bind["GetBitmapHeight"] = &TerrainObject::GetBitmapHeight;
+	}
+
+	{
+		/*ABSTRACTLUABINDING(MOSprite, MovableObject)
+			.enum_("SpriteAnimMode")
+			[
+				value("NOANIM", 0),
+				value("ALWAYSLOOP", 1),
+				value("ALWAYSRANDOM", 2),
+				value("ALWAYSPINGPONG", 3),
+				value("LOOPWHENMOVING", 4),
+				value("LOOPWHENOPENCLOSE", 5),
+				value("PINGPONGOPENCLOSE", 6)
+			]
+			.property("Diameter", &MOSprite::GetDiameter)
+			.property("BoundingBox", &MOSprite::GetBoundingBox)
+			.property("FrameCount", &MOSprite::GetFrameCount)
+			.property("SpriteOffset", &MOSprite::GetSpriteOffset, &MOSprite::SetSpriteOffset)
+			.property("HFlipped", &MOSprite::IsHFlipped, &MOSprite::SetHFlipped)
+			.property("RotAngle", &MOSprite::GetRotAngle, &MOSprite::SetRotAngle)
+			.property("AngularVel", &MOSprite::GetAngularVel, &MOSprite::SetAngularVel)
+			.property("Frame", &MOSprite::GetFrame, &MOSprite::SetFrame)
+			.property("SpriteAnimMode", &MOSprite::GetSpriteAnimMode, &MOSprite::SetSpriteAnimMode)
+			.property("SpriteAnimDuration", &MOSprite::GetSpriteAnimDuration, &MOSprite::SetSpriteAnimDuration)
+			.def("SetNextFrame", &MOSprite::SetNextFrame)
+			.def("IsTooFast", &MOSprite::IsTooFast)
+			.def("IsOnScenePoint", &MOSprite::IsOnScenePoint)
+			.def("RotateOffset", &MOSprite::RotateOffset)
+			.def("UnRotateOffset", &MOSprite::UnRotateOffset)
+			.def("GetSpriteWidth", &MOSprite::GetSpriteWidth)
+			.def("GetSpriteHeight", &MOSprite::GetSpriteHeight)
+			.def("SetEntryWound", &MOSprite::SetEntryWound)
+			.def("SetExitWound", &MOSprite::SetExitWound)
+			.def("GetEntryWoundPresetName", &MOSprite::GetEntryWoundPresetName)
+			.def("GetExitWoundPresetName", &MOSprite::GetExitWoundPresetName),*/
+
+		ABSTRACTLUABINDING_SOL(MOSprite, MovableObject);
+
+		g_pSolLuaState->set("SpriteAnimMode", g_pSolLuaState->create_table_with(
+			"NOANIM", MOSprite::SpriteAnimMode::NOANIM,
+			"ALWAYSLOOP", MOSprite::SpriteAnimMode::ALWAYSLOOP,
+			"ALWAYSRANDOM", MOSprite::SpriteAnimMode::ALWAYSRANDOM,
+			"ALWAYSPINGPONG", MOSprite::SpriteAnimMode::ALWAYSPINGPONG,
+			"LOOPWHENMOVING", MOSprite::SpriteAnimMode::LOOPWHENMOVING,
+			"LOOPWHENOPENCLOSE", MOSprite::SpriteAnimMode::LOOPWHENOPENCLOSE,
+			"PINGPONGOPENCLOSE", MOSprite::SpriteAnimMode::PINGPONGOPENCLOSE
+		));
+
+		Bind["Diameter"] = sol::property(&MOSprite::GetDiameter);
+		Bind["BoundingBox"] = sol::property(&MOSprite::GetBoundingBox);
+		Bind["FrameCount"] = sol::property(&MOSprite::GetFrameCount);
+		Bind["SpriteOffset"] = sol::property(&MOSprite::GetSpriteOffset, &MOSprite::SetSpriteOffset);
+		Bind["HFlipped"] = sol::property(&MOSprite::IsHFlipped, &MOSprite::SetHFlipped);
+		Bind["RotAngle"] = sol::property(&MOSprite::GetRotAngle, &MOSprite::SetRotAngle);
+		Bind["AngularVel"] = sol::property(&MOSprite::GetAngularVel, &MOSprite::SetAngularVel);
+		Bind["Frame"] = sol::property(&MOSprite::GetFrame, &MOSprite::SetFrame);
+		Bind["SpriteAnimMode"] = sol::property(&MOSprite::GetSpriteAnimMode, &MOSprite::SetSpriteAnimMode);
+		Bind["SpriteAnimDuration"] = sol::property(&MOSprite::GetSpriteAnimDuration, &MOSprite::SetSpriteAnimDuration);
+		Bind["SetNextFrame"] = &MOSprite::SetNextFrame;
+		Bind["IsTooFast"] = &MOSprite::IsTooFast;
+		Bind["IsOnScenePoint"] = &MOSprite::IsOnScenePoint;
+		Bind["RotateOffset"] = &MOSprite::RotateOffset;
+		Bind["UnRotateOffset"] = &MOSprite::UnRotateOffset;
+		Bind["GetSpriteWidth"] = &MOSprite::GetSpriteWidth;
+		Bind["GetSpriteHeight"] = &MOSprite::GetSpriteHeight;
+		Bind["SetEntryWound"] = &MOSprite::SetEntryWound;
+		Bind["SetExitWound"] = &MOSprite::SetExitWound;
+		Bind["GetEntryWoundPresetName"] = &MOSprite::GetEntryWoundPresetName;
+		Bind["GetExitWoundPresetName"] = &MOSprite::GetExitWoundPresetName;
+	}
+
+	{
+		/*CONCRETELUABINDING(MOSParticle, MOSprite)
+			.property("Framerate", &MOSParticle::GetFramerate, &MOSParticle::SetFramerate)
+			.property("IsGold", &MOSParticle::IsGold),*/
+
+		CONCRETELUABINDING_SOL(MOSParticle, MOSprite);
+		
+		Bind["Framerate"] = sol::property(&MOSParticle::GetFramerate, &MOSParticle::SetFramerate);
+		Bind["IsGold"] = sol::property(&MOSParticle::IsGold);
+	}
+
+	{
+		/*CONCRETELUABINDING(MOSRotating, MOSprite)
+			.property("RecoilForce", &MOSRotating::GetRecoilForce)
+			.property("RecoilOffset", &MOSRotating::GetRecoilOffset)
+			.property("IsGold", &MOSRotating::IsGold)
+			.property("TravelImpulse", &MOSRotating::GetTravelImpulse, &MOSRotating::SetTravelImpulse)
+			.property("GibWoundLimit", &MOSRotating::GetGibWoundLimit, &MOSRotating::SetGibWoundLimit)
+			.property("GibImpulseLimit", &MOSRotating::GetGibImpulseLimit, &MOSRotating::SetGibImpulseLimit)
+			.property("DamageMultiplier", &MOSRotating::GetDamageMultiplier, &MOSRotating::SetDamageMultiplier)
+			.property("WoundCount", &MOSRotating::GetWoundCount)
+			.def_readwrite("Wounds", &MOSRotating::m_Emitters, luabind::return_stl_iterator())
+			.def("AddRecoil", &MOSRotating::AddRecoil)
+			.def("SetRecoil", &MOSRotating::SetRecoil)
+			.def("IsRecoiled", &MOSRotating::IsRecoiled)
+			.def("EnableDeepCheck", &MOSRotating::EnableDeepCheck)
+			.def("ForceDeepCheck", &MOSRotating::ForceDeepCheck)
+			.def("GibThis", &MOSRotating::GibThis)
+			// Free function bound as member function to emulate default variables
+			.def("GibThis", &GibThis)
+			.def("MoveOutOfTerrain", &MOSRotating::MoveOutOfTerrain)
+			.def("ApplyForces", &MOSRotating::ApplyForces)
+			.def("ApplyImpulses", &MOSRotating::ApplyImpulses)
+			.def("AttachEmitter", &MOSRotating::AttachEmitter, luabind::adopt_policy<2>())
+			.def("RemoveWounds", &MOSRotating::RemoveWounds)
+			.def("IsOnScenePoint", &MOSRotating::IsOnScenePoint)
+			.def("EraseFromTerrain", &MOSRotating::EraseFromTerrain)
+			.def("GetStringValue", &MOSRotating::GetStringValue)
+			.def("GetNumberValue", &MOSRotating::GetNumberValue)
+			.def("GetObjectValue", &MOSRotating::GetObjectValue)
+			.def("SetStringValue", &MOSRotating::SetStringValue)
+			.def("SetNumberValue", &MOSRotating::SetNumberValue)
+			.def("SetObjectValue", &MOSRotating::SetObjectValue)
+			.def("RemoveStringValue", &MOSRotating::RemoveStringValue)
+			.def("RemoveNumberValue", &MOSRotating::RemoveNumberValue)
+			.def("RemoveObjectValue", &MOSRotating::RemoveObjectValue)
+			.def("StringValueExists", &MOSRotating::StringValueExists)
+			.def("NumberValueExists", &MOSRotating::NumberValueExists)
+			.def("ObjectValueExists", &MOSRotating::ObjectValueExists)
+			.def_readwrite("Attachables", &MOSRotating::m_Attachables, luabind::return_stl_iterator())
+			.def_readwrite("Emitters", &MOSRotating::m_Emitters, luabind::return_stl_iterator()),*/
+
+
+		CONCRETELUABINDING_SOL(MOSRotating, MOSprite);
+
+		Bind["RecoilForce"] = sol::property(&MOSRotating::GetRecoilForce);
+		Bind["RecoilOffset"] = sol::property(&MOSRotating::GetRecoilOffset);
+		Bind["IsGold"] = sol::property(&MOSRotating::IsGold);
+		Bind["TravelImpulse"] = sol::property(&MOSRotating::GetTravelImpulse, &MOSRotating::SetTravelImpulse);
+		Bind["GibWoundLimit"] = sol::property(&MOSRotating::GetGibWoundLimit, &MOSRotating::SetGibWoundLimit);
+		Bind["GibImpulseLimit"] = sol::property(&MOSRotating::GetGibImpulseLimit, &MOSRotating::SetGibImpulseLimit);
+		Bind["DamageMultiplier"] = sol::property(&MOSRotating::GetDamageMultiplier, &MOSRotating::SetDamageMultiplier);
+		Bind["WoundCount"] = sol::property(&MOSRotating::GetWoundCount);
+		Bind["AddRecoil"] = &MOSRotating::AddRecoil;
+		Bind["SetRecoil"] = &MOSRotating::SetRecoil;
+		Bind["IsRecoiled"] = &MOSRotating::IsRecoiled;
+		Bind["EnableDeepCheck"] = &MOSRotating::EnableDeepCheck;
+		Bind["ForceDeepCheck"] = &MOSRotating::ForceDeepCheck;
+		Bind["GibThis"] = &MOSRotating::GibThis;
+		// Free function bound as member function to emulate default variables
+		//Bind["GibThis"] = &GibThis;
+		Bind["MoveOutOfTerrain"] = &MOSRotating::MoveOutOfTerrain;
+		Bind["ApplyForces"] = &MOSRotating::ApplyForces;
+		Bind["ApplyImpulses"] = &MOSRotating::ApplyImpulses;
+		Bind["AttachEmitter"] = &MOSRotating::AttachEmitter;
+		Bind["RemoveWounds"] = &MOSRotating::RemoveWounds;
+		Bind["IsOnScenePoint"] = &MOSRotating::IsOnScenePoint;
+		Bind["EraseFromTerrain"] = &MOSRotating::EraseFromTerrain;
+		Bind["GetStringValue"] = &MOSRotating::GetStringValue;
+		Bind["GetNumberValue"] = &MOSRotating::GetNumberValue;
+		Bind["GetObjectValue"] = &MOSRotating::GetObjectValue;
+		Bind["SetStringValue"] = &MOSRotating::SetStringValue;
+		Bind["SetNumberValue"] = &MOSRotating::SetNumberValue;
+		Bind["SetObjectValue"] = &MOSRotating::SetObjectValue;
+		Bind["RemoveStringValue"] = &MOSRotating::RemoveStringValue;
+		Bind["RemoveNumberValue"] = &MOSRotating::RemoveNumberValue;
+		Bind["RemoveObjectValue"] = &MOSRotating::RemoveObjectValue;
+		Bind["StringValueExists"] = &MOSRotating::StringValueExists;
+		Bind["NumberValueExists"] = &MOSRotating::NumberValueExists;
+		Bind["ObjectValueExists"] = &MOSRotating::ObjectValueExists;
+		Bind["Wounds"] = &MOSRotating::m_Emitters;
+		Bind["Attachables"] = &MOSRotating::m_Attachables;
+		Bind["Emitters"] = &MOSRotating::m_Emitters;
+	}
+
+	{
+		/*CONCRETELUABINDING(Attachable, MOSRotating)
+			.def("GetRootParent", (MovableObject * (Attachable::*)())&Attachable::GetRootParent)
+			.def("GetRootParent", (const MovableObject * (Attachable::*)() const)&Attachable::GetRootParent)
+			.def("GetParent", (MovableObject * (Attachable::*)())&Attachable::GetParent)
+			.def("GetParent", (const MovableObject * (Attachable::*)() const)&Attachable::GetParent)
+			.property("ParentOffset", &Attachable::GetParentOffset, &Attachable::SetParentOffset)
+			.property("JointOffset", &Attachable::GetJointOffset, &Attachable::SetJointOffset)
+			.property("JointStiffness", &Attachable::GetJointStiffness, &Attachable::SetJointStiffness)
+			.property("JointStrength", &Attachable::GetJointStrength, &Attachable::SetJointStrength)
+			.property("RotTarget", &Attachable::GetRotTarget, &Attachable::SetRotTarget)
+			.property("AtomSubgroupID", &Attachable::GetAtomSubgroupID, &Attachable::SetAtomSubgroupID)
+			.property("OnlyLinearForces", &Attachable::GetOnlyLinearForces, &Attachable::SetOnlyLinearForces)
+			.def("IsAttached", &Attachable::IsAttached)
+			.def("IsAttachedTo", &Attachable::IsAttachedTo)
+			.def("IsDrawnAfterParent", &Attachable::IsDrawnAfterParent)
+			.def("Attach", (void (Attachable::*)(MOSRotating *))&Attachable::Attach)
+			.def("Attach", (void (Attachable::*)(MOSRotating *, const Vector &))&Attachable::Attach)
+			.def("Detach", &Attachable::Detach)
+			.def("TransferJointForces", &Attachable::TransferJointForces)
+			.def("TransferJointImpulses", &Attachable::TransferJointImpulses)
+			.def("CollectDamage", &Attachable::CollectDamage)
+			.property("InheritsRotAngle", &Attachable::InheritsRotAngle, &Attachable::SetInheritsRotAngle),*/
+
+			CONCRETELUABINDING_SOL(Attachable, MOSRotating);
+
+			Bind["GetRootParent"] = (MovableObject * (Attachable::*)())&Attachable::GetRootParent;
+			Bind["GetRootParent"] = (const MovableObject * (Attachable::*)() const)&Attachable::GetRootParent;
+			Bind["GetParent"] = (MovableObject * (Attachable::*)())&Attachable::GetParent;
+			Bind["GetParent"] = (const MovableObject * (Attachable::*)() const)&Attachable::GetParent;
+			Bind["ParentOffset"] = sol::property(&Attachable::GetParentOffset, &Attachable::SetParentOffset);
+			Bind["JointOffset"] = sol::property(&Attachable::GetJointOffset, &Attachable::SetJointOffset);
+			Bind["JointStiffness"] = sol::property(&Attachable::GetJointStiffness, &Attachable::SetJointStiffness);
+			Bind["JointStrength"] = sol::property(&Attachable::GetJointStrength, &Attachable::SetJointStrength);
+			Bind["RotTarget"] = sol::property(&Attachable::GetRotTarget, &Attachable::SetRotTarget);
+			Bind["AtomSubgroupID"] = sol::property(&Attachable::GetAtomSubgroupID, &Attachable::SetAtomSubgroupID);
+			Bind["OnlyLinearForces"] = sol::property(&Attachable::GetOnlyLinearForces, &Attachable::SetOnlyLinearForces);
+			Bind["IsAttached"] = &Attachable::IsAttached;
+			Bind["IsAttachedTo"] = &Attachable::IsAttachedTo;
+			Bind["IsDrawnAfterParent"] = &Attachable::IsDrawnAfterParent;
+			Bind["Attach"] = (void (Attachable::*)(MOSRotating *))&Attachable::Attach;
+			Bind["Attach"] = (void (Attachable::*)(MOSRotating *, const Vector &))&Attachable::Attach;
+			Bind["Detach"] = &Attachable::Detach;
+			Bind["TransferJointForces"] = &Attachable::TransferJointForces;
+			Bind["TransferJointImpulses"] = &Attachable::TransferJointImpulses;
+			Bind["CollectDamage"] = &Attachable::CollectDamage;
+			Bind["InheritsRotAngle"] = sol::property(&Attachable::InheritsRotAngle, &Attachable::SetInheritsRotAngle);
+	}
+
+	{
+		/*ABSTRACTLUABINDING(Emission, Entity)
+			.property("ParticlesPerMinute", &Emission::GetRate, &Emission::SetRate)
+			.property("MinVelocity", &Emission::GetMinVelocity, &Emission::SetMinVelocity)
+			.property("MaxVelocity", &Emission::GetMaxVelocity, &Emission::SetMaxVelocity)
+			.property("PushesEmitter", &Emission::PushesEmitter, &Emission::SetPushesEmitter)
+			.property("LifeVariation", &Emission::GetLifeVariation, &Emission::SetLifeVariation)
+			.property("BurstSize", &Emission::GetBurstSize, &Emission::SetBurstSize)
+			.property("Spread", &Emission::GetSpread, &Emission::SetSpread)
+			.property("Offset", &Emission::GetOffset, &Emission::SetOffset)
+			.def("ResetEmissionTimers", &Emission::ResetEmissionTimers),*/
+
+		ABSTRACTLUABINDING_SOL(Emission, Entity);
+		Bind["ParticlesPerMinute"] = sol::property(&Emission::GetRate, &Emission::SetRate);
+		Bind["MinVelocity"] = sol::property(&Emission::GetMinVelocity, &Emission::SetMinVelocity);
+		Bind["MaxVelocity"] = sol::property(&Emission::GetMaxVelocity, &Emission::SetMaxVelocity);
+		Bind["PushesEmitter"] = sol::property(&Emission::PushesEmitter, &Emission::SetPushesEmitter);
+		Bind["LifeVariation"] = sol::property(&Emission::GetLifeVariation, &Emission::SetLifeVariation);
+		Bind["BurstSize"] = sol::property(&Emission::GetBurstSize, &Emission::SetBurstSize);
+		Bind["Spread"] = sol::property(&Emission::GetSpread, &Emission::SetSpread);
+		Bind["Offset"] = sol::property(&Emission::GetOffset, &Emission::SetOffset);
+		Bind["ResetEmissionTimers"] = &Emission::ResetEmissionTimers;
+	}
+
+	{
+		/*CONCRETELUABINDING(AEmitter, Attachable)
+			.def("IsEmitting", &AEmitter::IsEmitting)
+			.def("EnableEmission", &AEmitter::EnableEmission)
+			.property("BurstScale", &AEmitter::GetBurstScale, &AEmitter::SetBurstScale)
+			.property("EmitAngle", &AEmitter::GetEmitAngle, &AEmitter::SetEmitAngle)
+			.property("GetThrottle", &AEmitter::GetThrottle, &AEmitter::SetThrottle)
+			.property("Throttle", &AEmitter::GetThrottle, &AEmitter::SetThrottle)
+			.property("BurstSpacing", &AEmitter::GetBurstSpacing, &AEmitter::SetBurstSpacing)
+			.property("BurstDamage", &AEmitter::GetBurstDamage, &AEmitter::SetBurstDamage)
+			.property("EmitterDamageMultiplier", &AEmitter::GetEmitterDamageMultiplier, &AEmitter::SetEmitterDamageMultiplier)
+			.property("EmitCountLimit", &AEmitter::GetEmitCountLimit, &AEmitter::SetEmitCountLimit)
+			.property("EmitDamage", &AEmitter::GetEmitDamage, &AEmitter::SetEmitDamage)
+			.property("FlashScale", &AEmitter::GetFlashScale, &AEmitter::SetFlashScale)
+			.def("GetEmitVector", &AEmitter::GetEmitVector)
+			.def("GetRecoilVector", &AEmitter::GetRecoilVector)
+			.def("EstimateImpulse", &AEmitter::EstimateImpulse)
+			.def("TriggerBurst", &AEmitter::TriggerBurst)
+			.def("IsSetToBurst", &AEmitter::IsSetToBurst)
+			.def("CanTriggerBurst", &AEmitter::CanTriggerBurst)
+			.def_readwrite("Emissions", &AEmitter::m_EmissionList, luabind::return_stl_iterator()),*/
+
+		CONCRETELUABINDING_SOL(AEmitter, Attachable)
+
+		Bind["IsEmitting"] = &AEmitter::IsEmitting;
+		Bind["EnableEmission"] = &AEmitter::EnableEmission;
+		Bind["BurstScale"] = sol::property(&AEmitter::GetBurstScale, &AEmitter::SetBurstScale);
+		Bind["EmitAngle"] = sol::property(&AEmitter::GetEmitAngle, &AEmitter::SetEmitAngle);
+		Bind["GetThrottle"] = sol::property(&AEmitter::GetThrottle, &AEmitter::SetThrottle);
+		Bind["Throttle"] = sol::property(&AEmitter::GetThrottle, &AEmitter::SetThrottle);
+		Bind["BurstSpacing"] = sol::property(&AEmitter::GetBurstSpacing, &AEmitter::SetBurstSpacing);
+		Bind["BurstDamage"] = sol::property(&AEmitter::GetBurstDamage, &AEmitter::SetBurstDamage);
+		Bind["EmitterDamageMultiplier"] = sol::property(&AEmitter::GetEmitterDamageMultiplier, &AEmitter::SetEmitterDamageMultiplier);
+		Bind["EmitCountLimit"] = sol::property(&AEmitter::GetEmitCountLimit, &AEmitter::SetEmitCountLimit);
+		Bind["EmitDamage"] = sol::property(&AEmitter::GetEmitDamage, &AEmitter::SetEmitDamage);
+		Bind["FlashScale"] = sol::property(&AEmitter::GetFlashScale, &AEmitter::SetFlashScale);
+		Bind["GetEmitVector"] = &AEmitter::GetEmitVector;
+		Bind["GetRecoilVector"] = &AEmitter::GetRecoilVector;
+		Bind["EstimateImpulse"] = &AEmitter::EstimateImpulse;
+		Bind["TriggerBurst"] = &AEmitter::TriggerBurst;
+		Bind["IsSetToBurst"] = &AEmitter::IsSetToBurst;
+		Bind["CanTriggerBurst"] = &AEmitter::CanTriggerBurst;
+		Bind["Emissions"] = &AEmitter::m_EmissionList;
+	}
+
+	{
+		/*CONCRETELUABINDING(Actor, MOSRotating)
+			.enum_("Status")
+			[
+				value("STABLE", 0),
+				value("UNSTABLE", 1),
+				value("INACTIVE", 2),
+				value("DYING", 3),
+				value("DEAD", 4)
+			]
+		.enum_("AIMode")
+			[
+				value("AIMODE_NONE", 0),
+				value("AIMODE_SENTRY", 1),
+				value("AIMODE_PATROL", 2),
+				value("AIMODE_GOTO", 3),
+				value("AIMODE_BRAINHUNT", 4),
+				value("AIMODE_GOLDDIG", 5),
+				value("AIMODE_RETURN", 6),
+				value("AIMODE_STAY", 7),
+				value("AIMODE_SCUTTLE", 8),
+				value("AIMODE_DELIVER", 9),
+				value("AIMODE_BOMB", 10),
+				value("AIMODE_SQUAD", 11),
+				value("AIMODE_COUNT", 12)
+			]
+		.enum_("ActionState")
+			[
+				value("MOVING", 0),
+				value("MOVING_FAST", 1),
+				value("FIRING", 2),
+				value("ActionStateCount", 3)
+			]
+		.enum_("AimState")
+			[
+				value("AIMSTILL", 0),
+				value("AIMUP", 1),
+				value("AIMDOWN", 2),
+				value("AimStateCount", 3)
+			]
+		.enum_("LateralMoveState")
+			[
+				value("LAT_STILL", 0),
+				value("LAT_LEFT", 1),
+				value("LAT_RIGHT", 2)
+			]
+		.enum_("ObstacleState")
+			[
+				value("PROCEEDING", 0),
+				value("BACKSTEPPING", 1),
+				value("DIGPAUSING", 2),
+				value("JUMPING", 3),
+				value("SOFTLANDING", 4)
+			]
+		.enum_("TeamBlockState")
+			[
+				value("NOTBLOCKED", 0),
+				value("BLOCKED", 1),
+				value("IGNORINGBLOCK", 2),
+				value("FOLLOWWAIT", 3)
+			]
+		.def(constructor<>())
+			.def("GetController", &Actor::GetController)
+			.def("IsPlayerControlled", &Actor::IsPlayerControlled)
+			.def("IsControllable", &Actor::IsControllable)
+			.def("SetControllerMode", &Actor::SetControllerMode)
+			.def("SwapControllerModes", &Actor::SwapControllerModes)
+			.property("ImpulseDamageThreshold", &Actor::GetTravelImpulseDamage, &Actor::SetTravelImpulseDamage)
+			.property("Status", &Actor::GetStatus, &Actor::SetStatus)
+			.property("Health", &Actor::GetHealth, &Actor::SetHealth)
+			.property("MaxHealth", &Actor::GetMaxHealth, &Actor::SetMaxHealth)
+			.property("GoldCarried", &Actor::GetGoldCarried, &Actor::SetGoldCarried)
+			.property("AimRange", &Actor::GetAimRange, &Actor::SetAimRange)
+			.def("GetAimAngle", &Actor::GetAimAngle)
+			.def("SetAimAngle", &Actor::SetAimAngle)
+			.def("HasObject", &Actor::HasObject)
+			.def("HasObjectInGroup", &Actor::HasObjectInGroup)
+			.property("CPUPos", &Actor::GetCPUPos)
+			.property("EyePos", &Actor::GetEyePos)
+			.property("ViewPoint", &Actor::GetViewPoint, &Actor::SetViewPoint)
+			.property("Height", &Actor::GetHeight)
+			.def("IsWithinRange", &Actor::IsWithinRange)
+			.def("AddHealth", &Actor::AddHealth)
+			.def("IsStatus", &Actor::IsStatus)
+			.def("IsDead", &Actor::IsDead)
+			.def("FacingAngle", &Actor::FacingAngle)
+			.property("AIMode", &Actor::GetAIMode, &Actor::SetAIMode)
+			.property("DeploymentID", &Actor::GetDeploymentID)
+			.def("AddAISceneWaypoint", &Actor::AddAISceneWaypoint)
+			.def("AddAIMOWaypoint", &Actor::AddAIMOWaypoint)
+			.def("ClearAIWaypoints", &Actor::ClearAIWaypoints)
+			.def("GetLastAIWaypoint", &Actor::GetLastAIWaypoint)
+			.def("GetAIMOWaypointID", &Actor::GetAIMOWaypointID)
+			.def("GetWaypointListSize", &Actor::GetWaypointsSize)
+			.def("ClearMovePath", &Actor::ClearMovePath)
+			.def("AddToMovePathBeginning", &Actor::AddToMovePathBeginning)
+			.def("AddToMovePathEnd", &Actor::AddToMovePathEnd)
+			.def("RemoveMovePathBeginning", &Actor::RemoveMovePathBeginning)
+			.def("RemoveMovePathEnd", &Actor::RemoveMovePathEnd)
+			.property("Perceptiveness", &Actor::GetPerceptiveness, &Actor::SetPerceptiveness)
+			.def("AddInventoryItem", &Actor::AddInventoryItem, luabind::adopt_policy<2>())
+			.def("RemoveInventoryItem", &Actor::RemoveInventoryItem)
+			.def("SwapNextInventory", &Actor::SwapNextInventory)
+			.def("SwapPrevInventory", &Actor::SwapPrevInventory)
+			.def("DropAllInventory", &Actor::DropAllInventory)
+			.property("InventorySize", &Actor::GetInventorySize)
+			.def("IsInventoryEmpty", &Actor::IsInventoryEmpty)
+			.property("MaxMass", &Actor::GetMaxMass)
+			.def("FlashWhite", &Actor::FlashWhite)
+			.def("DrawWaypoints", &Actor::DrawWaypoints)
+			.def("SetMovePathToUpdate", &Actor::SetMovePathToUpdate)
+			.def("UpdateMovePath", &Actor::UpdateMovePath)
+			.property("MovePathSize", &Actor::GetMovePathSize)
+			.def_readwrite("MOMoveTarget", &Actor::m_pMOMoveTarget)
+			.def_readwrite("MovePath", &Actor::m_MovePath, luabind::return_stl_iterator())
+			.def_readwrite("Inventory", &Actor::m_Inventory, luabind::return_stl_iterator())
+			.def("SetAlarmPoint", &Actor::AlarmPoint)
+			.def("GetAlarmPoint", &Actor::GetAlarmPoint)
+			.property("AimDistance", &Actor::GetAimDistance, &Actor::SetAimDistance)
+			.property("SightDistance", &Actor::GetSightDistance, &Actor::SetSightDistance)
+			.property("TotalWoundCount", &Actor::GetTotalWoundCount)
+			.property("TotalWoundLimit", &Actor::GetTotalWoundLimit)
+			.def("RemoveAnyRandomWounds", &Actor::RemoveAnyRandomWounds),*/
+
+
+		CONCRETELUABINDING_SOL(Actor, MOSRotating);
+
+		g_pSolLuaState->set("Status", g_pSolLuaState->create_table_with(
+			"STABLE", Actor::Status::STABLE,
+			"UNSTABLE", Actor::Status::UNSTABLE,
+			"INACTIVE", Actor::Status::INACTIVE,
+			"DYING", Actor::Status::DYING,
+			"DEAD", Actor::Status::DEAD
+		));
+
+		g_pSolLuaState->set("AIMode", g_pSolLuaState->create_table_with(
+			"AIMODE_NONE", Actor::AIMode::AIMODE_NONE,
+			"AIMODE_SENTRY", Actor::AIMode::AIMODE_SENTRY,
+			"AIMODE_PATROL", Actor::AIMode::AIMODE_PATROL,
+			"AIMODE_GOTO", Actor::AIMode::AIMODE_GOTO,
+			"AIMODE_BRAINHUNT", Actor::AIMode::AIMODE_BRAINHUNT,
+			"AIMODE_GOLDDIG", Actor::AIMode::AIMODE_GOLDDIG,
+			"AIMODE_RETURN", Actor::AIMode::AIMODE_RETURN,
+			"AIMODE_STAY", Actor::AIMode::AIMODE_STAY,
+			"AIMODE_SCUTTLE", Actor::AIMode::AIMODE_SCUTTLE,
+			"AIMODE_DELIVER", Actor::AIMode::AIMODE_DELIVER,
+			"AIMODE_BOMB", Actor::AIMode::AIMODE_BOMB,
+			"AIMODE_SQUAD", Actor::AIMode::AIMODE_SQUAD,
+			"AIMODE_COUNT", Actor::AIMode::AIMODE_COUNT
+		));
+
+		g_pSolLuaState->set("ActionState", g_pSolLuaState->create_table_with(
+			"MOVING", Actor::ActionState::MOVING,
+			"MOVING_FAST", Actor::ActionState::MOVING_FAST,
+			"FIRING", Actor::ActionState::FIRING,
+			"ActionStateCount", Actor::ActionState::ActionStateCount
+		));
+
+		g_pSolLuaState->set("AimState", g_pSolLuaState->create_table_with(
+			"AIMSTILL", Actor::AimState::AIMSTILL,
+			"AIMUP", Actor::AimState::AIMUP,
+			"AIMDOWN", Actor::AimState::AIMDOWN,
+			"AimStateCount", Actor::AimState::AimStateCount
+		));
+
+		g_pSolLuaState->set("LateralMoveState", g_pSolLuaState->create_table_with(
+			"LAT_STILL", Actor::LateralMoveState::LAT_STILL,
+			"LAT_LEFT", Actor::LateralMoveState::LAT_LEFT,
+			"LAT_RIGHT", Actor::LateralMoveState::LAT_RIGHT
+		));
+
+		g_pSolLuaState->set("ObstacleState", g_pSolLuaState->create_table_with(
+			"PROCEEDING", Actor::ObstacleState::PROCEEDING,
+			"BACKSTEPPING", Actor::ObstacleState::BACKSTEPPING,
+			"DIGPAUSING", Actor::ObstacleState::DIGPAUSING,
+			"JUMPING", Actor::ObstacleState::JUMPING,
+			"SOFTLANDING", Actor::ObstacleState::SOFTLANDING
+		));
+
+		g_pSolLuaState->set("TeamBlockState", g_pSolLuaState->create_table_with(
+			"NOTBLOCKED", Actor::TeamBlockState::NOTBLOCKED,
+			"BLOCKED", Actor::TeamBlockState::BLOCKED,
+			"IGNORINGBLOCK", Actor::TeamBlockState::IGNORINGBLOCK,
+			"FOLLOWWAIT", Actor::TeamBlockState::FOLLOWWAIT
+		));
+
+		Bind["GetController"] = &Actor::GetController;
+		Bind["IsPlayerControlled"] = &Actor::IsPlayerControlled;
+		Bind["IsControllable"] = &Actor::IsControllable;
+		Bind["SetControllerMode"] = &Actor::SetControllerMode;
+		Bind["SwapControllerModes"] = &Actor::SwapControllerModes;
+		Bind["ImpulseDamageThreshold"] = sol::property(&Actor::GetTravelImpulseDamage, &Actor::SetTravelImpulseDamage);
+		Bind["Status"] = sol::property(&Actor::GetStatus, &Actor::SetStatus);
+		Bind["Health"] = sol::property(&Actor::GetHealth, &Actor::SetHealth);
+		Bind["MaxHealth"] = sol::property(&Actor::GetMaxHealth, &Actor::SetMaxHealth);
+		Bind["GoldCarried"] = sol::property(&Actor::GetGoldCarried, &Actor::SetGoldCarried);
+		Bind["AimRange"] = sol::property(&Actor::GetAimRange, &Actor::SetAimRange);
+		Bind["GetAimAngle"] = &Actor::GetAimAngle;
+		Bind["SetAimAngle"] = &Actor::SetAimAngle;
+		Bind["HasObject"] = &Actor::HasObject;
+		Bind["HasObjectInGroup"] = &Actor::HasObjectInGroup;
+		Bind["CPUPos"] = sol::property(&Actor::GetCPUPos);
+		Bind["EyePos"] = sol::property(&Actor::GetEyePos);
+		Bind["ViewPoint"] = sol::property(&Actor::GetViewPoint, &Actor::SetViewPoint);
+		Bind["Height"] = sol::property(&Actor::GetHeight);
+		Bind["IsWithinRange"] = &Actor::IsWithinRange;
+		Bind["AddHealth"] = &Actor::AddHealth;
+		Bind["IsStatus"] = &Actor::IsStatus;
+		Bind["IsDead"] = &Actor::IsDead;
+		Bind["FacingAngle"] = &Actor::FacingAngle;
+		Bind["AIMode"] = sol::property(&Actor::GetAIMode, &Actor::SetAIMode);
+		Bind["DeploymentID"] = sol::property(&Actor::GetDeploymentID);
+		Bind["AddAISceneWaypoint"] = &Actor::AddAISceneWaypoint;
+		Bind["AddAIMOWaypoint"] = &Actor::AddAIMOWaypoint;
+		Bind["ClearAIWaypoints"] = &Actor::ClearAIWaypoints;
+		Bind["GetLastAIWaypoint"] = &Actor::GetLastAIWaypoint;
+		Bind["GetAIMOWaypointID"] = &Actor::GetAIMOWaypointID;
+		Bind["GetWaypointListSize"] = &Actor::GetWaypointsSize;
+		Bind["ClearMovePath"] = &Actor::ClearMovePath;
+		Bind["AddToMovePathBeginning"] = &Actor::AddToMovePathBeginning;
+		Bind["AddToMovePathEnd"] = &Actor::AddToMovePathEnd;
+		Bind["RemoveMovePathBeginning"] = &Actor::RemoveMovePathBeginning;
+		Bind["RemoveMovePathEnd"] = &Actor::RemoveMovePathEnd;
+		Bind["Perceptiveness"] = sol::property(&Actor::GetPerceptiveness, &Actor::SetPerceptiveness);
+		Bind["AddInventoryItem"] = &Actor::AddInventoryItem;
+		Bind["RemoveInventoryItem"] = &Actor::RemoveInventoryItem;
+		Bind["SwapNextInventory"] = &Actor::SwapNextInventory;
+		Bind["SwapPrevInventory"] = &Actor::SwapPrevInventory;
+		Bind["DropAllInventory"] = &Actor::DropAllInventory;
+		Bind["InventorySize"] = sol::property(&Actor::GetInventorySize);
+		Bind["IsInventoryEmpty"] = &Actor::IsInventoryEmpty;
+		Bind["MaxMass"] = sol::property(&Actor::GetMaxMass);
+		Bind["FlashWhite"] = &Actor::FlashWhite;
+		Bind["DrawWaypoints"] = &Actor::DrawWaypoints;
+		Bind["SetMovePathToUpdate"] = &Actor::SetMovePathToUpdate;
+		Bind["UpdateMovePath"] = &Actor::UpdateMovePath;
+		Bind["MovePathSize"] = sol::property(&Actor::GetMovePathSize);
+		Bind["MOMoveTarget"] = &Actor::m_pMOMoveTarget;
+		Bind["MovePath"] = &Actor::m_MovePath;
+		Bind["Inventory"] = &Actor::m_Inventory;
+		Bind["SetAlarmPoint"] = &Actor::AlarmPoint;
+		Bind["GetAlarmPoint"] = &Actor::GetAlarmPoint;
+		Bind["AimDistance"] = sol::property(&Actor::GetAimDistance, &Actor::SetAimDistance);
+		Bind["SightDistance"] = sol::property(&Actor::GetSightDistance, &Actor::SetSightDistance);
+		Bind["TotalWoundCount"] = sol::property(&Actor::GetTotalWoundCount);
+		Bind["TotalWoundLimit"] = sol::property(&Actor::GetTotalWoundLimit);
+		Bind["RemoveAnyRandomWounds"] = &Actor::RemoveAnyRandomWounds;
+	}
 
     // Declare all useful classes in the master state
     module(m_pMasterState)
@@ -631,7 +1602,7 @@ int LuaMan::Create()
             .def_readwrite("Y", &Vector::m_Y)
             .def("SetXY", &Vector::SetXY),//*/
 
-        class_<Box>("Box")
+        /*class_<Box>("Box")
             .def(constructor<>())
             .def(constructor<const Vector &, const Vector &>())
             .def(constructor<float, float, float, float>())
@@ -651,9 +1622,9 @@ int LuaMan::Create()
             .def("WithinBoxY", &Box::WithinBoxY)
             .def("GetWithinBoxX", &Box::GetWithinBoxX)
             .def("GetWithinBoxY", &Box::GetWithinBoxY)
-            .def("GetWithinBox", &Box::GetWithinBox),
+            .def("GetWithinBox", &Box::GetWithinBox), */
 
-        class_<Scene::Area>("Area")
+        /*class_<Scene::Area>("Area")
             .def(constructor<>())
             .def(constructor<string>())
             .def(constructor<const Scene::Area &>())
@@ -666,9 +1637,9 @@ int LuaMan::Create()
             .def("GetBoxInside", &Scene::Area::GetBoxInside)
             .def("RemoveBoxInside", &Scene::Area::RemoveBoxInside)
             .def("GetCenterPoint", &Scene::Area::GetCenterPoint)
-            .def("GetRandomPoint", &Scene::Area::GetRandomPoint),
+            .def("GetRandomPoint", &Scene::Area::GetRandomPoint), */
 
-        class_<Entity/*, boost::shared_ptr<Entity> */>("Entity")
+        /*class_<Entity>("Entity")
             .def("Clone", &CloneEntity)
             .def("Reset", &Entity::Reset)
             .def(tostring(const_self))
@@ -679,16 +1650,16 @@ int LuaMan::Create()
             .property("ModuleID", &Entity::GetModuleID)
 			.property("RandomWeight", &Entity::GetRandomWeight)
             .def("AddToGroup", &Entity::AddToGroup)
-            .def("IsInGroup", (bool (Entity::*)(const string &))&Entity::IsInGroup),
+            .def("IsInGroup", (bool (Entity::*)(const string &))&Entity::IsInGroup),*/
 
-		class_<Sound>("Sound")
+		/*class_<Sound>("Sound")
 			.def(constructor<>())
 			.def("IsPlaying", &Sound::IsBeingPlayed)
 			.def("Stop", &Sound::Stop)
 			.def("UpdateDistance", &Sound::UpdateAttenuation),
-			//.property("Loops", &Sound::GetLoopSetting, &Sound::SetLoopSetting),
+			//.property("Loops", &Sound::GetLoopSetting, &Sound::SetLoopSetting),*/
 
-        ABSTRACTLUABINDING(SceneObject, Entity)
+        /*ABSTRACTLUABINDING(SceneObject, Entity)
             .property("Pos", &SceneObject::GetPos, &SceneObject::SetPos)
             .property("HFlipped", &SceneObject::IsHFlipped, &SceneObject::SetHFlipped)
             .property("RotAngle", &SceneObject::GetRotAngle, &SceneObject::SetRotAngle)
@@ -701,9 +1672,9 @@ int LuaMan::Create()
             .def("GetTotalValue", &SceneObject::GetTotalValueOld)
             .def("GetTotalValue", &SceneObject::GetTotalValue)
             .property("IsBuyable", &SceneObject::IsBuyable)
-            .def("IsOnScenePoint", &SceneObject::IsOnScenePoint),
+            .def("IsOnScenePoint", &SceneObject::IsOnScenePoint),*/
 
-        ABSTRACTLUABINDING(MovableObject, SceneObject)
+        /*ABSTRACTLUABINDING(MovableObject, SceneObject)
 			.property("Material", &MovableObject::GetMaterial)
 			.def("ReloadScripts", &MovableObject::ReloadScripts)
             .property("Mass", &MovableObject::GetMass, &MovableObject::SetMass)
@@ -776,9 +1747,9 @@ int LuaMan::Create()
 			.property("HitWhatTerrMaterial", &MovableObject::HitWhatTerrMaterial)
 			.property("ProvidesPieMenuContext", &MovableObject::ProvidesPieMenuContext, &MovableObject::SetProvidesPieMenuContext)
 			.def_readwrite("PieMenuActor", &MovableObject::m_pPieMenuActor)
-			.property("HitWhatParticleUniqueID", &MovableObject::HitWhatParticleUniqueID),
+			.property("HitWhatParticleUniqueID", &MovableObject::HitWhatParticleUniqueID),*/
 
-		class_<Material, Entity>("Material")
+		/*class_<Material, Entity>("Material")
 			.property("ID", &Material::GetId)
 			.property("Restitution", &Material::GetRestitution)
 			.property("Bounce", &Material::GetRestitution)
@@ -791,20 +1762,20 @@ int LuaMan::Create()
 			.property("SettleMaterial", &Material::GetSettleMaterial)
 			.property("SpawnMaterial", &Material::GetSpawnMaterial)
 			.property("TransformsInto", &Material::GetSpawnMaterial)
-			.property("IsScrap", &Material::IsScrap),
+			.property("IsScrap", &Material::IsScrap),*/
 
-        CONCRETELUABINDING(MOPixel, MovableObject),
+        //CONCRETELUABINDING(MOPixel, MovableObject),
 //            .property("Material", &MOPixel::GetMaterial),
 //            .property("Framerate", &MOPixel::GetFramerate, &MOPixel::SetFramerate)
 //            .property("Atom", &MOPixel::GetAtom, &MOPixel:SetAtom)
 //            .property("IsGold", &MOPixel::IsGold),
 
-        CONCRETELUABINDING(TerrainObject, SceneObject)
+        /*CONCRETELUABINDING(TerrainObject, SceneObject)
             .def("GetBitmapOffset", &TerrainObject::GetBitmapOffset)
             .def("GetBitmapWidth", &TerrainObject::GetBitmapWidth)
-            .def("GetBitmapHeight", &TerrainObject::GetBitmapHeight),
+            .def("GetBitmapHeight", &TerrainObject::GetBitmapHeight),*/
 
-        ABSTRACTLUABINDING(MOSprite, MovableObject)
+        /*ABSTRACTLUABINDING(MOSprite, MovableObject)
             .enum_("SpriteAnimMode")
             [
                 value("NOANIM", 0),
@@ -835,13 +1806,13 @@ int LuaMan::Create()
 			.def("SetEntryWound", &MOSprite::SetEntryWound)
 			.def("SetExitWound", &MOSprite::SetExitWound)
 			.def("GetEntryWoundPresetName", &MOSprite::GetEntryWoundPresetName)
-			.def("GetExitWoundPresetName", &MOSprite::GetExitWoundPresetName),
+			.def("GetExitWoundPresetName", &MOSprite::GetExitWoundPresetName),*/
 
-        CONCRETELUABINDING(MOSParticle, MOSprite)
+        /*CONCRETELUABINDING(MOSParticle, MOSprite)
             .property("Framerate", &MOSParticle::GetFramerate, &MOSParticle::SetFramerate)
-            .property("IsGold", &MOSParticle::IsGold),
+            .property("IsGold", &MOSParticle::IsGold),*/
 
-        CONCRETELUABINDING(MOSRotating, MOSprite)
+        /*CONCRETELUABINDING(MOSRotating, MOSprite)
             .property("RecoilForce", &MOSRotating::GetRecoilForce)
             .property("RecoilOffset", &MOSRotating::GetRecoilOffset)
             .property("IsGold", &MOSRotating::IsGold)
@@ -879,9 +1850,9 @@ int LuaMan::Create()
             .def("NumberValueExists", &MOSRotating::NumberValueExists)
             .def("ObjectValueExists", &MOSRotating::ObjectValueExists)
 			.def_readwrite("Attachables", &MOSRotating::m_Attachables, luabind::return_stl_iterator())
-			.def_readwrite("Emitters", &MOSRotating::m_Emitters, luabind::return_stl_iterator()),
+			.def_readwrite("Emitters", &MOSRotating::m_Emitters, luabind::return_stl_iterator()),*/
 
-        CONCRETELUABINDING(Attachable, MOSRotating)
+        /*CONCRETELUABINDING(Attachable, MOSRotating)
             .def("GetRootParent", (MovableObject * (Attachable::*)())&Attachable::GetRootParent)
             .def("GetRootParent", (const MovableObject * (Attachable::*)() const)&Attachable::GetRootParent)
 			.def("GetParent", (MovableObject * (Attachable::*)())&Attachable::GetParent)
@@ -902,9 +1873,9 @@ int LuaMan::Create()
             .def("TransferJointForces", &Attachable::TransferJointForces)
             .def("TransferJointImpulses", &Attachable::TransferJointImpulses)
             .def("CollectDamage", &Attachable::CollectDamage)
-			.property("InheritsRotAngle", &Attachable::InheritsRotAngle, &Attachable::SetInheritsRotAngle),
+			.property("InheritsRotAngle", &Attachable::InheritsRotAngle, &Attachable::SetInheritsRotAngle),*/
 
-		ABSTRACTLUABINDING(Emission, Entity)
+		/*ABSTRACTLUABINDING(Emission, Entity)
 			.property("ParticlesPerMinute", &Emission::GetRate, &Emission::SetRate)
 			.property("MinVelocity", &Emission::GetMinVelocity, &Emission::SetMinVelocity)
 			.property("MaxVelocity", &Emission::GetMaxVelocity, &Emission::SetMaxVelocity)
@@ -913,9 +1884,9 @@ int LuaMan::Create()
 			.property("BurstSize", &Emission::GetBurstSize, &Emission::SetBurstSize)
 			.property("Spread", &Emission::GetSpread, &Emission::SetSpread)
 			.property("Offset", &Emission::GetOffset, &Emission::SetOffset)
-			.def("ResetEmissionTimers", &Emission::ResetEmissionTimers),
+			.def("ResetEmissionTimers", &Emission::ResetEmissionTimers),*/
 
-        CONCRETELUABINDING(AEmitter, Attachable)
+        /*CONCRETELUABINDING(AEmitter, Attachable)
             .def("IsEmitting", &AEmitter::IsEmitting)
             .def("EnableEmission", &AEmitter::EnableEmission)
             .property("BurstScale", &AEmitter::GetBurstScale, &AEmitter::SetBurstScale)
@@ -934,10 +1905,10 @@ int LuaMan::Create()
             .def("TriggerBurst", &AEmitter::TriggerBurst)
             .def("IsSetToBurst", &AEmitter::IsSetToBurst)
             .def("CanTriggerBurst", &AEmitter::CanTriggerBurst)
-			.def_readwrite("Emissions", &AEmitter::m_EmissionList, luabind::return_stl_iterator()),
+			.def_readwrite("Emissions", &AEmitter::m_EmissionList, luabind::return_stl_iterator()),*/
 
 
-        CONCRETELUABINDING(Actor, MOSRotating)
+        /*CONCRETELUABINDING(Actor, MOSRotating)
             .enum_("Status")
             [
                 value("STABLE", 0),
@@ -1058,7 +2029,7 @@ int LuaMan::Create()
 			.property("SightDistance", &Actor::GetSightDistance, &Actor::SetSightDistance)
 			.property("TotalWoundCount", &Actor::GetTotalWoundCount)
 			.property("TotalWoundLimit", &Actor::GetTotalWoundLimit)
-            .def("RemoveAnyRandomWounds", &Actor::RemoveAnyRandomWounds),
+            .def("RemoveAnyRandomWounds", &Actor::RemoveAnyRandomWounds),*/
 
         CONCRETELUABINDING(ADoor, Actor)
 			.enum_("DooorState")
@@ -2318,18 +3289,20 @@ int LuaMan::Create()
     ];
 
     // Assign the manager instances to globals in the lua master state
-    globals(m_pMasterState)["TimerMan"] = &g_TimerMan;
-    globals(m_pMasterState)["FrameMan"] = &g_FrameMan;
-    globals(m_pMasterState)["PresetMan"] = &g_PresetMan;
-    globals(m_pMasterState)["AudioMan"] = &g_AudioMan;
-    globals(m_pMasterState)["UInputMan"] = &g_UInputMan;
-    globals(m_pMasterState)["SceneMan"] = &g_SceneMan;
-    globals(m_pMasterState)["ActivityMan"] = &g_ActivityMan;
-    globals(m_pMasterState)["MetaMan"] = &g_MetaMan;
-    globals(m_pMasterState)["MovableMan"] = &g_MovableMan;
-    globals(m_pMasterState)["ConsoleMan"] = &g_ConsoleMan;
-    globals(m_pMasterState)["LuaMan"] = &g_LuaMan;
-    globals(m_pMasterState)["SettingsMan"] = &g_SettingsMan;
+    //globals(m_pMasterState)["TimerMan"] = &g_TimerMan;
+    //globals(m_pMasterState)["FrameMan"] = &g_FrameMan;
+    //globals(m_pMasterState)["PresetMan"] = &g_PresetMan;
+    //globals(m_pMasterState)["AudioMan"] = &g_AudioMan;
+    //globals(m_pMasterState)["UInputMan"] = &g_UInputMan;
+    //globals(m_pMasterState)["SceneMan"] = &g_SceneMan;
+    //globals(m_pMasterState)["ActivityMan"] = &g_ActivityMan;
+    //globals(m_pMasterState)["MetaMan"] = &g_MetaMan;
+    //globals(m_pMasterState)["MovableMan"] = &g_MovableMan;
+    //globals(m_pMasterState)["ConsoleMan"] = &g_ConsoleMan;
+    //globals(m_pMasterState)["LuaMan"] = &g_LuaMan;
+    //globals(m_pMasterState)["SettingsMan"] = &g_SettingsMan;
+
+
 
     luaL_dostring(m_pMasterState,
         // Override print() in the lua state to output to the console

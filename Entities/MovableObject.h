@@ -1701,6 +1701,9 @@ ENTITYALLOCATION(MovableObject)
 
 	virtual void SetProvidesPieMenuContext(bool value) { m_ProvidesPieMenuContext = value; }
 
+	Actor * GetPieMenuActor() const { return m_pPieMenuActor; }
+
+	void SetPieMenuActor(Actor * pActor) { m_pPieMenuActor = pActor; }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Protected member variable and method declarations
@@ -1740,6 +1743,7 @@ protected:
     virtual void RegMOID(std::vector<MovableObject *> &MOIDIndex,
                          MOID rootMOID = g_NoMOID,
                          bool makeNewMOID = true);
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Constructor:     MovableObject
