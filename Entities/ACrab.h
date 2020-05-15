@@ -40,7 +40,7 @@ class AEmitter;
 class ACrab:
     public Actor
 {
-
+    friend class LuaMan;
 
 enum MovementState
 {

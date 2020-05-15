@@ -40,7 +40,7 @@ class AEmitter;
 class AHuman:
     public Actor
 {
-
+    friend class LuaMan;
 
 enum UpperBodyState
 {
@@ -76,7 +76,7 @@ enum ProneState
     PRONESTATECOUNT
 };
 
-enum
+enum 
 {
     FGROUND = 0,
     BGROUND

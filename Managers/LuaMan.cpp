@@ -626,7 +626,7 @@ int LuaMan::Create()
 		// For whatever reasons binding simply as variable breaks the VS 2017 compiler
 		Bind["X"] = sol::property(&Vector::GetX, &Vector::SetX);
 		Bind["Y"] = sol::property(&Vector::GetY, &Vector::SetY);
-		Bind["SetXY"] = &Vector::SetXY;
+		Bind["SetXY"] = &Vector::SetXY;//*/
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -677,7 +677,7 @@ int LuaMan::Create()
 		Bind["WithinBoxY"] = &Box::WithinBoxY;
 		Bind["GetWithinBoxX"] = &Box::GetWithinBoxX;
 		Bind["GetWithinBoxY"] = &Box::GetWithinBoxY;
-		Bind["GetWithinBox"] = &Box::GetWithinBox;
+		Bind["GetWithinBox"] = &Box::GetWithinBox;//*/
 	}
 
 
@@ -714,7 +714,7 @@ int LuaMan::Create()
 		Bind["GetBoxInside"] = &Scene::Area::GetBoxInside;
 		Bind["RemoveBoxInside"] = &Scene::Area::RemoveBoxInside;
 		Bind["GetCenterPoint"] = &Scene::Area::GetCenterPoint;
-		Bind["GetRandomPoint"] = &Scene::Area::GetRandomPoint;
+		Bind["GetRandomPoint"] = &Scene::Area::GetRandomPoint;//*/
 	}
 
 
@@ -746,7 +746,7 @@ int LuaMan::Create()
 		Bind["ModuleID"] = sol::property(&Entity::GetModuleID);
 		Bind["RandomWeight"] = sol::property(&Entity::GetRandomWeight);
 		Bind["AddToGroup"] = &Entity::AddToGroup;
-		Bind["IsInGroup"] = &Entity::IsInGroup;
+		Bind["IsInGroup"] = &Entity::IsInGroup;//*/
 	}
 
 
@@ -766,7 +766,7 @@ int LuaMan::Create()
 
 		Bind["IsPlaying"] = &Sound::IsBeingPlayed;
 		Bind["Stop"] = &Sound::Stop;
-		Bind["UpdateDistance"] = &Sound::UpdateAttenuation;
+		Bind["UpdateDistance"] = &Sound::UpdateAttenuation;//*/
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -802,7 +802,7 @@ int LuaMan::Create()
 		Bind["GetTotalValue"] = &SceneObject::GetTotalValueOld;
 		Bind["GetTotalValue"] = &SceneObject::GetTotalValue;
 		Bind["IsBuyable"] = sol::property(&SceneObject::IsBuyable);
-		Bind["IsOnScenePoint"] = &SceneObject::IsOnScenePoint;
+		Bind["IsOnScenePoint"] = &SceneObject::IsOnScenePoint;//*/
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -958,7 +958,7 @@ int LuaMan::Create()
 		Bind["HitWhatTerrMaterial"] = sol::property(&MovableObject::HitWhatTerrMaterial);
 		Bind["ProvidesPieMenuContext"] = sol::property(&MovableObject::ProvidesPieMenuContext, &MovableObject::SetProvidesPieMenuContext);
 		Bind["PieMenuActor"] = sol::property(&MovableObject::GetPieMenuActor, &MovableObject::SetPieMenuActor);
-		Bind["HitWhatParticleUniqueID"] = sol::property(&MovableObject::HitWhatParticleUniqueID);
+		Bind["HitWhatParticleUniqueID"] = sol::property(&MovableObject::HitWhatParticleUniqueID);//*/
 	}
 
 	{
@@ -991,7 +991,7 @@ int LuaMan::Create()
 		Bind["SettleMaterial"]  = &Material::GetSettleMaterial;
 		Bind["SpawnMaterial"]  = &Material::GetSpawnMaterial;
 		Bind["TransformsInto"]  = &Material::GetSpawnMaterial;
-		Bind["IsScrap"]  = &Material::IsScrap;
+		Bind["IsScrap"]  = &Material::IsScrap;//*/
 	}
 
 	{
@@ -1002,7 +1002,7 @@ int LuaMan::Create()
 //            .property("IsGold", &MOPixel::IsGold),
 
 
-		CONCRETELUABINDING_SOL(MOPixel, MovableObject);
+		CONCRETELUABINDING_SOL(MOPixel, MovableObject);//*/
 	}
 
 	{
@@ -1015,7 +1015,7 @@ int LuaMan::Create()
 
 		Bind["GetBitmapOffset"] = &TerrainObject::GetBitmapOffset;
 		Bind["GetBitmapWidth"] = &TerrainObject::GetBitmapWidth;
-		Bind["GetBitmapHeight"] = &TerrainObject::GetBitmapHeight;
+		Bind["GetBitmapHeight"] = &TerrainObject::GetBitmapHeight;//*/
 	}
 
 	{
@@ -1084,7 +1084,7 @@ int LuaMan::Create()
 		Bind["SetEntryWound"] = &MOSprite::SetEntryWound;
 		Bind["SetExitWound"] = &MOSprite::SetExitWound;
 		Bind["GetEntryWoundPresetName"] = &MOSprite::GetEntryWoundPresetName;
-		Bind["GetExitWoundPresetName"] = &MOSprite::GetExitWoundPresetName;
+		Bind["GetExitWoundPresetName"] = &MOSprite::GetExitWoundPresetName;//*/
 	}
 
 	{
@@ -1095,7 +1095,7 @@ int LuaMan::Create()
 		CONCRETELUABINDING_SOL(MOSParticle, MOSprite);
 		
 		Bind["Framerate"] = sol::property(&MOSParticle::GetFramerate, &MOSParticle::SetFramerate);
-		Bind["IsGold"] = sol::property(&MOSParticle::IsGold);
+		Bind["IsGold"] = sol::property(&MOSParticle::IsGold);//*/
 	}
 
 	{
@@ -1179,7 +1179,7 @@ int LuaMan::Create()
 		Bind["ObjectValueExists"] = &MOSRotating::ObjectValueExists;
 		Bind["Wounds"] = &MOSRotating::m_Emitters;
 		Bind["Attachables"] = &MOSRotating::m_Attachables;
-		Bind["Emitters"] = &MOSRotating::m_Emitters;
+		Bind["Emitters"] = &MOSRotating::m_Emitters;//*/
 	}
 
 	{
@@ -1206,29 +1206,29 @@ int LuaMan::Create()
 			.def("CollectDamage", &Attachable::CollectDamage)
 			.property("InheritsRotAngle", &Attachable::InheritsRotAngle, &Attachable::SetInheritsRotAngle),*/
 
-			CONCRETELUABINDING_SOL(Attachable, MOSRotating);
+		CONCRETELUABINDING_SOL(Attachable, MOSRotating);
 
-			Bind["GetRootParent"] = (MovableObject * (Attachable::*)())&Attachable::GetRootParent;
-			Bind["GetRootParent"] = (const MovableObject * (Attachable::*)() const)&Attachable::GetRootParent;
-			Bind["GetParent"] = (MovableObject * (Attachable::*)())&Attachable::GetParent;
-			Bind["GetParent"] = (const MovableObject * (Attachable::*)() const)&Attachable::GetParent;
-			Bind["ParentOffset"] = sol::property(&Attachable::GetParentOffset, &Attachable::SetParentOffset);
-			Bind["JointOffset"] = sol::property(&Attachable::GetJointOffset, &Attachable::SetJointOffset);
-			Bind["JointStiffness"] = sol::property(&Attachable::GetJointStiffness, &Attachable::SetJointStiffness);
-			Bind["JointStrength"] = sol::property(&Attachable::GetJointStrength, &Attachable::SetJointStrength);
-			Bind["RotTarget"] = sol::property(&Attachable::GetRotTarget, &Attachable::SetRotTarget);
-			Bind["AtomSubgroupID"] = sol::property(&Attachable::GetAtomSubgroupID, &Attachable::SetAtomSubgroupID);
-			Bind["OnlyLinearForces"] = sol::property(&Attachable::GetOnlyLinearForces, &Attachable::SetOnlyLinearForces);
-			Bind["IsAttached"] = &Attachable::IsAttached;
-			Bind["IsAttachedTo"] = &Attachable::IsAttachedTo;
-			Bind["IsDrawnAfterParent"] = &Attachable::IsDrawnAfterParent;
-			Bind["Attach"] = (void (Attachable::*)(MOSRotating *))&Attachable::Attach;
-			Bind["Attach"] = (void (Attachable::*)(MOSRotating *, const Vector &))&Attachable::Attach;
-			Bind["Detach"] = &Attachable::Detach;
-			Bind["TransferJointForces"] = &Attachable::TransferJointForces;
-			Bind["TransferJointImpulses"] = &Attachable::TransferJointImpulses;
-			Bind["CollectDamage"] = &Attachable::CollectDamage;
-			Bind["InheritsRotAngle"] = sol::property(&Attachable::InheritsRotAngle, &Attachable::SetInheritsRotAngle);
+		Bind["GetRootParent"] = (MovableObject * (Attachable::*)())&Attachable::GetRootParent;
+		Bind["GetRootParent"] = (const MovableObject * (Attachable::*)() const)&Attachable::GetRootParent;
+		Bind["GetParent"] = (MovableObject * (Attachable::*)())&Attachable::GetParent;
+		Bind["GetParent"] = (const MovableObject * (Attachable::*)() const)&Attachable::GetParent;
+		Bind["ParentOffset"] = sol::property(&Attachable::GetParentOffset, &Attachable::SetParentOffset);
+		Bind["JointOffset"] = sol::property(&Attachable::GetJointOffset, &Attachable::SetJointOffset);
+		Bind["JointStiffness"] = sol::property(&Attachable::GetJointStiffness, &Attachable::SetJointStiffness);
+		Bind["JointStrength"] = sol::property(&Attachable::GetJointStrength, &Attachable::SetJointStrength);
+		Bind["RotTarget"] = sol::property(&Attachable::GetRotTarget, &Attachable::SetRotTarget);
+		Bind["AtomSubgroupID"] = sol::property(&Attachable::GetAtomSubgroupID, &Attachable::SetAtomSubgroupID);
+		Bind["OnlyLinearForces"] = sol::property(&Attachable::GetOnlyLinearForces, &Attachable::SetOnlyLinearForces);
+		Bind["IsAttached"] = &Attachable::IsAttached;
+		Bind["IsAttachedTo"] = &Attachable::IsAttachedTo;
+		Bind["IsDrawnAfterParent"] = &Attachable::IsDrawnAfterParent;
+		Bind["Attach"] = (void (Attachable::*)(MOSRotating *))&Attachable::Attach;
+		Bind["Attach"] = (void (Attachable::*)(MOSRotating *, const Vector &))&Attachable::Attach;
+		Bind["Detach"] = &Attachable::Detach;
+		Bind["TransferJointForces"] = &Attachable::TransferJointForces;
+		Bind["TransferJointImpulses"] = &Attachable::TransferJointImpulses;
+		Bind["CollectDamage"] = &Attachable::CollectDamage;
+		Bind["InheritsRotAngle"] = sol::property(&Attachable::InheritsRotAngle, &Attachable::SetInheritsRotAngle);//*/
 	}
 
 	{
@@ -1252,7 +1252,7 @@ int LuaMan::Create()
 		Bind["BurstSize"] = sol::property(&Emission::GetBurstSize, &Emission::SetBurstSize);
 		Bind["Spread"] = sol::property(&Emission::GetSpread, &Emission::SetSpread);
 		Bind["Offset"] = sol::property(&Emission::GetOffset, &Emission::SetOffset);
-		Bind["ResetEmissionTimers"] = &Emission::ResetEmissionTimers;
+		Bind["ResetEmissionTimers"] = &Emission::ResetEmissionTimers;//*/
 	}
 
 	{
@@ -1297,7 +1297,7 @@ int LuaMan::Create()
 		Bind["TriggerBurst"] = &AEmitter::TriggerBurst;
 		Bind["IsSetToBurst"] = &AEmitter::IsSetToBurst;
 		Bind["CanTriggerBurst"] = &AEmitter::CanTriggerBurst;
-		Bind["Emissions"] = &AEmitter::m_EmissionList;
+		Bind["Emissions"] = &AEmitter::m_EmissionList;//*/
 	}
 
 	{
@@ -1310,7 +1310,7 @@ int LuaMan::Create()
 				value("DYING", 3),
 				value("DEAD", 4)
 			]
-		.enum_("AIMode")
+			.enum_("AIMode")
 			[
 				value("AIMODE_NONE", 0),
 				value("AIMODE_SENTRY", 1),
@@ -1546,938 +1546,775 @@ int LuaMan::Create()
 		Bind["SightDistance"] = sol::property(&Actor::GetSightDistance, &Actor::SetSightDistance);
 		Bind["TotalWoundCount"] = sol::property(&Actor::GetTotalWoundCount);
 		Bind["TotalWoundLimit"] = sol::property(&Actor::GetTotalWoundLimit);
-		Bind["RemoveAnyRandomWounds"] = &Actor::RemoveAnyRandomWounds;
+		Bind["RemoveAnyRandomWounds"] = &Actor::RemoveAnyRandomWounds;//*/
 	}
 
-    // Declare all useful classes in the master state
-    module(m_pMasterState)
-    [
-        /*class_<Vector>("Vector")
-            .def(luabind::constructor<>())
-            .def(luabind::constructor<float, float>())
-            .def(self == other<const Vector &>())
-            .def(const_self + other<const Vector &>())
-            .def(const_self - other<const Vector &>())
-            .def(const_self * float())
-            .def(const_self / float())
-            .def(tostring(const_self))
-            .property("ClassName", &Vector::GetClassName)
-            .property("RoundedX", &Vector::GetRoundIntX)
-            .property("RoundedY", &Vector::GetRoundIntY)
-            .property("Rounded", &Vector::GetRounded)
-            .property("FlooredX", &Vector::GetFloorIntX)
-            .property("FlooredY", &Vector::GetFloorIntY)
-            .property("Floored", &Vector::GetFloored)
-            .property("CeilingedX", &Vector::GetCeilingIntX)
-            .property("CeilingedY", &Vector::GetCeilingIntY)
-            .property("Ceilinged", &Vector::GetCeilinged)
-            .property("Magnitude", &Vector::GetMagnitude)
-            .def("SetMagnitude", &Vector::SetMagnitude)
-            .property("Largest", &Vector::GetLargest)
-            .property("Smallest", &Vector::GetSmallest)
-            .property("Normalized", &Vector::GetNormalized)
-            .property("Perpendicular", &Vector::GetPerpendicular)
-            .def("GetXFlipped", &Vector::GetXFlipped)
-            .def("GetYFlipped", &Vector::GetYFlipped)
-            .property("AbsRadAngle", &Vector::GetAbsRadAngle)
-            .property("AbsDegAngle", &Vector::GetAbsDegAngle)
-            .def("CapMagnitude", &Vector::CapMagnitude)
-            .def("FlipX", &Vector::FlipX)
-            .def("FlipY", &Vector::FlipY)
-            .def("IsZero", &Vector::IsZero)
-            .def("IsOpposedTo", &Vector::IsOpposedTo)
-            .def("Dot", &Vector::Dot)
-            .def("Cross", &Vector::Cross)
-            .def("Round", &Vector::Round)
-            .def("ToHalf", &Vector::ToHalf)
-            .def("Floor", &Vector::Floor)
-            .def("Ceiling", &Vector::Ceiling)
-            .def("Normalize", &Vector::Normalize)
-            .def("Perpendicularize", &Vector::Perpendicularize)
-            .def("Reset", &Vector::Reset)
-            .def("RadRotate", &Vector::RadRotate)
-            .def("DegRotate", &Vector::DegRotate)
-            .def("AbsRotateTo", &Vector::AbsRotateTo)
-            .def_readwrite("X", &Vector::m_X)
-            .def_readwrite("Y", &Vector::m_Y)
-            .def("SetXY", &Vector::SetXY),//*/
 
-        /*class_<Box>("Box")
-            .def(constructor<>())
-            .def(constructor<const Vector &, const Vector &>())
-            .def(constructor<float, float, float, float>())
-            .def(constructor<const Vector &, float, float>())
-            .def(constructor<const Box &>())
-            .def(self == other<const Box &>())
-            .property("ClassName", &Box::GetClassName)
-            .property("Corner", &Box::GetCorner, &Box::SetCorner)
-            .property("Width", &Box::GetWidth, &Box::SetWidth)
-            .property("Height", &Box::GetHeight, &Box::SetHeight)
-            .property("Center", &Box::GetCenter, &Box::SetCenter)
-            .property("Area", &Box::GetArea)
-            .def("GetRandomPoint", &Box::GetRandomPoint)
-            .def("Unflip", &Box::Unflip)
-            .def("WithinBox", &Box::WithinBox)
-            .def("WithinBoxX", &Box::WithinBoxX)
-            .def("WithinBoxY", &Box::WithinBoxY)
-            .def("GetWithinBoxX", &Box::GetWithinBoxX)
-            .def("GetWithinBoxY", &Box::GetWithinBoxY)
-            .def("GetWithinBox", &Box::GetWithinBox), */
+	{
+		/*CONCRETELUABINDING(ADoor, Actor)
+		.enum_("DooorState")
+		[
+			value("CLOSED", 0),
+			value("OPENING", 1),
+			value("OPEN", 2),
+			value("CLOSING", 3)
+		]
+		.property("Door", &ADoor::GetDoor)
+		.def("GetDoorState", &ADoor::GetDoorState)
+		.def("OpenDoor", &ADoor::OpenDoor)
+		.def("CloseDoor", &ADoor::CloseDoor)
+		.def("SetClosedByDefault", &ADoor::SetClosedByDefault),*/
 
-        /*class_<Scene::Area>("Area")
-            .def(constructor<>())
-            .def(constructor<string>())
-            .def(constructor<const Scene::Area &>())
-            .def("Reset", &Scene::Area::Reset)
-            .property("ClassName", &Scene::Area::GetClassName)
-            .property("Name", &Scene::Area::GetName)
-            .def("AddBox", &Scene::Area::AddBox)
-            .def("HasNoArea", &Scene::Area::HasNoArea)
-            .def("IsInside", &Scene::Area::IsInside)
-            .def("GetBoxInside", &Scene::Area::GetBoxInside)
-            .def("RemoveBoxInside", &Scene::Area::RemoveBoxInside)
-            .def("GetCenterPoint", &Scene::Area::GetCenterPoint)
-            .def("GetRandomPoint", &Scene::Area::GetRandomPoint), */
+		CONCRETELUABINDING_SOL(ADoor, Actor)
 
-        /*class_<Entity>("Entity")
-            .def("Clone", &CloneEntity)
-            .def("Reset", &Entity::Reset)
-            .def(tostring(const_self))
-            .property("ClassName", &Entity::GetClassName)
-            .property("PresetName", &Entity::GetPresetName, &Entity::SetPresetName)
-            .def("GetModuleAndPresetName", &Entity::GetModuleAndPresetName)
-            .property("IsOriginalPreset", &Entity::IsOriginalPreset)
-            .property("ModuleID", &Entity::GetModuleID)
-			.property("RandomWeight", &Entity::GetRandomWeight)
-            .def("AddToGroup", &Entity::AddToGroup)
-            .def("IsInGroup", (bool (Entity::*)(const string &))&Entity::IsInGroup),*/
+		g_pSolLuaState->set("DooorState", g_pSolLuaState->create_table_with(
+			"CLOSED", ADoor::DoorState::CLOSED,
+			"OPENING", ADoor::DoorState::OPENING,
+			"OPEN", ADoor::DoorState::OPEN,
+			"CLOSING", ADoor::DoorState::CLOSING
+		));
+		Bind["Door"] = sol::property(&ADoor::GetDoor);
+		Bind["GetDoorState"] = &ADoor::GetDoorState;
+		Bind["OpenDoor"] = &ADoor::OpenDoor;
+		Bind["CloseDoor"] = &ADoor::CloseDoor;
+		Bind["SetClosedByDefault"] = &ADoor::SetClosedByDefault;//*/
+	}
+	
+	{
+		/*ABSTRACTLUABINDING(Arm, Attachable)
+			.property("IdleOffset", &Arm::GetIdleOffset, &Arm::SetIdleOffset)
+			.property("HandPos", &Arm::GetHandPos, &Arm::SetHandPos),*/
 
-		/*class_<Sound>("Sound")
+		ABSTRACTLUABINDING_SOL(Arm, Attachable);
+		Bind["IdleOffset"] = sol::property(&Arm::GetIdleOffset, &Arm::SetIdleOffset);
+		Bind["HandPos"] = sol::property(&Arm::GetHandPos, &Arm::SetHandPos);//*/
+	}
+
+
+	{
+		/*CONCRETELUABINDING(AHuman, Actor)
+			.enum_("UpperBodyState")
+			[
+				value("WEAPON_READY", 0),
+				value("AIMING_SHARP", 1),
+				value("HOLSTERING_BACK", 2),
+				value("HOLSTERING_BELT", 3),
+				value("DEHOLSTERING_BACK", 4),
+				value("DEHOLSTERING_BELT", 5),
+				value("THROWING_PREP", 6),
+				value("THROWING_RELEASE", 7)
+			]
+			.enum_("MovementState")
+			[
+				value("NOMOVE", 0),
+				value("STAND", 1),
+				value("WALK", 2),
+				value("CROUCH", 3),
+				value("CRAWL", 4),
+				value("ARMCRAWL", 5),
+				value("CLIMB", 6),
+				value("JUMP", 7),
+				value("DISLODGE", 8),
+				value("MOMENTSTATECOUNT", 9)
+			]
+			.enum_("ProneState")
+			[
+				value("NOTPRONE", 0),
+				value("GOPRONE", 1),
+				value("PRONE", 2),
+				value("PRONESTATECOUNT", 3)
+			]
+			.enum_("Layer")
+			[
+				value("FGROUND", 0),
+				value("BGROUND", 1)
+			]
+			.enum_("DeviceHandlingState")
+			[
+				value("STILL", 0),
+				value("POINTING", 1),
+				value("SCANNING", 2),
+				value("AIMING", 3),
+				value("FIRING", 4),
+				value("THROWING", 5),
+				value("DIGGING", 6)
+			]
+			.enum_("SweepState")
+			[
+				value("NOSWEEP", 0),
+				value("SWEEPINGUP", 1),
+				value("SWEEPINGPAUSE", 2),
+				value("SWEEPINGDOWN", 3),
+				value("SWEEMDOWNPAUSE", 4)
+			]
+			.enum_("DigState")
+			[
+				value("NOTDIGGING", 0),
+				value("PREDIG", 1),
+				value("STARTDIG", 2),
+				value("TUNNELING", 3),
+				value("FINISHINGDIG", 4),
+				value("PAUSEDIGGER", 5)
+			]
+			.enum_("JumpState")
+			[
+				value("NOTJUMPING", 0),
+				value("FORWARDJUMP", 1),
+				value("PREJUMP", 2),
+				value("UPJUMP", 3),
+				value("APEXJUMP", 4),
+				value("LANDJUMP", 5)
+			]
 			.def(constructor<>())
-			.def("IsPlaying", &Sound::IsBeingPlayed)
-			.def("Stop", &Sound::Stop)
-			.def("UpdateDistance", &Sound::UpdateAttenuation),
-			//.property("Loops", &Sound::GetLoopSetting, &Sound::SetLoopSetting),*/
+			.property("Head", &AHuman::GetHead)
+			.property("FGArm", &AHuman::GetFGArm)
+			.property("BGArm", &AHuman::GetBGArm)
+			.property("FGLeg", &AHuman::GetFGLeg)
+			.property("BGLeg", &AHuman::GetBGLeg)
+			.property("Jetpack", &AHuman::GetJetpack)
+			.property("JetTimeTotal", &AHuman::GetJetTimeTotal, &AHuman::SetJetTimeTotal)
+			.property("JetTimeLeft", &AHuman::GetJetTimeLeft, &AHuman::SetJetTimeLeft)
+			.def("EquipFirearm", &AHuman::EquipFirearm)
+			.def("EquipThrowable", &AHuman::EquipThrowable)
+			.def("EquipDiggingTool", &AHuman::EquipDiggingTool)
+			.def("EquipShield", &AHuman::EquipShield)
+			.def("EquipShieldInBGArm", &AHuman::EquipShieldInBGArm)
+			.def("EquipDeviceInGroup", &AHuman::EquipDeviceInGroup)
+			.def("EquipNamedDevice", &AHuman::EquipNamedDevice)
+			.def("EquipLoadedFirearmInGroup", &AHuman::EquipLoadedFirearmInGroup)
+			.def("UnequipBGArm", &AHuman::UnequipBGArm)
+			.property("EquippedItem", &AHuman::GetEquippedItem)
+			.property("EquippedBGItem", &AHuman::GetEquippedBGItem)
+			.property("FirearmIsReady", &AHuman::FirearmIsReady)
+			.property("ThrowableIsReady", &AHuman::ThrowableIsReady)
+			.property("FirearmIsEmpty", &AHuman::FirearmIsEmpty)
+			.property("FirearmNeedsReload", &AHuman::FirearmNeedsReload)
+			.property("FirearmIsSemiAuto", &AHuman::FirearmIsSemiAuto)
+			.property("FirearmActivationDelay", &AHuman::FirearmActivationDelay)
+			.def("ReloadFirearm", &AHuman::ReloadFirearm)
+			.def("IsWithinRange", &AHuman::IsWithinRange)
+			.def("Look", &AHuman::Look)
+			.def("LookForGold", &AHuman::LookForGold)
+			.def("LookForMOs", &AHuman::LookForMOs)
+			.def("IsOnScenePoint", &AHuman::IsOnScenePoint)
+			.property("LimbPathPushForce", &AHuman::GetLimbPathPushForce, &AHuman::SetLimbPathPushForce)
+			.def("GetLimbPathSpeed", &AHuman::GetLimbPathSpeed)
+			.def("SetLimbPathSpeed", &AHuman::SetLimbPathSpeed),*/
 
-        /*ABSTRACTLUABINDING(SceneObject, Entity)
-            .property("Pos", &SceneObject::GetPos, &SceneObject::SetPos)
-            .property("HFlipped", &SceneObject::IsHFlipped, &SceneObject::SetHFlipped)
-            .property("RotAngle", &SceneObject::GetRotAngle, &SceneObject::SetRotAngle)
-            .property("Team", &SceneObject::GetTeam, &SceneObject::SetTeam)
-            .property("PlacedByPlayer", &SceneObject::GetPlacedByPlayer, &SceneObject::SetPlacedByPlayer)
-            .def("GetGoldValue", &SceneObject::GetGoldValueOld)
-            .def("GetGoldValue", &SceneObject::GetGoldValue)
-			.def("SetGoldValue", &SceneObject::SetGoldValue)
-			.def("GetGoldValueString", &SceneObject::GetGoldValueString)
-            .def("GetTotalValue", &SceneObject::GetTotalValueOld)
-            .def("GetTotalValue", &SceneObject::GetTotalValue)
-            .property("IsBuyable", &SceneObject::IsBuyable)
-            .def("IsOnScenePoint", &SceneObject::IsOnScenePoint),*/
+		CONCRETELUABINDING_SOL(AHuman, Actor)
 
-        /*ABSTRACTLUABINDING(MovableObject, SceneObject)
-			.property("Material", &MovableObject::GetMaterial)
-			.def("ReloadScripts", &MovableObject::ReloadScripts)
-            .property("Mass", &MovableObject::GetMass, &MovableObject::SetMass)
-            .property("Pos", &MovableObject::GetPos, &MovableObject::SetPos)
-            .property("Vel", &MovableObject::GetVel, &MovableObject::SetVel)
-            .property("AngularVel", &MovableObject::GetAngularVel, &MovableObject::SetAngularVel)
-            .property("Radius", &MovableObject::GetRadius)
-            .property("Diameter", &MovableObject::GetDiameter)
-            .property("Scale", &MovableObject::GetScale, &MovableObject::SetScale)
-            .property("EffectRotAngle", &MovableObject::GetEffectRotAngle, &MovableObject::SetEffectRotAngle)
-            .property("GlobalAccScalar", &MovableObject::GetGlobalAccScalar, &MovableObject::SetGlobalAccScalar)
-            .property("AirResistance", &MovableObject::GetAirResistance, &MovableObject::SetAirResistance)
-            .property("AirThreshold", &MovableObject::GetAirThreshold, &MovableObject::SetAirThreshold)
-            .property("Age", &MovableObject::GetAge, &MovableObject::SetAge)
-            .property("Lifetime", &MovableObject::GetLifetime, &MovableObject::SetLifetime)
-            .property("ID", &MovableObject::GetID)
-            .property("UniqueID", &MovableObject::GetUniqueID)
-            .property("RootID", &MovableObject::GetRootID)
-            .property("MOIDFootprint", &MovableObject::GetMOIDFootprint)
-            .property("Sharpness", &MovableObject::GetSharpness, &MovableObject::SetSharpness)
-            .def("GetAltitude", &MovableObject::GetAltitude)
-            .property("AboveHUDPos", &MovableObject::GetAboveHUDPos)
-            .property("HitsMOs", &MovableObject::HitsMOs, &MovableObject::SetToHitMOs)
-            .property("GetsHitByMOs", &MovableObject::GetsHitByMOs, &MovableObject::SetToGetHitByMOs)
-            .property("IgnoresTeamHits", &MovableObject::IgnoresTeamHits, &MovableObject::SetIgnoresTeamHits)
-            .property("IgnoresWhichTeam", &MovableObject::IgnoresWhichTeam)
-			.property("IgnoreTerrain", &MovableObject::IgnoreTerrain, &MovableObject::SetIgnoreTerrain)
-			.def("SetWhichMOToNotHit", &MovableObject::SetWhichMOToNotHit)
-            .property("ToSettle", &MovableObject::ToSettle, &MovableObject::SetToSettle)
-            .property("ToDelete", &MovableObject::ToDelete, &MovableObject::SetToDelete)
-            .def("IsSetToDelete", &MovableObject::IsSetToDelete)
-			.property("MissionCritical", &MovableObject::IsMissionCritical, &MovableObject::SetMissionCritical)
-			.def("IsMissionCritical", &MovableObject::IsMissionCritical)
-			.property("HUDVisible", &MovableObject::GetHUDVisible, &MovableObject::SetHUDVisible)
-            .def("IsGeneric", &MovableObject::IsGeneric)
-            .def("IsActor", &MovableObject::IsActor)
-            .def("IsDevice", &MovableObject::IsDevice)
-            .def("IsHeldDevice", &MovableObject::IsHeldDevice)
-            .def("IsThrownDevice", &MovableObject::IsThrownDevice)
-            .def("IsGold", &MovableObject::IsGold)
-            .def("IsThrownDevice", &MovableObject::IsThrownDevice)
-            .def("HasObject", &MovableObject::HasObject)
-            .def("HasObjectInGroup", &MovableObject::HasObjectInGroup)
-            .def("AddForce", &MovableObject::AddForce)
-            .def("AddAbsForce", &MovableObject::AddAbsForce)
-            .def("AddImpulseForce", &MovableObject::AddImpulseForce)
-            .def("AddAbsImpulseForce", &MovableObject::AddAbsImpulseForce)
-            .def("ClearForces", &MovableObject::ClearForces)
-            .def("ClearImpulseForces", &MovableObject::ClearImpulseForces)
-			.def("GetForcesCount", &MovableObject::GetForcesCount)
-			.def("GetForceVector", &MovableObject::GetForceVector)
-			.def("GetForceOffset", &MovableObject::GetForceOffset)
-			.def("SetForceVector", &MovableObject::SetForceVector)
-			.def("SetForceOffset", &MovableObject::SetForceOffset)
-			.def("GetImpulsesCount", &MovableObject::GetImpulsesCount)
-			.def("GetImpulseVector", &MovableObject::GetImpulseVector)
-			.def("GetImpulseOffset", &MovableObject::GetImpulseOffset)
-			.def("SetImpulseVector", &MovableObject::SetImpulseVector)
-			.def("SetImpulseOffset", &MovableObject::SetImpulseOffset)
-            .property("PinStrength", &MovableObject::GetPinStrength, &MovableObject::SetPinStrength)
-            .def("RestDetection", &MovableObject::RestDetection)
-            .def("NotResting", &MovableObject::NotResting)
-            .def("IsAtRest", &MovableObject::IsAtRest)
-            .def("MoveOutOfTerrain", &MovableObject::MoveOutOfTerrain)
-            .def("RotateOffset", &MovableObject::RotateOffset)
-			.property("DamageOnCollision", &MovableObject::DamageOnCollision, &MovableObject::SetDamageOnCollision)
-			.property("DamageOnPenetration", &MovableObject::DamageOnPenetration, &MovableObject::SetDamageOnPenetration)
-			.property("WoundDamageMultiplier", &MovableObject::WoundDamageMultiplier, &MovableObject::SetWoundDamageMultiplier)
-			.property("HitWhatMOID", &MovableObject::HitWhatMOID)
-			.property("HitWhatTerrMaterial", &MovableObject::HitWhatTerrMaterial)
-			.property("ProvidesPieMenuContext", &MovableObject::ProvidesPieMenuContext, &MovableObject::SetProvidesPieMenuContext)
-			.def_readwrite("PieMenuActor", &MovableObject::m_pPieMenuActor)
-			.property("HitWhatParticleUniqueID", &MovableObject::HitWhatParticleUniqueID),*/
+		g_pSolLuaState->set("UpperBodyState", g_pSolLuaState->create_table_with(
+			"WEAPON_READY", AHuman::UpperBodyState::WEAPON_READY,
+			"AIMING_SHARP", AHuman::UpperBodyState::AIMING_SHARP,
+			"HOLSTERING_BACK", AHuman::UpperBodyState::HOLSTERING_BACK,
+			"HOLSTERING_BELT", AHuman::UpperBodyState::DEHOLSTERING_BELT,
+			"DEHOLSTERING_BACK", AHuman::UpperBodyState::DEHOLSTERING_BACK,
+			"DEHOLSTERING_BELT", AHuman::UpperBodyState::DEHOLSTERING_BELT,
+			"THROWING_PREP", AHuman::UpperBodyState::THROWING_PREP,
+			"THROWING_RELEASE", AHuman::UpperBodyState::THROWING_RELEASE
+		));
+	
+		g_pSolLuaState->set("MovementState", g_pSolLuaState->create_table_with(
+			"NOMOVE", AHuman::MovementState::NOMOVE,
+			"STAND", AHuman::MovementState::STAND,
+			"WALK", AHuman::MovementState::WALK,
+			"CROUCH", AHuman::MovementState::CROUCH,
+			"CRAWL", AHuman::MovementState::CRAWL,
+			"ARMCRAWL", AHuman::MovementState::ARMCRAWL,
+			"CLIMB", AHuman::MovementState::CLIMB,
+			"JUMP", AHuman::MovementState::JUMP,
+			"DISLODGE", AHuman::MovementState::DISLODGE,
+			"MOMENTSTATECOUNT", AHuman::MovementState::MOVEMENTSTATECOUNT
+		));
+			
+		g_pSolLuaState->set("ProneState", g_pSolLuaState->create_table_with(
+			"NOTPRONE", AHuman::ProneState::NOTPRONE,
+			"GOPRONE", AHuman::ProneState::GOPRONE,
+			"PRONE", AHuman::ProneState::PRONE,
+			"PRONESTATECOUNT", AHuman::ProneState::PRONESTATECOUNT
+		));
 
-		/*class_<Material, Entity>("Material")
-			.property("ID", &Material::GetId)
-			.property("Restitution", &Material::GetRestitution)
-			.property("Bounce", &Material::GetRestitution)
-			.property("Friction", &Material::GetFriction)
-			.property("Stickiness", &Material::GetStickiness)
-			.property("Strength", &Material::GetStrength)
-			.property("StructuralIntegrity", &Material::GetStrength)
-			.property("DensityKGPerVolumeL", &Material::GetVolumeDensity)
-			.property("DensityKGPerPixel", &Material::GetPixelDensity)
-			.property("SettleMaterial", &Material::GetSettleMaterial)
-			.property("SpawnMaterial", &Material::GetSpawnMaterial)
-			.property("TransformsInto", &Material::GetSpawnMaterial)
-			.property("IsScrap", &Material::IsScrap),*/
+		g_pSolLuaState->set("Layer", g_pSolLuaState->create_table_with(
+			"FGROUND", AHuman::FGROUND,
+			"BGROUND", AHuman::BGROUND
+		));
 
-        //CONCRETELUABINDING(MOPixel, MovableObject),
-//            .property("Material", &MOPixel::GetMaterial),
-//            .property("Framerate", &MOPixel::GetFramerate, &MOPixel::SetFramerate)
-//            .property("Atom", &MOPixel::GetAtom, &MOPixel:SetAtom)
-//            .property("IsGold", &MOPixel::IsGold),
+		g_pSolLuaState->set("DeviceHandlingState", g_pSolLuaState->create_table_with(
+			"STILL", AHuman::DeviceHandlingState::STILL,
+			"POINTING", AHuman::DeviceHandlingState::POINTING,
+			"SCANNING", AHuman::DeviceHandlingState::SCANNING,
+			"AIMING", AHuman::DeviceHandlingState::AIMING,
+			"FIRING", AHuman::DeviceHandlingState::FIRING,
+			"THROWING", AHuman::DeviceHandlingState::THROWING,
+			"DIGGING", AHuman::DeviceHandlingState::DIGGING
+		));
 
-        /*CONCRETELUABINDING(TerrainObject, SceneObject)
-            .def("GetBitmapOffset", &TerrainObject::GetBitmapOffset)
-            .def("GetBitmapWidth", &TerrainObject::GetBitmapWidth)
-            .def("GetBitmapHeight", &TerrainObject::GetBitmapHeight),*/
+		g_pSolLuaState->set("SweepState", g_pSolLuaState->create_table_with(
+			"NOSWEEP", AHuman::SweepState::NOSWEEP,
+			"SWEEPINGUP", AHuman::SweepState::NOSWEEP,
+			"SWEEPINGPAUSE", AHuman::SweepState::NOSWEEP,
+			"SWEEPINGDOWN", AHuman::SweepState::NOSWEEP,
+			"SWEEMDOWNPAUSE", AHuman::SweepState::NOSWEEP
+		));
 
-        /*ABSTRACTLUABINDING(MOSprite, MovableObject)
-            .enum_("SpriteAnimMode")
-            [
-                value("NOANIM", 0),
-                value("ALWAYSLOOP", 1),
-                value("ALWAYSRANDOM", 2),
-                value("ALWAYSPINGPONG", 3),
-                value("LOOPWHENMOVING", 4),
-                value("LOOPWHENOPENCLOSE", 5),
-                value("PINGPONGOPENCLOSE", 6)
-            ]
-            .property("Diameter", &MOSprite::GetDiameter)
-            .property("BoundingBox", &MOSprite::GetBoundingBox)
-            .property("FrameCount", &MOSprite::GetFrameCount)
-            .property("SpriteOffset", &MOSprite::GetSpriteOffset, &MOSprite::SetSpriteOffset)
-            .property("HFlipped", &MOSprite::IsHFlipped, &MOSprite::SetHFlipped)
-            .property("RotAngle", &MOSprite::GetRotAngle, &MOSprite::SetRotAngle)
-            .property("AngularVel", &MOSprite::GetAngularVel, &MOSprite::SetAngularVel)
-            .property("Frame", &MOSprite::GetFrame, &MOSprite::SetFrame)
-            .property("SpriteAnimMode", &MOSprite::GetSpriteAnimMode, &MOSprite::SetSpriteAnimMode)
-            .property("SpriteAnimDuration", &MOSprite::GetSpriteAnimDuration, &MOSprite::SetSpriteAnimDuration)
-            .def("SetNextFrame", &MOSprite::SetNextFrame)
-            .def("IsTooFast", &MOSprite::IsTooFast)
-            .def("IsOnScenePoint", &MOSprite::IsOnScenePoint)
-            .def("RotateOffset", &MOSprite::RotateOffset)
-            .def("UnRotateOffset", &MOSprite::UnRotateOffset)
-            .def("GetSpriteWidth", &MOSprite::GetSpriteWidth)
-            .def("GetSpriteHeight", &MOSprite::GetSpriteHeight)
-			.def("SetEntryWound", &MOSprite::SetEntryWound)
-			.def("SetExitWound", &MOSprite::SetExitWound)
-			.def("GetEntryWoundPresetName", &MOSprite::GetEntryWoundPresetName)
-			.def("GetExitWoundPresetName", &MOSprite::GetExitWoundPresetName),*/
+		g_pSolLuaState->set("DigState", g_pSolLuaState->create_table_with(
+			"NOTDIGGING", AHuman::DigState::NOTDIGGING,
+			"PREDIG", AHuman::DigState::PREDIG,
+			"STARTDIG", AHuman::DigState::STARTDIG,
+			"TUNNELING", AHuman::DigState::TUNNELING,
+			"FINISHINGDIG", AHuman::DigState::FINISHINGDIG,
+			"PAUSEDIGGER", AHuman::DigState::PAUSEDIGGER
+		));
 
-        /*CONCRETELUABINDING(MOSParticle, MOSprite)
-            .property("Framerate", &MOSParticle::GetFramerate, &MOSParticle::SetFramerate)
-            .property("IsGold", &MOSParticle::IsGold),*/
+		g_pSolLuaState->set("JumpState", g_pSolLuaState->create_table_with(
+			"NOTJUMPING", AHuman::JumpState::NOTJUMPING,
+			"FORWARDJUMP", AHuman::JumpState::FORWARDJUMP,
+			"PREJUMP", AHuman::JumpState::PREUPJUMP,
+			"UPJUMP", AHuman::JumpState::UPJUMP,
+			"APEXJUMP", AHuman::JumpState::APEXJUMP,
+			"LANDJUMP", AHuman::JumpState::LANDJUMP
+		));
 
-        /*CONCRETELUABINDING(MOSRotating, MOSprite)
-            .property("RecoilForce", &MOSRotating::GetRecoilForce)
-            .property("RecoilOffset", &MOSRotating::GetRecoilOffset)
-            .property("IsGold", &MOSRotating::IsGold)
-			.property("TravelImpulse", &MOSRotating::GetTravelImpulse, &MOSRotating::SetTravelImpulse)
-			.property("GibWoundLimit", &MOSRotating::GetGibWoundLimit, &MOSRotating::SetGibWoundLimit)
-			.property("GibImpulseLimit", &MOSRotating::GetGibImpulseLimit, &MOSRotating::SetGibImpulseLimit)
-			.property("DamageMultiplier", &MOSRotating::GetDamageMultiplier, &MOSRotating::SetDamageMultiplier)
-			.property("WoundCount", &MOSRotating::GetWoundCount)
-            .def_readwrite("Wounds", &MOSRotating::m_Emitters, luabind::return_stl_iterator())
-            .def("AddRecoil", &MOSRotating::AddRecoil)
-            .def("SetRecoil", &MOSRotating::SetRecoil)
-            .def("IsRecoiled", &MOSRotating::IsRecoiled)
-            .def("EnableDeepCheck", &MOSRotating::EnableDeepCheck)
-            .def("ForceDeepCheck", &MOSRotating::ForceDeepCheck)
-            .def("GibThis", &MOSRotating::GibThis)
-            // Free function bound as member function to emulate default variables
-            .def("GibThis", &GibThis)
-            .def("MoveOutOfTerrain", &MOSRotating::MoveOutOfTerrain)
-            .def("ApplyForces", &MOSRotating::ApplyForces)
-            .def("ApplyImpulses", &MOSRotating::ApplyImpulses)
-            .def("AttachEmitter", &MOSRotating::AttachEmitter, luabind::adopt_policy<2>())
-			.def("RemoveWounds", &MOSRotating::RemoveWounds)
-            .def("IsOnScenePoint", &MOSRotating::IsOnScenePoint)
-            .def("EraseFromTerrain", &MOSRotating::EraseFromTerrain)
-            .def("GetStringValue", &MOSRotating::GetStringValue)
-            .def("GetNumberValue", &MOSRotating::GetNumberValue)
-            .def("GetObjectValue", &MOSRotating::GetObjectValue)
-            .def("SetStringValue", &MOSRotating::SetStringValue)
-            .def("SetNumberValue", &MOSRotating::SetNumberValue)
-            .def("SetObjectValue", &MOSRotating::SetObjectValue)
-            .def("RemoveStringValue", &MOSRotating::RemoveStringValue)
-            .def("RemoveNumberValue", &MOSRotating::RemoveNumberValue)
-            .def("RemoveObjectValue", &MOSRotating::RemoveObjectValue)
-            .def("StringValueExists", &MOSRotating::StringValueExists)
-            .def("NumberValueExists", &MOSRotating::NumberValueExists)
-            .def("ObjectValueExists", &MOSRotating::ObjectValueExists)
-			.def_readwrite("Attachables", &MOSRotating::m_Attachables, luabind::return_stl_iterator())
-			.def_readwrite("Emitters", &MOSRotating::m_Emitters, luabind::return_stl_iterator()),*/
+		Bind["Head"] = sol::property(&AHuman::GetHead);
+		Bind["FGArm"] = sol::property(&AHuman::GetFGArm);
+		Bind["BGArm"] = sol::property(&AHuman::GetBGArm);
+		Bind["FGLeg"] = sol::property(&AHuman::GetFGLeg);
+		Bind["BGLeg"] = sol::property(&AHuman::GetBGLeg);
+		Bind["Jetpack"] = sol::property(&AHuman::GetJetpack);
+		Bind["JetTimeTotal"] = sol::property(&AHuman::GetJetTimeTotal, &AHuman::SetJetTimeTotal);
+		Bind["JetTimeLeft"] = sol::property(&AHuman::GetJetTimeLeft, &AHuman::SetJetTimeLeft);
+		Bind["EquipFirearm"] = &AHuman::EquipFirearm;
+		Bind["EquipThrowable"] = &AHuman::EquipThrowable;
+		Bind["EquipDiggingTool"] = &AHuman::EquipDiggingTool;
+		Bind["EquipShield"] = &AHuman::EquipShield;
+		Bind["EquipShieldInBGArm"] = &AHuman::EquipShieldInBGArm;
+		Bind["EquipDeviceInGroup"] = &AHuman::EquipDeviceInGroup;
+		Bind["EquipNamedDevice"] = &AHuman::EquipNamedDevice;
+		Bind["EquipLoadedFirearmInGroup"] = &AHuman::EquipLoadedFirearmInGroup;
+		Bind["UnequipBGArm"] = &AHuman::UnequipBGArm;
+		Bind["EquippedItem"] = sol::property(&AHuman::GetEquippedItem);
+		Bind["EquippedBGItem"] = sol::property(&AHuman::GetEquippedBGItem);
+		Bind["FirearmIsReady"] = sol::property(&AHuman::FirearmIsReady);
+		Bind["ThrowableIsReady"] = sol::property(&AHuman::ThrowableIsReady);
+		Bind["FirearmIsEmpty"] = sol::property(&AHuman::FirearmIsEmpty);
+		Bind["FirearmNeedsReload"] = sol::property(&AHuman::FirearmNeedsReload);
+		Bind["FirearmIsSemiAuto"] = sol::property(&AHuman::FirearmIsSemiAuto);
+		Bind["FirearmActivationDelay"] = sol::property(&AHuman::FirearmActivationDelay);
+		Bind["ReloadFirearm"] = &AHuman::ReloadFirearm;
+		Bind["IsWithinRange"] = &AHuman::IsWithinRange;
+		Bind["Look"] = &AHuman::Look;
+		Bind["LookForGold"] = &AHuman::LookForGold;
+		Bind["LookForMOs"] = &AHuman::LookForMOs;
+		Bind["IsOnScenePoint"] = &AHuman::IsOnScenePoint;
+		Bind["LimbPathPushForce"] = sol::property(&AHuman::GetLimbPathPushForce, &AHuman::SetLimbPathPushForce);
+		Bind["GetLimbPathSpeed"] = &AHuman::GetLimbPathSpeed;
+		Bind["SetLimbPathSpeed"] = &AHuman::SetLimbPathSpeed;
+	}
 
-        /*CONCRETELUABINDING(Attachable, MOSRotating)
-            .def("GetRootParent", (MovableObject * (Attachable::*)())&Attachable::GetRootParent)
-            .def("GetRootParent", (const MovableObject * (Attachable::*)() const)&Attachable::GetRootParent)
-			.def("GetParent", (MovableObject * (Attachable::*)())&Attachable::GetParent)
-			.def("GetParent", (const MovableObject * (Attachable::*)() const)&Attachable::GetParent)
-			.property("ParentOffset", &Attachable::GetParentOffset, &Attachable::SetParentOffset)
-            .property("JointOffset", &Attachable::GetJointOffset, &Attachable::SetJointOffset)
-            .property("JointStiffness", &Attachable::GetJointStiffness, &Attachable::SetJointStiffness)
-            .property("JointStrength", &Attachable::GetJointStrength, &Attachable::SetJointStrength)
-            .property("RotTarget", &Attachable::GetRotTarget, &Attachable::SetRotTarget)
-            .property("AtomSubgroupID", &Attachable::GetAtomSubgroupID, &Attachable::SetAtomSubgroupID)
-            .property("OnlyLinearForces", &Attachable::GetOnlyLinearForces, &Attachable::SetOnlyLinearForces)
-            .def("IsAttached", &Attachable::IsAttached)
-            .def("IsAttachedTo", &Attachable::IsAttachedTo)
-            .def("IsDrawnAfterParent", &Attachable::IsDrawnAfterParent)
-            .def("Attach", (void (Attachable::*)(MOSRotating *))&Attachable::Attach)
-            .def("Attach", (void (Attachable::*)(MOSRotating *, const Vector &))&Attachable::Attach)
-            .def("Detach", &Attachable::Detach)
-            .def("TransferJointForces", &Attachable::TransferJointForces)
-            .def("TransferJointImpulses", &Attachable::TransferJointImpulses)
-            .def("CollectDamage", &Attachable::CollectDamage)
-			.property("InheritsRotAngle", &Attachable::InheritsRotAngle, &Attachable::SetInheritsRotAngle),*/
+	{
+		/*CONCRETELUABINDING(ACrab, Actor)
+			.enum_("MovementState")
+			[
+				value("STAND", 0),
+				value("WALK", 1),
+				value("JUMP", 2),
+				value("DISLODGE", 3),
+				value("MOMENTSTATECOUNT", 4)
+			]
+			.enum_("Side")
+			[
+				value("LEFTSIDE", 0),
+				value("RIGHTSIDE", 1),
+				value("SIDECOUNT", 2)
+			]
+			.enum_("Layer")
+			[
+				value("FGROUND", 0),
+				value("BGROUND", 1)
+			]
+			.enum_("DeviceHandlingState")
+			[
+				value("STILL", 0),
+				value("POINTING", 1),
+				value("SCANNING", 2),
+				value("AIMING", 3),
+				value("FIRING", 4),
+				value("THROWING", 5),
+				value("DIGGING", 6)
+			]
+			.enum_("SweepState")
+			[
+				value("NOSWEEP", 0),
+				value("SWEEPINGUP", 1),
+				value("SWEEPINGPAUSE", 2),
+				value("SWEEPINGDOWN", 3),
+				value("SWEEMDOWNPAUSE", 4)
+			]
+			.enum_("DigState")
+			[
+				value("NOTDIGGING", 0),
+				value("PREDIG", 1),
+				value("STARTDIG", 2),
+				value("TUNNELING", 3),
+				value("FINISHINGDIG", 4),
+				value("PAUSEDIGGER", 5)
+			]
+			.enum_("JumpState")
+			[
+				value("NOTJUMPING", 0),
+				value("FORWARDJUMP", 1),
+				value("PREJUMP", 2),
+				value("UPJUMP", 3),
+				value("APEXJUMP", 4),
+				value("LANDJUMP", 5)
+			]
+			.def(constructor<>())
+			.property("Turret", &ACrab::GetTurret)
+			.property("LFGLeg", &ACrab::GetLFGLeg)
+			.property("LBGLeg", &ACrab::GetLBGLeg)
+			.property("RFGLeg", &ACrab::GetRFGLeg)
+			.property("RBGLeg", &ACrab::GetRBGLeg)
+			.property("Jetpack", &ACrab::GetJetpack)
+			.property("JetTimeTotal", &ACrab::GetJetTimeTotal, &ACrab::SetJetTimeTotal)
+			.property("JetTimeLeft", &ACrab::GetJetTimeLeft)
+			.property("EquippedItem", &ACrab::GetEquippedItem)
+			.property("FirearmIsReady", &ACrab::FirearmIsReady)
+			.property("FirearmIsEmpty", &ACrab::FirearmIsEmpty)
+			.property("FirearmNeedsReload", &ACrab::FirearmNeedsReload)
+			.property("FirearmIsSemiAuto", &ACrab::FirearmIsSemiAuto)
+			.property("FirearmActivationDelay", &ACrab::FirearmActivationDelay)
+			.def("ReloadFirearm", &ACrab::ReloadFirearm)
+			.def("IsWithinRange", &ACrab::IsWithinRange)
+			.def("Look", &ACrab::Look)
+			.def("LookForMOs", &ACrab::LookForMOs)
+			.def("IsOnScenePoint", &ACrab::IsOnScenePoint)
+			.property("LimbPathPushForce", &ACrab::GetLimbPathPushForce, &ACrab::SetLimbPathPushForce)
+			.def("GetLimbPathSpeed", &ACrab::GetLimbPathSpeed)
+			.def("SetLimbPathSpeed", &ACrab::SetLimbPathSpeed),*/
 
-		/*ABSTRACTLUABINDING(Emission, Entity)
-			.property("ParticlesPerMinute", &Emission::GetRate, &Emission::SetRate)
-			.property("MinVelocity", &Emission::GetMinVelocity, &Emission::SetMinVelocity)
-			.property("MaxVelocity", &Emission::GetMaxVelocity, &Emission::SetMaxVelocity)
-			.property("PushesEmitter", &Emission::PushesEmitter, &Emission::SetPushesEmitter)
-			.property("LifeVariation", &Emission::GetLifeVariation, &Emission::SetLifeVariation)
-			.property("BurstSize", &Emission::GetBurstSize, &Emission::SetBurstSize)
-			.property("Spread", &Emission::GetSpread, &Emission::SetSpread)
-			.property("Offset", &Emission::GetOffset, &Emission::SetOffset)
-			.def("ResetEmissionTimers", &Emission::ResetEmissionTimers),*/
+		CONCRETELUABINDING_SOL(ACrab, Actor)
 
-        /*CONCRETELUABINDING(AEmitter, Attachable)
-            .def("IsEmitting", &AEmitter::IsEmitting)
-            .def("EnableEmission", &AEmitter::EnableEmission)
-            .property("BurstScale", &AEmitter::GetBurstScale, &AEmitter::SetBurstScale)
-            .property("EmitAngle", &AEmitter::GetEmitAngle, &AEmitter::SetEmitAngle)
-            .property("GetThrottle", &AEmitter::GetThrottle, &AEmitter::SetThrottle)
-            .property("Throttle", &AEmitter::GetThrottle, &AEmitter::SetThrottle)
-            .property("BurstSpacing", &AEmitter::GetBurstSpacing, &AEmitter::SetBurstSpacing)
-			.property("BurstDamage", &AEmitter::GetBurstDamage, &AEmitter::SetBurstDamage)
-			.property("EmitterDamageMultiplier", &AEmitter::GetEmitterDamageMultiplier, &AEmitter::SetEmitterDamageMultiplier)
-			.property("EmitCountLimit", &AEmitter::GetEmitCountLimit, &AEmitter::SetEmitCountLimit)
-			.property("EmitDamage", &AEmitter::GetEmitDamage, &AEmitter::SetEmitDamage)
-			.property("FlashScale", &AEmitter::GetFlashScale, &AEmitter::SetFlashScale)
-			.def("GetEmitVector", &AEmitter::GetEmitVector)
-            .def("GetRecoilVector", &AEmitter::GetRecoilVector)
-            .def("EstimateImpulse", &AEmitter::EstimateImpulse)
-            .def("TriggerBurst", &AEmitter::TriggerBurst)
-            .def("IsSetToBurst", &AEmitter::IsSetToBurst)
-            .def("CanTriggerBurst", &AEmitter::CanTriggerBurst)
-			.def_readwrite("Emissions", &AEmitter::m_EmissionList, luabind::return_stl_iterator()),*/
+		g_pSolLuaState->set("MovementState", g_pSolLuaState->create_table_with(
+			"STAND", ACrab::MovementState::STAND,
+			"WALK", ACrab::MovementState::WALK,
+			"JUMP", ACrab::MovementState::JUMP,
+			"DISLODGE", ACrab::MovementState::DISLODGE,
+			"MOMENTSTATECOUNT", ACrab::MovementState::MOVEMENTSTATECOUNT
+		));
 
+		g_pSolLuaState->set("Side", g_pSolLuaState->create_table_with(
+			"LEFTSIDE", ACrab::LEFTSIDE,
+			"RIGHTSIDE", ACrab::RIGHTSIDE,
+			"SIDECOUNT", ACrab::SIDECOUNT
+		));
 
-        /*CONCRETELUABINDING(Actor, MOSRotating)
-            .enum_("Status")
-            [
-                value("STABLE", 0),
-                value("UNSTABLE", 1),
-                value("INACTIVE", 2),
-                value("DYING", 3),
-                value("DEAD", 4)
-            ]
-            .enum_("AIMode")
-            [
-                value("AIMODE_NONE", 0),
-                value("AIMODE_SENTRY", 1),
-                value("AIMODE_PATROL", 2),
-                value("AIMODE_GOTO", 3),
-                value("AIMODE_BRAINHUNT", 4),
-                value("AIMODE_GOLDDIG", 5),
-                value("AIMODE_RETURN", 6),
-                value("AIMODE_STAY", 7),
-                value("AIMODE_SCUTTLE", 8),
-                value("AIMODE_DELIVER", 9),
-                value("AIMODE_BOMB", 10),
-                value("AIMODE_SQUAD", 11),
-                value("AIMODE_COUNT", 12)
-            ]
-            .enum_("ActionState")
-            [
-                value("MOVING", 0),
-                value("MOVING_FAST", 1),
-                value("FIRING", 2),
-                value("ActionStateCount", 3)
-            ]
-            .enum_("AimState")
-            [
-                value("AIMSTILL", 0),
-                value("AIMUP", 1),
-                value("AIMDOWN", 2),
-                value("AimStateCount", 3)
-            ]
-            .enum_("LateralMoveState")
-            [
-                value("LAT_STILL", 0),
-                value("LAT_LEFT", 1),
-                value("LAT_RIGHT", 2)
-            ]
-            .enum_("ObstacleState")
-            [
-                value("PROCEEDING", 0),
-                value("BACKSTEPPING", 1),
-                value("DIGPAUSING", 2),
-                value("JUMPING", 3),
-                value("SOFTLANDING", 4)
-            ]
-            .enum_("TeamBlockState")
-            [
-                value("NOTBLOCKED", 0),
-                value("BLOCKED", 1),
-                value("IGNORINGBLOCK", 2),
-                value("FOLLOWWAIT", 3)
-            ]
-            .def(constructor<>())
-            .def("GetController", &Actor::GetController)
-            .def("IsPlayerControlled", &Actor::IsPlayerControlled)
-            .def("IsControllable", &Actor::IsControllable)
-            .def("SetControllerMode", &Actor::SetControllerMode)
-            .def("SwapControllerModes", &Actor::SwapControllerModes)
-			.property("ImpulseDamageThreshold", &Actor::GetTravelImpulseDamage, &Actor::SetTravelImpulseDamage)
-            .property("Status", &Actor::GetStatus, &Actor::SetStatus)
-            .property("Health", &Actor::GetHealth, &Actor::SetHealth)
-            .property("MaxHealth", &Actor::GetMaxHealth, &Actor::SetMaxHealth)
-            .property("GoldCarried", &Actor::GetGoldCarried, &Actor::SetGoldCarried)
-            .property("AimRange", &Actor::GetAimRange, &Actor::SetAimRange)
-            .def("GetAimAngle", &Actor::GetAimAngle)
-            .def("SetAimAngle", &Actor::SetAimAngle)
-            .def("HasObject", &Actor::HasObject)
-            .def("HasObjectInGroup", &Actor::HasObjectInGroup)
-            .property("CPUPos", &Actor::GetCPUPos)
-            .property("EyePos", &Actor::GetEyePos)
-            .property("ViewPoint", &Actor::GetViewPoint, &Actor::SetViewPoint)
-            .property("Height", &Actor::GetHeight)
-            .def("IsWithinRange", &Actor::IsWithinRange)
-            .def("AddHealth", &Actor::AddHealth)
-            .def("IsStatus", &Actor::IsStatus)
-            .def("IsDead", &Actor::IsDead)
-            .def("FacingAngle", &Actor::FacingAngle)
-            .property("AIMode", &Actor::GetAIMode, &Actor::SetAIMode)
-			.property("DeploymentID", &Actor::GetDeploymentID)
-			.def("AddAISceneWaypoint", &Actor::AddAISceneWaypoint)
-            .def("AddAIMOWaypoint", &Actor::AddAIMOWaypoint)
-            .def("ClearAIWaypoints", &Actor::ClearAIWaypoints)
-            .def("GetLastAIWaypoint", &Actor::GetLastAIWaypoint)
-            .def("GetAIMOWaypointID", &Actor::GetAIMOWaypointID)
-            .def("GetWaypointListSize", &Actor::GetWaypointsSize)
-            .def("ClearMovePath", &Actor::ClearMovePath)
-            .def("AddToMovePathBeginning", &Actor::AddToMovePathBeginning)
-            .def("AddToMovePathEnd", &Actor::AddToMovePathEnd)
-            .def("RemoveMovePathBeginning", &Actor::RemoveMovePathBeginning)
-            .def("RemoveMovePathEnd", &Actor::RemoveMovePathEnd)
-            .property("Perceptiveness", &Actor::GetPerceptiveness, &Actor::SetPerceptiveness)
-            .def("AddInventoryItem", &Actor::AddInventoryItem, luabind::adopt_policy<2>())
-            .def("RemoveInventoryItem", &Actor::RemoveInventoryItem)
-            .def("SwapNextInventory", &Actor::SwapNextInventory)
-            .def("SwapPrevInventory", &Actor::SwapPrevInventory)
-            .def("DropAllInventory", &Actor::DropAllInventory)
-            .property("InventorySize", &Actor::GetInventorySize)
-            .def("IsInventoryEmpty", &Actor::IsInventoryEmpty)
-            .property("MaxMass", &Actor::GetMaxMass)
-            .def("FlashWhite", &Actor::FlashWhite)
-            .def("DrawWaypoints", &Actor::DrawWaypoints)
-            .def("SetMovePathToUpdate", &Actor::SetMovePathToUpdate)
-            .def("UpdateMovePath", &Actor::UpdateMovePath)
-            .property("MovePathSize", &Actor::GetMovePathSize)
-            .def_readwrite("MOMoveTarget", &Actor::m_pMOMoveTarget)
-            .def_readwrite("MovePath", &Actor::m_MovePath, luabind::return_stl_iterator())
-            .def_readwrite("Inventory", &Actor::m_Inventory, luabind::return_stl_iterator())
-            .def("SetAlarmPoint", &Actor::AlarmPoint)
-            .def("GetAlarmPoint", &Actor::GetAlarmPoint)
-            .property("AimDistance", &Actor::GetAimDistance, &Actor::SetAimDistance)
-			.property("SightDistance", &Actor::GetSightDistance, &Actor::SetSightDistance)
-			.property("TotalWoundCount", &Actor::GetTotalWoundCount)
-			.property("TotalWoundLimit", &Actor::GetTotalWoundLimit)
-            .def("RemoveAnyRandomWounds", &Actor::RemoveAnyRandomWounds),*/
+		g_pSolLuaState->set("Layer", g_pSolLuaState->create_table_with(
+			"FGROUND", ACrab::FGROUND,
+			"BGROUND", ACrab::BGROUND
+		));
 
-        CONCRETELUABINDING(ADoor, Actor)
-			.enum_("DooorState")
+		g_pSolLuaState->set("DeviceHandlingState", g_pSolLuaState->create_table_with(
+			"STILL", ACrab::DeviceHandlingState::STILL,
+			"POINTING", ACrab::DeviceHandlingState::POINTING,
+			"SCANNING", ACrab::DeviceHandlingState::SCANNING,
+			"AIMING", ACrab::DeviceHandlingState::AIMING,
+			"FIRING", ACrab::DeviceHandlingState::FIRING,
+			"THROWING", ACrab::DeviceHandlingState::THROWING,
+			"DIGGING", ACrab::DeviceHandlingState::DIGGING
+		));
+				
+		g_pSolLuaState->set("SweepState", g_pSolLuaState->create_table_with(
+			"NOSWEEP", ACrab::SweepState::NOSWEEP,
+			"SWEEPINGUP", ACrab::SweepState::SWEEPINGUP,
+			"SWEEPINGPAUSE", ACrab::SweepState::SWEEPUPPAUSE,
+			"SWEEPINGDOWN", ACrab::SweepState::SWEEPINGDOWN,
+			"SWEEMDOWNPAUSE", ACrab::SweepState::SWEEPDOWNPAUSE
+		));
+
+		g_pSolLuaState->set("DigState", g_pSolLuaState->create_table_with(
+			"NOTDIGGING", ACrab::DigState::NOTDIGGING,
+			"PREDIG", ACrab::DigState::PREDIG,
+			"STARTDIG", ACrab::DigState::STARTDIG,
+			"TUNNELING", ACrab::DigState::TUNNELING,
+			"FINISHINGDIG", ACrab::DigState::FINISHINGDIG,
+			"PAUSEDIGGER", ACrab::DigState::PAUSEDIGGER
+		));
+
+		g_pSolLuaState->set("JumpState", g_pSolLuaState->create_table_with(
+			"NOTJUMPING", ACrab::JumpState::NOTJUMPING,
+			"FORWARDJUMP", ACrab::JumpState::FORWARDJUMP,
+			"PREJUMP", ACrab::JumpState::PREUPJUMP,
+			"UPJUMP", ACrab::JumpState::UPJUMP,
+			"APEXJUMP", ACrab::JumpState::APEXJUMP,
+			"LANDJUMP", ACrab::JumpState::LANDJUMP
+		));
+
+		Bind["Turret"] = sol::property(&ACrab::GetTurret);
+		Bind["LFGLeg"] = sol::property(&ACrab::GetLFGLeg);
+		Bind["LBGLeg"] = sol::property(&ACrab::GetLBGLeg);
+		Bind["RFGLeg"] = sol::property(&ACrab::GetRFGLeg);
+		Bind["RBGLeg"] = sol::property(&ACrab::GetRBGLeg);
+		Bind["Jetpack"] = sol::property(&ACrab::GetJetpack);
+		Bind["JetTimeTotal"] = sol::property(&ACrab::GetJetTimeTotal, &ACrab::SetJetTimeTotal);
+		Bind["JetTimeLeft"] = sol::property(&ACrab::GetJetTimeLeft);
+		Bind["EquippedItem"] = sol::property(&ACrab::GetEquippedItem);
+		Bind["FirearmIsReady"] = sol::property(&ACrab::FirearmIsReady);
+		Bind["FirearmIsEmpty"] = sol::property(&ACrab::FirearmIsEmpty);
+		Bind["FirearmNeedsReload"] = sol::property(&ACrab::FirearmNeedsReload);
+		Bind["FirearmIsSemiAuto"] = sol::property(&ACrab::FirearmIsSemiAuto);
+		Bind["FirearmActivationDelay"] = sol::property(&ACrab::FirearmActivationDelay);
+		Bind["ReloadFirearm"] = &ACrab::ReloadFirearm;
+		Bind["IsWithinRange"] = &ACrab::IsWithinRange;
+		Bind["Look"] = &ACrab::Look;
+		Bind["LookForMOs"] = &ACrab::LookForMOs;
+		Bind["IsOnScenePoint"] = &ACrab::IsOnScenePoint;
+		Bind["LimbPathPushForce"] = sol::property(&ACrab::GetLimbPathPushForce, &ACrab::SetLimbPathPushForce);
+		Bind["GetLimbPathSpeed"] = &ACrab::GetLimbPathSpeed;
+		Bind["SetLimbPathSpeed"] = &ACrab::SetLimbPathSpeed;
+	}
+
+	{
+		/*ABSTRACTLUABINDING(ACraft, Actor)
+			.enum_("HatchState")
 			[
 				value("CLOSED", 0),
 				value("OPENING", 1),
 				value("OPEN", 2),
-				value("CLOSING", 3)
+				value("CLOSING", 3),
+				value("HatchStateCount", 4)
 			]
-            .property("Door", &ADoor::GetDoor)
-			.def("GetDoorState", &ADoor::GetDoorState)
-			.def("OpenDoor", &ADoor::OpenDoor)
-			.def("CloseDoor", &ADoor::CloseDoor)
-			.def("SetClosedByDefault", &ADoor::SetClosedByDefault),
+			.enum_("Side")
+			[
+				value("RIGHT", 0),
+				value("LEFT", 1)
+			]
+			.enum_("CraftDeliverySequence")
+			[
+				value("FALL", 0),
+				value("LAND", 1),
+				value("STANDBY", 2),
+				value("UNLOAD", 3),
+				value("LAUNCH", 4),
+				value("UNSTICK", 5)
+			]
+			.enum_("AltitudeMoveState")
+			[
+				value("HOVER", 0),
+				value("DESCEND", 1),
+				value("ASCEND", 2)
+			]
+			.def("OpenHatch", &ACraft::OpenHatch)
+			.def("CloseHatch", &ACraft::CloseHatch)
+			.property("HatchState", &ACraft::GetHatchState)
+			.property("MaxPassengers", &ACraft::GetMaxPassengers)
+			.property("DeliveryDelayMultiplier", &ACraft::GetDeliveryDelayMultiplier),*/
 
-		ABSTRACTLUABINDING(Arm, Attachable)
-			.property("IdleOffset", &Arm::GetIdleOffset, &Arm::SetIdleOffset)
-			.property("HandPos", &Arm::GetHandPos, &Arm::SetHandPos),
 
-        CONCRETELUABINDING(AHuman, Actor)
-            .enum_("UpperBodyState")
-            [
-                value("WEAPON_READY", 0),
-                value("AIMING_SHARP", 1),
-                value("HOLSTERING_BACK", 2),
-                value("HOLSTERING_BELT", 3),
-                value("DEHOLSTERING_BACK", 4),
-                value("DEHOLSTERING_BELT", 5),
-                value("THROWING_PREP", 6),
-                value("THROWING_RELEASE", 7)
-            ]
-            .enum_("MovementState")
-            [
-                value("NOMOVE", 0),
-                value("STAND", 1),
-                value("WALK", 2),
-                value("CROUCH", 3),
-                value("CRAWL", 4),
-                value("ARMCRAWL", 5),
-                value("CLIMB", 6),
-                value("JUMP", 7),
-                value("DISLODGE", 8),
-                value("MOMENTSTATECOUNT", 9)
-            ]
-            .enum_("ProneState")
-            [
-                value("NOTPRONE", 0),
-                value("GOPRONE", 1),
-                value("PRONE", 2),
-                value("PRONESTATECOUNT", 3)
-            ]
-            .enum_("Layer")
-            [
-                value("FGROUND", 0),
-                value("BGROUND", 1)
-            ]
-            .enum_("DeviceHandlingState")
-            [
-                value("STILL", 0),
-                value("POINTING", 1),
-                value("SCANNING", 2),
-                value("AIMING", 3),
-                value("FIRING", 4),
-                value("THROWING", 5),
-                value("DIGGING", 6)
-            ]
-            .enum_("SweepState")
-            [
-                value("NOSWEEP", 0),
-                value("SWEEPINGUP", 1),
-                value("SWEEPINGPAUSE", 2),
-                value("SWEEPINGDOWN", 3),
-                value("SWEEMDOWNPAUSE", 4)
-            ]
-            .enum_("DigState")
-            [
-                value("NOTDIGGING", 0),
-                value("PREDIG", 1),
-                value("STARTDIG", 2),
-                value("TUNNELING", 3),
-                value("FINISHINGDIG", 4),
-                value("PAUSEDIGGER", 5)
-            ]
-            .enum_("JumpState")
-            [
-                value("NOTJUMPING", 0),
-                value("FORWARDJUMP", 1),
-                value("PREJUMP", 2),
-                value("UPJUMP", 3),
-                value("APEXJUMP", 4),
-                value("LANDJUMP", 5)
-            ]
-            .def(constructor<>())
-            .property("Head", &AHuman::GetHead)
-            .property("FGArm", &AHuman::GetFGArm)
-            .property("BGArm", &AHuman::GetBGArm)
-            .property("FGLeg", &AHuman::GetFGLeg)
-            .property("BGLeg", &AHuman::GetBGLeg)
-            .property("Jetpack", &AHuman::GetJetpack)
-            .property("JetTimeTotal", &AHuman::GetJetTimeTotal, &AHuman::SetJetTimeTotal)
-            .property("JetTimeLeft", &AHuman::GetJetTimeLeft, &AHuman::SetJetTimeLeft)
-            .def("EquipFirearm", &AHuman::EquipFirearm)
-            .def("EquipThrowable", &AHuman::EquipThrowable)
-            .def("EquipDiggingTool", &AHuman::EquipDiggingTool)
-            .def("EquipShield", &AHuman::EquipShield)
-            .def("EquipShieldInBGArm", &AHuman::EquipShieldInBGArm)
-            .def("EquipDeviceInGroup", &AHuman::EquipDeviceInGroup)
-            .def("EquipNamedDevice", &AHuman::EquipNamedDevice)
-            .def("EquipLoadedFirearmInGroup", &AHuman::EquipLoadedFirearmInGroup)
-            .def("UnequipBGArm", &AHuman::UnequipBGArm)
-            .property("EquippedItem", &AHuman::GetEquippedItem)
-            .property("EquippedBGItem", &AHuman::GetEquippedBGItem)
-            .property("FirearmIsReady", &AHuman::FirearmIsReady)
-            .property("ThrowableIsReady", &AHuman::ThrowableIsReady)
-            .property("FirearmIsEmpty", &AHuman::FirearmIsEmpty)
-            .property("FirearmNeedsReload", &AHuman::FirearmNeedsReload)
-            .property("FirearmIsSemiAuto", &AHuman::FirearmIsSemiAuto)
-            .property("FirearmActivationDelay", &AHuman::FirearmActivationDelay)
-            .def("ReloadFirearm", &AHuman::ReloadFirearm)
-            .def("IsWithinRange", &AHuman::IsWithinRange)
-            .def("Look", &AHuman::Look)
-            .def("LookForGold", &AHuman::LookForGold)
-            .def("LookForMOs", &AHuman::LookForMOs)
-            .def("IsOnScenePoint", &AHuman::IsOnScenePoint)
-			.property("LimbPathPushForce", &AHuman::GetLimbPathPushForce, &AHuman::SetLimbPathPushForce)
-			.def("GetLimbPathSpeed", &AHuman::GetLimbPathSpeed)
-			.def("SetLimbPathSpeed", &AHuman::SetLimbPathSpeed),
-        
-		CONCRETELUABINDING(ACrab, Actor)
-            .enum_("MovementState")
-            [
-                value("STAND", 0),
-                value("WALK", 1),
-                value("JUMP", 2),
-                value("DISLODGE", 3),
-                value("MOMENTSTATECOUNT", 4)
-            ]
-            .enum_("Side")
-            [
-                value("LEFTSIDE", 0),
-                value("RIGHTSIDE", 1),
-                value("SIDECOUNT", 2)
-            ]
-            .enum_("Layer")
-            [
-                value("FGROUND", 0),
-                value("BGROUND", 1)
-            ]
-            .enum_("DeviceHandlingState")
-            [
-                value("STILL", 0),
-                value("POINTING", 1),
-                value("SCANNING", 2),
-                value("AIMING", 3),
-                value("FIRING", 4),
-                value("THROWING", 5),
-                value("DIGGING", 6)
-            ]
-            .enum_("SweepState")
-            [
-                value("NOSWEEP", 0),
-                value("SWEEPINGUP", 1),
-                value("SWEEPINGPAUSE", 2),
-                value("SWEEPINGDOWN", 3),
-                value("SWEEMDOWNPAUSE", 4)
-            ]
-            .enum_("DigState")
-            [
-                value("NOTDIGGING", 0),
-                value("PREDIG", 1),
-                value("STARTDIG", 2),
-                value("TUNNELING", 3),
-                value("FINISHINGDIG", 4),
-                value("PAUSEDIGGER", 5)
-            ]
-            .enum_("JumpState")
-            [
-                value("NOTJUMPING", 0),
-                value("FORWARDJUMP", 1),
-                value("PREJUMP", 2),
-                value("UPJUMP", 3),
-                value("APEXJUMP", 4),
-                value("LANDJUMP", 5)
-            ]
-            .def(constructor<>())
-            .property("Turret", &ACrab::GetTurret)
-            .property("LFGLeg", &ACrab::GetLFGLeg)
-            .property("LBGLeg", &ACrab::GetLBGLeg)
-            .property("RFGLeg", &ACrab::GetRFGLeg)
-            .property("RBGLeg", &ACrab::GetRBGLeg)
-            .property("Jetpack", &ACrab::GetJetpack)
-            .property("JetTimeTotal", &ACrab::GetJetTimeTotal, &ACrab::SetJetTimeTotal)
-            .property("JetTimeLeft", &ACrab::GetJetTimeLeft)
-            .property("EquippedItem", &ACrab::GetEquippedItem)
-            .property("FirearmIsReady", &ACrab::FirearmIsReady)
-            .property("FirearmIsEmpty", &ACrab::FirearmIsEmpty)
-            .property("FirearmNeedsReload", &ACrab::FirearmNeedsReload)
-            .property("FirearmIsSemiAuto", &ACrab::FirearmIsSemiAuto)
-            .property("FirearmActivationDelay", &ACrab::FirearmActivationDelay)
-            .def("ReloadFirearm", &ACrab::ReloadFirearm)
-            .def("IsWithinRange", &ACrab::IsWithinRange)
-            .def("Look", &ACrab::Look)
-            .def("LookForMOs", &ACrab::LookForMOs)
-            .def("IsOnScenePoint", &ACrab::IsOnScenePoint)
-			.property("LimbPathPushForce", &ACrab::GetLimbPathPushForce, &ACrab::SetLimbPathPushForce)
-			.def("GetLimbPathSpeed", &ACrab::GetLimbPathSpeed)
-			.def("SetLimbPathSpeed", &ACrab::SetLimbPathSpeed),
+			ABSTRACTLUABINDING_SOL(ACraft, Actor)
 
-        ABSTRACTLUABINDING(ACraft, Actor)
-            .enum_("HatchState")
-            [
-                value("CLOSED", 0),
-                value("OPENING", 1),
-                value("OPEN", 2),
-                value("CLOSING", 3),
-                value("HatchStateCount", 4)
-            ]
-            .enum_("Side")
-            [
-                value("RIGHT", 0),
-                value("LEFT", 1)
-            ]
-            .enum_("CraftDeliverySequence")
-            [
-                value("FALL", 0),
-                value("LAND", 1),
-                value("STANDBY", 2),
-                value("UNLOAD", 3),
-                value("LAUNCH", 4),
-                value("UNSTICK", 5)
-            ]
-            .enum_("AltitudeMoveState")
-            [
-                value("HOVER", 0),
-                value("DESCEND", 1),
-                value("ASCEND", 2)
-            ]
-            .def("OpenHatch", &ACraft::OpenHatch)
-            .def("CloseHatch", &ACraft::CloseHatch)
-            .property("HatchState", &ACraft::GetHatchState)
-            .property("MaxPassengers", &ACraft::GetMaxPassengers)
-            .property("DeliveryDelayMultiplier", &ACraft::GetDeliveryDelayMultiplier),
+			g_pSolLuaState->set("HatchState", g_pSolLuaState->create_table_with(
+				"CLOSED", ACraft::HatchState::CLOSED,
+				"OPENING", ACraft::HatchState::OPENING,
+				"OPEN", ACraft::HatchState::OPEN,
+				"CLOSING", ACraft::HatchState::CLOSING,
+				"HatchStateCount", ACraft::HatchState::HatchStateCount
+			));
 
-        CONCRETELUABINDING(ACDropShip, ACraft)
-            .property("RightEngine", &ACDropShip::GetRThruster)
-            .property("LeftEngine", &ACDropShip::GetLThruster)
-            .property("RightThruster", &ACDropShip::GetURThruster)
-            .property("LeftThruster", &ACDropShip::GetULThruster)
+			g_pSolLuaState->set("Side", g_pSolLuaState->create_table_with(
+				"RIGHT", ACraft::RIGHT,
+				"LEFT", ACraft::LEFT
+			));
+				
+			g_pSolLuaState->set("CraftDeliverySequence", g_pSolLuaState->create_table_with(
+				"FALL", ACraft::CraftDeliverySequence::FALL,
+				"LAND", ACraft::CraftDeliverySequence::LAND,
+				"STANDBY", ACraft::CraftDeliverySequence::STANDBY,
+				"UNLOAD", ACraft::CraftDeliverySequence::UNLOAD,
+				"LAUNCH", ACraft::CraftDeliverySequence::LAUNCH,
+				"UNSTICK", ACraft::CraftDeliverySequence::UNSTICK
+			));
+
+			g_pSolLuaState->set("AltitudeMoveState", g_pSolLuaState->create_table_with(
+				"HOVER", ACraft::AltitudeMoveState::HOVER,
+				"DESCEND", ACraft::AltitudeMoveState::DESCEND,
+				"ASCEND", ACraft::AltitudeMoveState::ASCEND
+			));
+			
+			Bind["OpenHatch"] = &ACraft::OpenHatch;
+			Bind["CloseHatch"] = &ACraft::CloseHatch;
+			Bind["HatchState"] = sol::property(&ACraft::GetHatchState);
+			Bind["MaxPassengers"] = sol::property(&ACraft::GetMaxPassengers);
+			Bind["DeliveryDelayMultiplier"] = sol::property(&ACraft::GetDeliveryDelayMultiplier);//*/
+	}
+
+	{
+		/*CONCRETELUABINDING(ACDropShip, ACraft)
+			.property("RightEngine", &ACDropShip::GetRThruster)
+			.property("LeftEngine", &ACDropShip::GetLThruster)
+			.property("RightThruster", &ACDropShip::GetURThruster)
+			.property("LeftThruster", &ACDropShip::GetULThruster)
 			.property("LeftHatch", &ACDropShip::GetLHatch)
 			.property("RightHatch", &ACDropShip::GetRHatch)
 			.property("MaxEngineAngle", &ACDropShip::GetMaxEngineAngle, &ACDropShip::SetMaxEngineAngle)
 			.property("LateralControlSpeed", &ACDropShip::GetLateralControlSpeed, &ACDropShip::SetLateralControlSpeed)
 			.property("LateralControl", &ACDropShip::GetLateralControl)
 			.def("DetectObstacle", &ACDropShip::DetectObstacle)
-            .def("GetAltitude", &ACDropShip::GetAltitude),
+			.def("GetAltitude", &ACDropShip::GetAltitude),//*/
 
-        CONCRETELUABINDING(ACRocket, ACraft)
-            .enum_("LandingGearState")
-            [
-                value("RAISED", 0),
-                value("LOWERED", 1),
-                value("LOWERING", 2),
-                value("RAISING", 3),
-                value("GearStateCount", 4)
-            ]
-			.property("MainEngine", &ACRocket::GetMThruster)
+		CONCRETELUABINDING_SOL(ACDropShip, ACraft)
+
+		Bind["RightEngine"] = sol::property(&ACDropShip::GetRThruster);
+		Bind["LeftEngine"] = sol::property(&ACDropShip::GetLThruster);
+		Bind["RightThruster"] = sol::property(&ACDropShip::GetURThruster);
+		Bind["LeftThruster"] = sol::property(&ACDropShip::GetULThruster);
+		Bind["LeftHatch"] = sol::property(&ACDropShip::GetLHatch);
+		Bind["RightHatch"] = sol::property(&ACDropShip::GetRHatch);
+		Bind["MaxEngineAngle"] = sol::property(&ACDropShip::GetMaxEngineAngle, &ACDropShip::SetMaxEngineAngle);
+		Bind["LateralControlSpeed"] = sol::property(&ACDropShip::GetLateralControlSpeed, &ACDropShip::SetLateralControlSpeed);
+		Bind["LateralControl"] = sol::property(&ACDropShip::GetLateralControl);
+		Bind["DetectObstacle"] = &ACDropShip::DetectObstacle;
+		Bind["GetAltitude"] = &ACDropShip::GetAltitude;//*/
+	}
+
+	{
+		/*CONCRETELUABINDING(ACRocket, ACraft)
+			.enum_("LandingGearState")
+			[
+				value("RAISED", 0),
+				value("LOWERED", 1),
+				value("LOWERING", 2),
+				value("RAISING", 3),
+				value("GearStateCount", 4)
+			]
+		.property("MainEngine", &ACRocket::GetMThruster)
 			.property("LeftEngine", &ACRocket::GetLThruster)
 			.property("RightEngine", &ACRocket::GetRThruster)
 			.property("LeftThruster", &ACRocket::GetULThruster)
 			.property("RightThruster", &ACRocket::GetURThruster)
-			.property("GearState", &ACRocket::GetGearState),
+			.property("GearState", &ACRocket::GetGearState),*/
 
-        CONCRETELUABINDING(HeldDevice, Attachable)
-            .property("SupportPos", &HeldDevice::GetSupportPos)
-            .property("MagazinePos", &HeldDevice::GetMagazinePos)
-            .property("MuzzlePos", &HeldDevice::GetMuzzlePos)
-            .property("MuzzleOffset", &HeldDevice::GetMuzzleOffset, &HeldDevice::SetMuzzleOffset)
-            .property("StanceOffset", &HeldDevice::GetStanceOffset, &HeldDevice::SetStanceOffset)
-            .property("SharpStanceOffset", &HeldDevice::GetSharpStanceOffset, &HeldDevice::SetSharpStanceOffset)
-            .property("SharpLength", &HeldDevice::GetSharpLength, &HeldDevice::SetSharpLength)
-            .def("IsWeapon", &HeldDevice::IsWeapon)
-            .def("IsTool", &HeldDevice::IsTool)
-            .def("IsShield", &HeldDevice::IsShield)
-            .def("IsDualWieldable", &HeldDevice::IsDualWieldable)
-            .def("SetDualWieldable", &HeldDevice::SetDualWieldable)
-            .def("IsOneHanded", &HeldDevice::IsOneHanded)
-            .def("SetOneHanded", &HeldDevice::SetOneHanded)
-            .def("Activate", &HeldDevice::Activate)
-            .def("Deactivate", &HeldDevice::Deactivate)
-            .def("Reload", &HeldDevice::Reload)
-            .def("IsActivated", &HeldDevice::IsActivated)
-            .def("IsReloading", &HeldDevice::IsReloading)
-            .def("DoneReloading", &HeldDevice::DoneReloading)
-            .def("NeedsReloading", &HeldDevice::NeedsReloading)
-            .def("IsFull", &HeldDevice::IsFull)
+
+		CONCRETELUABINDING_SOL(ACRocket, ACraft)
+
+		g_pSolLuaState->set("LandingGearState", g_pSolLuaState->create_table_with(
+			"RAISED", ACRocket::LandingGearState::RAISED,
+			"LOWERED", ACRocket::LandingGearState::LOWERED,
+			"LOWERING", ACRocket::LandingGearState::LOWERING,
+			"RAISING", ACRocket::LandingGearState::RAISING,
+			"GearStateCount", ACRocket::LandingGearState::GearStateCount
+		));
+
+		Bind["MainEngine"] = sol::property(&ACRocket::GetMThruster);
+		Bind["LeftEngine"] = sol::property(&ACRocket::GetLThruster);
+		Bind["RightEngine"] = sol::property(&ACRocket::GetRThruster);
+		Bind["LeftThruster"] = sol::property(&ACRocket::GetULThruster);
+		Bind["RightThruster"] = sol::property(&ACRocket::GetURThruster);
+		Bind["GearState"] = sol::property(&ACRocket::GetGearState);
+	}
+
+	{
+		/*CONCRETELUABINDING(HeldDevice, Attachable)
+			.property("SupportPos", &HeldDevice::GetSupportPos)
+			.property("MagazinePos", &HeldDevice::GetMagazinePos)
+			.property("MuzzlePos", &HeldDevice::GetMuzzlePos)
+			.property("MuzzleOffset", &HeldDevice::GetMuzzleOffset, &HeldDevice::SetMuzzleOffset)
+			.property("StanceOffset", &HeldDevice::GetStanceOffset, &HeldDevice::SetStanceOffset)
+			.property("SharpStanceOffset", &HeldDevice::GetSharpStanceOffset, &HeldDevice::SetSharpStanceOffset)
+			.property("SharpLength", &HeldDevice::GetSharpLength, &HeldDevice::SetSharpLength)
+			.def("IsWeapon", &HeldDevice::IsWeapon)
+			.def("IsTool", &HeldDevice::IsTool)
+			.def("IsShield", &HeldDevice::IsShield)
+			.def("IsDualWieldable", &HeldDevice::IsDualWieldable)
+			.def("SetDualWieldable", &HeldDevice::SetDualWieldable)
+			.def("IsOneHanded", &HeldDevice::IsOneHanded)
+			.def("SetOneHanded", &HeldDevice::SetOneHanded)
+			.def("Activate", &HeldDevice::Activate)
+			.def("Deactivate", &HeldDevice::Deactivate)
+			.def("Reload", &HeldDevice::Reload)
+			.def("IsActivated", &HeldDevice::IsActivated)
+			.def("IsReloading", &HeldDevice::IsReloading)
+			.def("DoneReloading", &HeldDevice::DoneReloading)
+			.def("NeedsReloading", &HeldDevice::NeedsReloading)
+			.def("IsFull", &HeldDevice::IsFull)
 			.property("SharpLength", &HeldDevice::GetSharpLength, &HeldDevice::SetSharpLength)
 			.property("SupportOffset", &HeldDevice::GetSupportOffset, &HeldDevice::SetSupportOffset)
-			.def("SetSupported", &HeldDevice::SetSupported),
+			.def("SetSupported", &HeldDevice::SetSupported),*/
+	}
 
-        CONCRETELUABINDING(Magazine, Attachable)
-            .property("NextRound", &Magazine::GetNextRound)
-            .property("RoundCount", &Magazine::GetRoundCount, &Magazine::SetRoundCount)
-            .property("IsEmpty", &Magazine::IsEmpty)
-            .property("IsFull", &Magazine::IsFull)
-            .property("IsOverHalfFull", &Magazine::IsOverHalfFull)
-            .property("Capacity", &Magazine::GetCapacity)
-            .property("Discardable", &Magazine::IsDiscardable),
+	{
+		/*CONCRETELUABINDING(Magazine, Attachable)
+			.property("NextRound", &Magazine::GetNextRound)
+			.property("RoundCount", &Magazine::GetRoundCount, &Magazine::SetRoundCount)
+			.property("IsEmpty", &Magazine::IsEmpty)
+			.property("IsFull", &Magazine::IsFull)
+			.property("IsOverHalfFull", &Magazine::IsOverHalfFull)
+			.property("Capacity", &Magazine::GetCapacity)
+			.property("Discardable", &Magazine::IsDiscardable),*/
+	}
 
-        CONCRETELUABINDING(Round, Entity)
-            .property("NextParticle", &Round::GetNextParticle)
-            .property("Shell", &Round::GetShell)
-            .property("FireVel", &Round::GetFireVel)
-            .property("ShellVel", &Round::GetShellVel)
-            .property("Separation", &Round::GetSeparation)
-            .property("ParticleCount", &Round::ParticleCount)
-            .property("AILifeTime", &Round::GetAILifeTime)
-            .property("AIFireVel", &Round::GetAIFireVel)
-            .property("IsEmpty", &Round::IsEmpty),
 
-        CONCRETELUABINDING(HDFirearm, HeldDevice)
-            .property("RateOfFire", &HDFirearm::GetRateOfFire, &HDFirearm::SetRateOfFire)
+
+	{
+		/*CONCRETELUABINDING(Round, Entity)
+			.property("NextParticle", &Round::GetNextParticle)
+			.property("Shell", &Round::GetShell)
+			.property("FireVel", &Round::GetFireVel)
+			.property("ShellVel", &Round::GetShellVel)
+			.property("Separation", &Round::GetSeparation)
+			.property("ParticleCount", &Round::ParticleCount)
+			.property("AILifeTime", &Round::GetAILifeTime)
+			.property("AIFireVel", &Round::GetAIFireVel)
+			.property("IsEmpty", &Round::IsEmpty),*/
+
+	}
+
+
+	{
+		/*CONCRETELUABINDING(HDFirearm, HeldDevice)
+			.property("RateOfFire", &HDFirearm::GetRateOfFire, &HDFirearm::SetRateOfFire)
 			.property("FullAuto", &HDFirearm::IsFullAuto, &HDFirearm::SetFullAuto)
-            .property("RoundInMagCount", &HDFirearm::GetRoundInMagCount)
-            .property("Magazine", &HDFirearm::GetMagazine)
-            .property("ActivationDelay", &HDFirearm::GetActivationDelay, &HDFirearm::SetActivationDelay)
-            .property("DeactivationDelay", &HDFirearm::GetDeactivationDelay, &HDFirearm::SetDeactivationDelay)
-            .property("ReloadTime", &HDFirearm::GetReloadTime, &HDFirearm::SetReloadTime)
-            .property("ShakeRange", &HDFirearm::GetShakeRange, &HDFirearm::SetShakeRange)
-            .property("SharpShakeRange", &HDFirearm::GetSharpShakeRange, &HDFirearm::SetSharpShakeRange)
-            .property("NoSupportFactor", &HDFirearm::GetNoSupportFactor, &HDFirearm::SetNoSupportFactor)
-            .property("ParticleSpreadRange", &HDFirearm::GetParticleSpreadRange, &HDFirearm::SetParticleSpreadRange)
+			.property("RoundInMagCount", &HDFirearm::GetRoundInMagCount)
+			.property("Magazine", &HDFirearm::GetMagazine)
+			.property("ActivationDelay", &HDFirearm::GetActivationDelay, &HDFirearm::SetActivationDelay)
+			.property("DeactivationDelay", &HDFirearm::GetDeactivationDelay, &HDFirearm::SetDeactivationDelay)
+			.property("ReloadTime", &HDFirearm::GetReloadTime, &HDFirearm::SetReloadTime)
+			.property("ShakeRange", &HDFirearm::GetShakeRange, &HDFirearm::SetShakeRange)
+			.property("SharpShakeRange", &HDFirearm::GetSharpShakeRange, &HDFirearm::SetSharpShakeRange)
+			.property("NoSupportFactor", &HDFirearm::GetNoSupportFactor, &HDFirearm::SetNoSupportFactor)
+			.property("ParticleSpreadRange", &HDFirearm::GetParticleSpreadRange, &HDFirearm::SetParticleSpreadRange)
 			.property("FiredOnce", &HDFirearm::FiredOnce)
 			.property("FiredFrame", &HDFirearm::FiredFrame)
 			.property("RoundsFired", &HDFirearm::RoundsFired)
-            .def("GetAIFireVel", &HDFirearm::GetAIFireVel)
-            .def("GetAIBulletLifeTime", &HDFirearm::GetAIBulletLifeTime)
-            .def("GetBulletAccScalar", &HDFirearm::GetBulletAccScalar)
-            .def("GetAIBlastRadius", &HDFirearm::GetAIBlastRadius)
-            .def("GetAIPenetration", &HDFirearm::GetAIPenetration)
-            .def("CompareTrajectories", &HDFirearm::CompareTrajectories)
-            .def("SetNextMagazineName", &HDFirearm::SetNextMagazineName)
+			.def("GetAIFireVel", &HDFirearm::GetAIFireVel)
+			.def("GetAIBulletLifeTime", &HDFirearm::GetAIBulletLifeTime)
+			.def("GetBulletAccScalar", &HDFirearm::GetBulletAccScalar)
+			.def("GetAIBlastRadius", &HDFirearm::GetAIBlastRadius)
+			.def("GetAIPenetration", &HDFirearm::GetAIPenetration)
+			.def("CompareTrajectories", &HDFirearm::CompareTrajectories)
+			.def("SetNextMagazineName", &HDFirearm::SetNextMagazineName)
 			.property("IsAnimatedManually", &HDFirearm::IsAnimatedManually, &HDFirearm::SetAnimatedManually)
-			.property("RecoilTransmission", &HDFirearm::GetRecoilTransmission, &HDFirearm::SetRecoilTransmission),
+			.property("RecoilTransmission", &HDFirearm::GetRecoilTransmission, &HDFirearm::SetRecoilTransmission),*/
+	}
 
-        CONCRETELUABINDING(ThrownDevice, HeldDevice)
-            .property("MinThrowVel", &ThrownDevice::GetMinThrowVel, &ThrownDevice::SetMinThrowVel)
-            .property("MaxThrowVel", &ThrownDevice::GetMaxThrowVel, &ThrownDevice::SetMaxThrowVel),
 
-        CONCRETELUABINDING(TDExplosive, ThrownDevice),
+	{
+		/*CONCRETELUABINDING(ThrownDevice, HeldDevice)
+			.property("MinThrowVel", &ThrownDevice::GetMinThrowVel, &ThrownDevice::SetMinThrowVel)
+			.property("MaxThrowVel", &ThrownDevice::GetMaxThrowVel, &ThrownDevice::SetMaxThrowVel),*/
+	}
 
-        class_<Controller>("Controller")
-            .enum_("ControlState")
-            [
-                value("PRIMARY_ACTION", 0),
-                value("SECONDARY_ACTION", 1),
-                value("MOVE_IDLE", 2),
-                value("MOVE_RIGHT", 3),
-                value("MOVE_LEFT", 4),
-                value("MOVE_UP", 5),
-                value("MOVE_DOWN", 6),
-                value("MOVE_FAST", 7),
-                value("BODY_JUMPSTART", 8),
-                value("BODY_JUMP", 9),
-                value("BODY_CROUCH", 10),
-                value("AIM_UP", 11),
-                value("AIM_DOWN", 12),
-                value("AIM_SHARP", 13),
-                value("WEAPON_FIRE", 14),
-                value("WEAPON_RELOAD", 15),
-                value("PIE_MENU_ACTIVE", 16),
-                value("WEAPON_CHANGE_NEXT", 17),
-                value("WEAPON_CHANGE_PREV", 18),
-                value("WEAPON_PICKUP", 19),
-                value("WEAPON_DROP", 20),
-                value("ACTOR_NEXT", 21),
-                value("ACTOR_PREV", 22),
-                value("ACTOR_BRAIN", 23),
-                value("ACTOR_NEXT_PREP", 24),
-                value("ACTOR_PREV_PREP", 25),
-                value("HOLD_RIGHT", 26),
-                value("HOLD_LEFT", 27),
-                value("HOLD_UP", 28),
-                value("HOLD_DOWN", 29),
-                value("PRESS_PRIMARY", 30),
-                value("PRESS_SECONDARY", 31),
-                value("PRESS_RIGHT", 32),
-                value("PRESS_LEFT", 33),
-                value("PRESS_UP", 34),
-                value("PRESS_DOWN", 35),
-                value("RELEASE_PRIMARY", 36),
-                value("RELEASE_SECONDARY", 37),
-                value("PRESS_FACEBUTTON", 38),
-                value("SCROLL_UP", 39),
-                value("SCROLL_DOWN", 40),
-                value("DEBUG_ONE", 41),
-                value("CONTROLSTATECOUNT", 42)
-            ]
-            .enum_("InputMode")
-            [
-                value("CIM_DISABLED", 0),
-                value("CIM_PLAYER", 1),
-                value("CIM_AI", 2),
-                value("CIM_NETWORK", 3),
-                value("CIM_INPUTMODECOUNT", 4)
-            ]
-            .def(luabind::constructor<>())
-            .property("InputMode", &Controller::GetInputMode, &Controller::SetInputMode)
-            .def("IsPlayerControlled", &Controller::IsPlayerControlled)
-            .property("ControlledActor", &Controller::GetControlledActor, &Controller::SetControlledActor)
-            .property("Team", &Controller::GetTeam, &Controller::SetTeam)
-            .property("AnalogMove", &Controller::GetAnalogMove, &Controller::SetAnalogMove)
-            .property("AnalogAim", &Controller::GetAnalogAim, &Controller::SetAnalogAim)
-            .property("AnalogCursor", &Controller::GetAnalogCursor)
-            .def("RelativeCursorMovement", &Controller::RelativeCursorMovement)
-            .property("Player", &Controller::GetPlayer, &Controller::SetPlayer)
-            .def("IsMouseControlled", &Controller::IsMouseControlled)
-            .property("MouseMovement", &Controller::GetMouseMovement)
-            .property("Disabled", &Controller::IsDisabled, &Controller::SetDisabled)
-            .def("SetState", &Controller::SetState)
-            .def("IsState", &Controller::IsState),
+	{
+		//CONCRETELUABINDING(TDExplosive, ThrownDevice),
+	}
 
-        class_<Timer>("Timer")
-            .def(luabind::constructor<>())
-            .def("Reset", &Timer::Reset)
-            .property("StartRealTimeMS", &Timer::GetStartRealTimeMS, &Timer::SetStartRealTimeMS)
-            .property("ElapsedRealTimeS", &Timer::GetElapsedRealTimeS, &Timer::SetElapsedRealTimeS)
-            .property("ElapsedRealTimeMS", &Timer::GetElapsedRealTimeMS, &Timer::SetElapsedRealTimeMS)
-            .def("SetRealTimeLimitMS", &Timer::SetRealTimeLimitMS)
-            .def("SetRealTimeLimitS", &Timer::SetRealTimeLimitS)
-            .def("IsPastRealTimeLimit", &Timer::IsPastRealTimeLimit)
-            .def("LeftTillRealTimeLimitMS", &Timer::LeftTillRealTimeLimitMS)
-            .def("LeftTillRealTimeLimitS", &Timer::LeftTillRealTimeLimitS)
-            .def("LeftTillRealMS", &Timer::LeftTillRealMS)
-            .def("IsPastRealMS", &Timer::IsPastRealMS)
-            .def("AlternateReal", &Timer::AlternateReal)
-            .property("StartSimTimeMS", &Timer::GetStartSimTimeMS, &Timer::SetStartSimTimeMS)
-            .property("ElapsedSimTimeS", &Timer::GetElapsedSimTimeS, &Timer::SetElapsedSimTimeS)
-            .property("ElapsedSimTimeMS", &Timer::GetElapsedSimTimeMS, &Timer::SetElapsedSimTimeMS)
-            .def("SetSimTimeLimitMS", &Timer::SetSimTimeLimitMS)
-            .def("SetSimTimeLimitS", &Timer::SetSimTimeLimitS)
-            .def("IsPastSimTimeLimit", &Timer::IsPastSimTimeLimit)
-            .def("LeftTillSimTimeLimitMS", &Timer::LeftTillSimTimeLimitMS)
-            .def("LeftTillSimTimeLimitS", &Timer::LeftTillSimTimeLimitS)
-            .def("LeftTillSimMS", &Timer::LeftTillSimMS)
-            .def("IsPastSimMS", &Timer::IsPastSimMS)
-            .def("AlternateSim", &Timer::AlternateSim),
+	{
+	/*
+		class_<Controller>("Controller")
+			.enum_("ControlState")
+			[
+				value("PRIMARY_ACTION", 0),
+				value("SECONDARY_ACTION", 1),
+				value("MOVE_IDLE", 2),
+				value("MOVE_RIGHT", 3),
+				value("MOVE_LEFT", 4),
+				value("MOVE_UP", 5),
+				value("MOVE_DOWN", 6),
+				value("MOVE_FAST", 7),
+				value("BODY_JUMPSTART", 8),
+				value("BODY_JUMP", 9),
+				value("BODY_CROUCH", 10),
+				value("AIM_UP", 11),
+				value("AIM_DOWN", 12),
+				value("AIM_SHARP", 13),
+				value("WEAPON_FIRE", 14),
+				value("WEAPON_RELOAD", 15),
+				value("PIE_MENU_ACTIVE", 16),
+				value("WEAPON_CHANGE_NEXT", 17),
+				value("WEAPON_CHANGE_PREV", 18),
+				value("WEAPON_PICKUP", 19),
+				value("WEAPON_DROP", 20),
+				value("ACTOR_NEXT", 21),
+				value("ACTOR_PREV", 22),
+				value("ACTOR_BRAIN", 23),
+				value("ACTOR_NEXT_PREP", 24),
+				value("ACTOR_PREV_PREP", 25),
+				value("HOLD_RIGHT", 26),
+				value("HOLD_LEFT", 27),
+				value("HOLD_UP", 28),
+				value("HOLD_DOWN", 29),
+				value("PRESS_PRIMARY", 30),
+				value("PRESS_SECONDARY", 31),
+				value("PRESS_RIGHT", 32),
+				value("PRESS_LEFT", 33),
+				value("PRESS_UP", 34),
+				value("PRESS_DOWN", 35),
+				value("RELEASE_PRIMARY", 36),
+				value("RELEASE_SECONDARY", 37),
+				value("PRESS_FACEBUTTON", 38),
+				value("SCROLL_UP", 39),
+				value("SCROLL_DOWN", 40),
+				value("DEBUG_ONE", 41),
+				value("CONTROLSTATECOUNT", 42)
+			]
+			.enum_("InputMode")
+			[
+				value("CIM_DISABLED", 0),
+				value("CIM_PLAYER", 1),
+				value("CIM_AI", 2),
+				value("CIM_NETWORK", 3),
+				value("CIM_INPUTMODECOUNT", 4)
+			]
+			.def(luabind::constructor<>())
+			.property("InputMode", &Controller::GetInputMode, &Controller::SetInputMode)
+			.def("IsPlayerControlled", &Controller::IsPlayerControlled)
+			.property("ControlledActor", &Controller::GetControlledActor, &Controller::SetControlledActor)
+			.property("Team", &Controller::GetTeam, &Controller::SetTeam)
+			.property("AnalogMove", &Controller::GetAnalogMove, &Controller::SetAnalogMove)
+			.property("AnalogAim", &Controller::GetAnalogAim, &Controller::SetAnalogAim)
+			.property("AnalogCursor", &Controller::GetAnalogCursor)
+			.def("RelativeCursorMovement", &Controller::RelativeCursorMovement)
+			.property("Player", &Controller::GetPlayer, &Controller::SetPlayer)
+			.def("IsMouseControlled", &Controller::IsMouseControlled)
+			.property("MouseMovement", &Controller::GetMouseMovement)
+			.property("Disabled", &Controller::IsDisabled, &Controller::SetDisabled)
+			.def("SetState", &Controller::SetState)
+			.def("IsState", &Controller::IsState),
+	*/
+	
+	}
 
-        class_<TimerMan>("TimerManager")
+	{
+		/*class_<Timer>("Timer")
+			.def(luabind::constructor<>())
+			.def("Reset", &Timer::Reset)
+			.property("StartRealTimeMS", &Timer::GetStartRealTimeMS, &Timer::SetStartRealTimeMS)
+			.property("ElapsedRealTimeS", &Timer::GetElapsedRealTimeS, &Timer::SetElapsedRealTimeS)
+			.property("ElapsedRealTimeMS", &Timer::GetElapsedRealTimeMS, &Timer::SetElapsedRealTimeMS)
+			.def("SetRealTimeLimitMS", &Timer::SetRealTimeLimitMS)
+			.def("SetRealTimeLimitS", &Timer::SetRealTimeLimitS)
+			.def("IsPastRealTimeLimit", &Timer::IsPastRealTimeLimit)
+			.def("LeftTillRealTimeLimitMS", &Timer::LeftTillRealTimeLimitMS)
+			.def("LeftTillRealTimeLimitS", &Timer::LeftTillRealTimeLimitS)
+			.def("LeftTillRealMS", &Timer::LeftTillRealMS)
+			.def("IsPastRealMS", &Timer::IsPastRealMS)
+			.def("AlternateReal", &Timer::AlternateReal)
+			.property("StartSimTimeMS", &Timer::GetStartSimTimeMS, &Timer::SetStartSimTimeMS)
+			.property("ElapsedSimTimeS", &Timer::GetElapsedSimTimeS, &Timer::SetElapsedSimTimeS)
+			.property("ElapsedSimTimeMS", &Timer::GetElapsedSimTimeMS, &Timer::SetElapsedSimTimeMS)
+			.def("SetSimTimeLimitMS", &Timer::SetSimTimeLimitMS)
+			.def("SetSimTimeLimitS", &Timer::SetSimTimeLimitS)
+			.def("IsPastSimTimeLimit", &Timer::IsPastSimTimeLimit)
+			.def("LeftTillSimTimeLimitMS", &Timer::LeftTillSimTimeLimitMS)
+			.def("LeftTillSimTimeLimitS", &Timer::LeftTillSimTimeLimitS)
+			.def("LeftTillSimMS", &Timer::LeftTillSimMS)
+			.def("IsPastSimMS", &Timer::IsPastSimMS)
+			.def("AlternateSim", &Timer::AlternateSim),*/
+
+	}
+
+	{
+	
+		/*        class_<TimerMan>("TimerManager")
             .property("TicksPerSecond", &TimerMan::GetTicksPerSecondInLua)
             .property("TimeScale", &TimerMan::GetTimeScale, &TimerMan::SetTimeScale)
             .def("EnableAveraging", &TimerMan::EnableAveraging)
@@ -2489,47 +2326,51 @@ int LuaMan::Create()
             .property("OneSimUpdatePerFrame", &TimerMan::IsOneSimUpdatePerFrame, &TimerMan::SetOneSimUpdatePerFrame)
             .def("TimeForSimUpdate", &TimerMan::TimeForSimUpdate)
             .def("DrawnSimUpdate", &TimerMan::DrawnSimUpdate),
+*/
+	}
 
-        class_<FrameMan>("FrameManager")
-            .def("ResetSplitScreens", &FrameMan::ResetSplitScreens)
-            .property("PPM", &FrameMan::GetPPM, &FrameMan::SetPPM)
-            .property("MPP", &FrameMan::GetMPP)
-            .property("PPL", &FrameMan::GetPPL)
-            .property("LPP", &FrameMan::GetLPP)
-            .property("ResX", &FrameMan::GetResX)
-            .property("ResY", &FrameMan::GetResY)
-            .property("ResBPP", &FrameMan::GetBPP)
-            .property("HSplit", &FrameMan::GetHSplit, &FrameMan::SetHSplit)
-            .property("VSplit", &FrameMan::GetVSplit, &FrameMan::SetVSplit)
-            .property("PlayerScreenWidth", &FrameMan::GetPlayerScreenWidth)
-            .property("PlayerScreenHeight", &FrameMan::GetPlayerScreenHeight)
-            .def("GetPlayerFrameBufferWidth", &FrameMan::GetPlayerFrameBufferWidth)
+	{
+		/*
+		class_<FrameMan>("FrameManager")
+			.def("ResetSplitScreens", &FrameMan::ResetSplitScreens)
+			.property("PPM", &FrameMan::GetPPM, &FrameMan::SetPPM)
+			.property("MPP", &FrameMan::GetMPP)
+			.property("PPL", &FrameMan::GetPPL)
+			.property("LPP", &FrameMan::GetLPP)
+			.property("ResX", &FrameMan::GetResX)
+			.property("ResY", &FrameMan::GetResY)
+			.property("ResBPP", &FrameMan::GetBPP)
+			.property("HSplit", &FrameMan::GetHSplit, &FrameMan::SetHSplit)
+			.property("VSplit", &FrameMan::GetVSplit, &FrameMan::SetVSplit)
+			.property("PlayerScreenWidth", &FrameMan::GetPlayerScreenWidth)
+			.property("PlayerScreenHeight", &FrameMan::GetPlayerScreenHeight)
+			.def("GetPlayerFrameBufferWidth", &FrameMan::GetPlayerFrameBufferWidth)
 			.def("GetPlayerFrameBufferHeight", &FrameMan::GetPlayerFrameBufferHeight)
-            .def("SetScreenText", &FrameMan::SetScreenText)
-            .def("ClearScreenText", &FrameMan::ClearScreenText)
-            .def("IsFullscreen", &FrameMan::IsFullscreen)
-            .property("PostProcessing", &FrameMan::IsPostProcessing, &FrameMan::EnablePostProcessing)
-            .property("PostPixelGlow", &FrameMan::IsPixelGlowEnabled, &FrameMan::EnablePixelGlow)
-            .def("LoadPalette", &FrameMan::LoadPalette)
-            .def("FadeInPalette", &FrameMan::FadeInPalette)
-            .def("FadeOutPalette", &FrameMan::FadeOutPalette)
-            .def("SaveScreenToBMP", &FrameMan::SaveScreenToBMP)
-            .def("SaveBitmapToBMP", &FrameMan::SaveBitmapToBMP)
-            .def("ResetFrameTimer", &FrameMan::ResetFrameTimer)
-            .def("ResetRTE", &FrameMan::ResetRTE)
-            .def("IsResettingRTE", &FrameMan::IsResettingRTE)
-            .def("ToggleFullscreen", &FrameMan::ToggleFullscreen)
-            .def("ClearBackBuffer8", &FrameMan::ClearBackBuffer8)
-            .def("ClearBackBuffer32", &FrameMan::ClearBackBuffer32)
-            .def("ShowPerformanceStats", &FrameMan::ShowPerformanceStats)
-            .def("FlashScreen", &FrameMan::FlashScreen)
-            .def("DrawCirclePrimitive", (void (FrameMan::*)(Vector pos, int radius, int color))&FrameMan::DrawCirclePrimitive)
-            .def("DrawCircleFillPrimitive", (void (FrameMan::*)(Vector pos, int radius, int color))&FrameMan::DrawCircleFillPrimitive)
-            .def("DrawLinePrimitive", (void (FrameMan::*)(Vector start, Vector end, int color))&FrameMan::DrawLinePrimitive)
-            .def("DrawTextPrimitive", (void (FrameMan::*)(Vector start, std::string text, bool isSmall, int alignment))&FrameMan::DrawTextPrimitive)
-            .def("DrawBitmapPrimitive", (void (FrameMan::*)(Vector start, Entity * pEntity, float rotAngle, int frame))&FrameMan::DrawBitmapPrimitive)
+			.def("SetScreenText", &FrameMan::SetScreenText)
+			.def("ClearScreenText", &FrameMan::ClearScreenText)
+			.def("IsFullscreen", &FrameMan::IsFullscreen)
+			.property("PostProcessing", &FrameMan::IsPostProcessing, &FrameMan::EnablePostProcessing)
+			.property("PostPixelGlow", &FrameMan::IsPixelGlowEnabled, &FrameMan::EnablePixelGlow)
+			.def("LoadPalette", &FrameMan::LoadPalette)
+			.def("FadeInPalette", &FrameMan::FadeInPalette)
+			.def("FadeOutPalette", &FrameMan::FadeOutPalette)
+			.def("SaveScreenToBMP", &FrameMan::SaveScreenToBMP)
+			.def("SaveBitmapToBMP", &FrameMan::SaveBitmapToBMP)
+			.def("ResetFrameTimer", &FrameMan::ResetFrameTimer)
+			.def("ResetRTE", &FrameMan::ResetRTE)
+			.def("IsResettingRTE", &FrameMan::IsResettingRTE)
+			.def("ToggleFullscreen", &FrameMan::ToggleFullscreen)
+			.def("ClearBackBuffer8", &FrameMan::ClearBackBuffer8)
+			.def("ClearBackBuffer32", &FrameMan::ClearBackBuffer32)
+			.def("ShowPerformanceStats", &FrameMan::ShowPerformanceStats)
+			.def("FlashScreen", &FrameMan::FlashScreen)
+			.def("DrawCirclePrimitive", (void (FrameMan::*)(Vector pos, int radius, int color))&FrameMan::DrawCirclePrimitive)
+			.def("DrawCircleFillPrimitive", (void (FrameMan::*)(Vector pos, int radius, int color))&FrameMan::DrawCircleFillPrimitive)
+			.def("DrawLinePrimitive", (void (FrameMan::*)(Vector start, Vector end, int color))&FrameMan::DrawLinePrimitive)
+			.def("DrawTextPrimitive", (void (FrameMan::*)(Vector start, std::string text, bool isSmall, int alignment))&FrameMan::DrawTextPrimitive)
+			.def("DrawBitmapPrimitive", (void (FrameMan::*)(Vector start, Entity * pEntity, float rotAngle, int frame))&FrameMan::DrawBitmapPrimitive)
 			.def("DrawBoxPrimitive", (void (FrameMan::*)(Vector start, Vector end, int color))&FrameMan::DrawBoxPrimitive)
-            .def("DrawBoxFillPrimitive", (void (FrameMan::*)(Vector start, Vector end, int color))&FrameMan::DrawBoxFillPrimitive)
+			.def("DrawBoxFillPrimitive", (void (FrameMan::*)(Vector start, Vector end, int color))&FrameMan::DrawBoxFillPrimitive)
 			.def("DrawCirclePrimitive", (void (FrameMan::*)(int player, Vector pos, int radius, int color))&FrameMan::DrawCirclePrimitive)
 			.def("DrawCircleFillPrimitive", (void (FrameMan::*)(int player, Vector pos, int radius, int color))&FrameMan::DrawCircleFillPrimitive)
 			.def("DrawLinePrimitive", (void (FrameMan::*)(int player, Vector start, Vector end, int color))&FrameMan::DrawLinePrimitive)
@@ -2539,174 +2380,202 @@ int LuaMan::Create()
 			.def("DrawBoxFillPrimitive", (void (FrameMan::*)(int player, Vector start, Vector end, int color))&FrameMan::DrawBoxFillPrimitive)
 			.def("CalculateTextHeight", &FrameMan::CalculateTextHeight)
 			.def("CalculateTextWidth", &FrameMan::CalculateTextWidth),
+	*/
+	}
 
-        class_<PresetMan>("PresetManager")
-            .def("LoadDataModule", (bool (PresetMan::*)(string))&PresetMan::LoadDataModule)
-            .def("GetDataModule", &PresetMan::GetDataModule)
-            .def("GetModuleID", &PresetMan::GetModuleID)
-            .def("GetModuleIDFromPath", &PresetMan::GetModuleIDFromPath)
-            .def("GetTotalModuleCount", &PresetMan::GetTotalModuleCount)
-            .def("GetOfficialModuleCount", &PresetMan::GetOfficialModuleCount)
-            .def("AddPreset", &PresetMan::AddEntityPreset)
+	{
+	/*
+		class_<PresetMan>("PresetManager")
+			.def("LoadDataModule", (bool (PresetMan::*)(string))&PresetMan::LoadDataModule)
+			.def("GetDataModule", &PresetMan::GetDataModule)
+			.def("GetModuleID", &PresetMan::GetModuleID)
+			.def("GetModuleIDFromPath", &PresetMan::GetModuleIDFromPath)
+			.def("GetTotalModuleCount", &PresetMan::GetTotalModuleCount)
+			.def("GetOfficialModuleCount", &PresetMan::GetOfficialModuleCount)
+			.def("AddPreset", &PresetMan::AddEntityPreset)
 			.def_readwrite("Modules", &PresetMan::m_pDataModules, luabind::return_stl_iterator())
 			// Disambiguate overloaded member funcs
-            .def("GetPreset", (const Entity *(PresetMan::*)(string, string, int))&PresetMan::GetEntityPreset)
-            .def("GetPreset", (const Entity *(PresetMan::*)(string, string, string))&PresetMan::GetEntityPreset)
-            .def("GetLoadout", (Actor * (PresetMan::*)(std::string, std::string, bool))&PresetMan::GetLoadout, luabind::adopt_policy<0>())
-            .def("GetLoadout", (Actor * (PresetMan::*)(std::string, int, bool))&PresetMan::GetLoadout, luabind::adopt_policy<0>())
-            .def("GetRandomOfGroup", &PresetMan::GetRandomOfGroup)
-            .def("GetRandomOfGroupInModuleSpace", &PresetMan::GetRandomOfGroupInModuleSpace)
-            .def("GetEntityDataLocation", &PresetMan::GetEntityDataLocation)
-            .def("ReadReflectedPreset", &PresetMan::ReadReflectedPreset)
-            .def("ReloadAllScripts", &PresetMan::ReloadAllScripts),
+			.def("GetPreset", (const Entity *(PresetMan::*)(string, string, int))&PresetMan::GetEntityPreset)
+			.def("GetPreset", (const Entity *(PresetMan::*)(string, string, string))&PresetMan::GetEntityPreset)
+			.def("GetLoadout", (Actor * (PresetMan::*)(std::string, std::string, bool))&PresetMan::GetLoadout, luabind::adopt_policy<0>())
+			.def("GetLoadout", (Actor * (PresetMan::*)(std::string, int, bool))&PresetMan::GetLoadout, luabind::adopt_policy<0>())
+			.def("GetRandomOfGroup", &PresetMan::GetRandomOfGroup)
+			.def("GetRandomOfGroupInModuleSpace", &PresetMan::GetRandomOfGroupInModuleSpace)
+			.def("GetEntityDataLocation", &PresetMan::GetEntityDataLocation)
+			.def("ReadReflectedPreset", &PresetMan::ReadReflectedPreset)
+			.def("ReloadAllScripts", &PresetMan::ReloadAllScripts),
 
-        class_<AudioMan>("AudioManager")
-            .property("SoundsVolume", &AudioMan::GetSoundsVolume, &AudioMan::SetSoundsVolume)
-            .property("MusicVolume", &AudioMan::GetMusicVolume, &AudioMan::SetMusicVolume)
+	
+	*/
+	}
+
+	{
+		/*
+		class_<AudioMan>("AudioManager")
+			.property("SoundsVolume", &AudioMan::GetSoundsVolume, &AudioMan::SetSoundsVolume)
+			.property("MusicVolume", &AudioMan::GetMusicVolume, &AudioMan::SetMusicVolume)
 //            .def("PlayModule", &AudioMan::PlayModule)
-            .def("PlayMusic", &AudioMan::PlayMusic)
-            .def("QueueMusicStream", &AudioMan::QueueMusicStream)
-            .def("QueueSilence", &AudioMan::QueueSilence)
-            .def("ClearMusicQueue", &AudioMan::ClearMusicQueue)
-            .def("PlaySound", (Sound * (AudioMan::*)(const char *, float, bool, bool, int))&AudioMan::PlaySound)
-            .def("PlaySound", (void (AudioMan::*)(const char *))&AudioMan::PlaySound)
-            .def("SetSoundAttenuation", &AudioMan::SetSoundAttenuation)
-            .def("IsPlaying", &AudioMan::IsPlaying)
-            .def("IsMusicPlaying", &AudioMan::IsMusicPlaying)
-            //.def("StopSound", &AudioMan::StopSound)
-            //.def("FadeOutSound", &AudioMan::FadeOutSound)
-            .def("StopMusic", &AudioMan::StopMusic)
-            .def("SetMusicPosition", &AudioMan::SetMusicPosition)
+			.def("PlayMusic", &AudioMan::PlayMusic)
+			.def("QueueMusicStream", &AudioMan::QueueMusicStream)
+			.def("QueueSilence", &AudioMan::QueueSilence)
+			.def("ClearMusicQueue", &AudioMan::ClearMusicQueue)
+			.def("PlaySound", (Sound * (AudioMan::*)(const char *, float, bool, bool, int))&AudioMan::PlaySound)
+			.def("PlaySound", (void (AudioMan::*)(const char *))&AudioMan::PlaySound)
+			.def("SetSoundAttenuation", &AudioMan::SetSoundAttenuation)
+			.def("IsPlaying", &AudioMan::IsPlaying)
+			.def("IsMusicPlaying", &AudioMan::IsMusicPlaying)
+			//.def("StopSound", &AudioMan::StopSound)
+			//.def("FadeOutSound", &AudioMan::FadeOutSound)
+			.def("StopMusic", &AudioMan::StopMusic)
+			.def("SetMusicPosition", &AudioMan::SetMusicPosition)
 			.def("GetMusicPosition", &AudioMan::GetMusicPosition)
 			.def("StopAll", &AudioMan::StopMusic),
 
-        class_<UInputMan>("UInputManager")
-            .enum_("Players")
-            [
-                value("PLAYER_NONE", -1),
-                value("PLAYER_ONE", 0),
-                value("PLAYER_TWO", 1),
-                value("PLAYER_THREE", 2),
-                value("PLAYER_FOUR", 3),
-                value("MAX_PLAYERS", 4)
-            ]
-            .enum_("InputDevice")
-            [
-                value("DEVICE_KEYB_ONLY", 0),
-                value("DEVICE_MOUSE_KEYB", 1),
-                value("DEVICE_GAMEPAD_1", 2),
-                value("DEVICE_GAMEPAD_2", 3),
-                value("DEVICE_GAMEPAD_3", 4),
-                value("DEVICE_GAMEPAD_4", 5),
-                value("DEVICE_COUNT", 6)
-            ]
-            .enum_("InputElements")
-            [
-                value("INPUT_L_UP", 0),
-                value("INPUT_L_DOWN", 1),
-                value("INPUT_L_LEFT", 2),
-                value("INPUT_L_RIGHT", 3),
-                value("INPUT_R_UP", 4),
-                value("INPUT_R_DOWN", 5),
-                value("INPUT_R_LEFT", 6),
-                value("INPUT_R_RIGHT", 7),
-                value("INPUT_FIRE", 8),
-                value("INPUT_AIM", 9),
-                value("INPUT_AIM_UP", 10),
-                value("INPUT_AIM_DOWN", 11),
-                value("INPUT_AIM_LEFT", 12),
-                value("INPUT_AIM_RIGHT", 13),
-                value("INPUT_PIEMENU", 14),
-                value("INPUT_JUMP", 15),
-                value("INPUT_CROUCH", 16),
-                value("INPUT_NEXT", 17),
-                value("INPUT_PREV", 18),
-                value("INPUT_START", 19),
-                value("INPUT_BACK", 20),
-                value("INPUT_COUNT", 21)
-            ]
-            .enum_("MouseButtons")
-            [
-                value("MOUSE_NONE", -1),
-                value("MOUSE_LEFT", 0),
-                value("MOUSE_RIGHT", 1),
-                value("MOUSE_MIDDLE", 2),
-                value("MAX_MOUSE_BUTTONS", 3)
-            ]
-            .enum_("JoyButtons")
-            [
-                value("JOY_NONE", -1),
-                value("JOY_1", 0),
-                value("JOY_2", 1),
-                value("JOY_3", 2),
-                value("JOY_4", 3),
-                value("JOY_5", 4),
-                value("JOY_6", 5),
-                value("JOY_7", 6),
-                value("JOY_8", 7),
-                value("JOY_9", 8),
-                value("JOY_10", 9),
-                value("JOY_11", 10),
-                value("JOY_12", 11),
-                value("MAX_JOY_BUTTONS", 12)
-            ]
-            .enum_("JoyDirections")
-            [
-                value("JOYDIR_ONE", 0),
-                value("JOYDIR_TWO", 1)
-            ]
-            .def("ElementPressed", &UInputMan::ElementPressed)
-            .def("ElementReleased", &UInputMan::ElementReleased)
-            .def("ElementHeld", &UInputMan::ElementHeld)
-            .def("KeyPressed", &UInputMan::KeyPressed)
-            .def("KeyReleased", &UInputMan::KeyReleased)
-            .def("KeyHeld", &UInputMan::KeyHeld)
-            .def("WhichKeyHeld", &UInputMan::WhichKeyHeld)
-            .def("MouseButtonPressed", (bool (UInputMan::*)(int,int))&UInputMan::MouseButtonPressed) 
-			.def("MouseButtonPressed", (bool (UInputMan::*)(int))&UInputMan::MouseButtonPressed) 
+
+		*/
+	}
+
+	{
+		/*
+		class_<UInputMan>("UInputManager")
+			.enum_("Players")
+			[
+				value("PLAYER_NONE", -1),
+				value("PLAYER_ONE", 0),
+				value("PLAYER_TWO", 1),
+				value("PLAYER_THREE", 2),
+				value("PLAYER_FOUR", 3),
+				value("MAX_PLAYERS", 4)
+			]
+			.enum_("InputDevice")
+			[
+				value("DEVICE_KEYB_ONLY", 0),
+				value("DEVICE_MOUSE_KEYB", 1),
+				value("DEVICE_GAMEPAD_1", 2),
+				value("DEVICE_GAMEPAD_2", 3),
+				value("DEVICE_GAMEPAD_3", 4),
+				value("DEVICE_GAMEPAD_4", 5),
+				value("DEVICE_COUNT", 6)
+			]
+			.enum_("InputElements")
+			[
+				value("INPUT_L_UP", 0),
+				value("INPUT_L_DOWN", 1),
+				value("INPUT_L_LEFT", 2),
+				value("INPUT_L_RIGHT", 3),
+				value("INPUT_R_UP", 4),
+				value("INPUT_R_DOWN", 5),
+				value("INPUT_R_LEFT", 6),
+				value("INPUT_R_RIGHT", 7),
+				value("INPUT_FIRE", 8),
+				value("INPUT_AIM", 9),
+				value("INPUT_AIM_UP", 10),
+				value("INPUT_AIM_DOWN", 11),
+				value("INPUT_AIM_LEFT", 12),
+				value("INPUT_AIM_RIGHT", 13),
+				value("INPUT_PIEMENU", 14),
+				value("INPUT_JUMP", 15),
+				value("INPUT_CROUCH", 16),
+				value("INPUT_NEXT", 17),
+				value("INPUT_PREV", 18),
+				value("INPUT_START", 19),
+				value("INPUT_BACK", 20),
+				value("INPUT_COUNT", 21)
+			]
+			.enum_("MouseButtons")
+			[
+				value("MOUSE_NONE", -1),
+				value("MOUSE_LEFT", 0),
+				value("MOUSE_RIGHT", 1),
+				value("MOUSE_MIDDLE", 2),
+				value("MAX_MOUSE_BUTTONS", 3)
+			]
+			.enum_("JoyButtons")
+			[
+				value("JOY_NONE", -1),
+				value("JOY_1", 0),
+				value("JOY_2", 1),
+				value("JOY_3", 2),
+				value("JOY_4", 3),
+				value("JOY_5", 4),
+				value("JOY_6", 5),
+				value("JOY_7", 6),
+				value("JOY_8", 7),
+				value("JOY_9", 8),
+				value("JOY_10", 9),
+				value("JOY_11", 10),
+				value("JOY_12", 11),
+				value("MAX_JOY_BUTTONS", 12)
+			]
+			.enum_("JoyDirections")
+			[
+				value("JOYDIR_ONE", 0),
+				value("JOYDIR_TWO", 1)
+			]
+			.def("ElementPressed", &UInputMan::ElementPressed)
+			.def("ElementReleased", &UInputMan::ElementReleased)
+			.def("ElementHeld", &UInputMan::ElementHeld)
+			.def("KeyPressed", &UInputMan::KeyPressed)
+			.def("KeyReleased", &UInputMan::KeyReleased)
+			.def("KeyHeld", &UInputMan::KeyHeld)
+			.def("WhichKeyHeld", &UInputMan::WhichKeyHeld)
+			.def("MouseButtonPressed", (bool (UInputMan::*)(int,int))&UInputMan::MouseButtonPressed)
+			.def("MouseButtonPressed", (bool (UInputMan::*)(int))&UInputMan::MouseButtonPressed)
 			.def("MouseButtonReleased", (bool (UInputMan::*)(int, int))&UInputMan::MouseButtonReleased)
 			.def("MouseButtonReleased", (bool (UInputMan::*)(int))&UInputMan::MouseButtonReleased)
 			.def("MouseButtonHeld", (bool (UInputMan::*)(int, int))&UInputMan::MouseButtonHeld)
 			.def("MouseButtonHeld", (bool (UInputMan::*)(int))&UInputMan::MouseButtonHeld)
 			.def("MouseWheelMoved", &UInputMan::MouseWheelMoved)
-            .def("JoyButtonPressed", &UInputMan::JoyButtonPressed)
-            .def("JoyButtonReleased", &UInputMan::JoyButtonReleased)
-            .def("JoyButtonHeld", &UInputMan::JoyButtonHeld)
-            .def("WhichJoyButtonPressed", &UInputMan::WhichJoyButtonPressed)
-            .def("JoyDirectionPressed", &UInputMan::JoyDirectionPressed)
-            .def("JoyDirectionReleased", &UInputMan::JoyDirectionReleased)
-            .def("JoyDirectionHeld", &UInputMan::JoyDirectionHeld)
-            .def("AnalogMoveValues", &UInputMan::AnalogMoveValues)
-            .def("AnalogAimValues", &UInputMan::AnalogAimValues)
-            .def("SetMouseValueMagnitude", &UInputMan::SetMouseValueMagnitude)
-            .def("AnalogAxisValue", &UInputMan::AnalogAxisValue)
-            .def("AnalogStickValues", &UInputMan::AnalogStickValues)
-            .def("MouseUsedByPlayer", &UInputMan::MouseUsedByPlayer)
-            .def("AnyMouseButtonPress", &UInputMan::AnyMouseButtonPress)
-            .def("TrapMousePos", &UInputMan::TrapMousePos)
-            .def("GetMouseMovement", &UInputMan::GetMouseMovement)
-            .def("DisableMouseMoving", &UInputMan::DisableMouseMoving)
-            .def("SetMousePos", &UInputMan::SetMousePos)
-            .def("ForceMouseWithinBox", &UInputMan::ForceMouseWithinBox)
-            .def("ForceMouseWithinPlayerScreen", &UInputMan::ForceMouseWithinPlayerScreen)
-            .def("AnyJoyInput", &UInputMan::AnyJoyInput)
-            .def("AnyJoyPress", &UInputMan::AnyJoyPress)
-            .def("AnyJoyButtonPress", &UInputMan::AnyJoyButtonPress)
-            .def("AnyInput", &UInputMan::AnyInput)
-            .def("AnyPress", &UInputMan::AnyPress)
-            .def("AnyStartPress", &UInputMan::AnyStartPress)
-            .property("FlagAltState", &UInputMan::FlagAltState)
-            .property("FlagCtrlState", &UInputMan::FlagCtrlState)
-            .property("FlagShiftState", &UInputMan::FlagShiftState),
+			.def("JoyButtonPressed", &UInputMan::JoyButtonPressed)
+			.def("JoyButtonReleased", &UInputMan::JoyButtonReleased)
+			.def("JoyButtonHeld", &UInputMan::JoyButtonHeld)
+			.def("WhichJoyButtonPressed", &UInputMan::WhichJoyButtonPressed)
+			.def("JoyDirectionPressed", &UInputMan::JoyDirectionPressed)
+			.def("JoyDirectionReleased", &UInputMan::JoyDirectionReleased)
+			.def("JoyDirectionHeld", &UInputMan::JoyDirectionHeld)
+			.def("AnalogMoveValues", &UInputMan::AnalogMoveValues)
+			.def("AnalogAimValues", &UInputMan::AnalogAimValues)
+			.def("SetMouseValueMagnitude", &UInputMan::SetMouseValueMagnitude)
+			.def("AnalogAxisValue", &UInputMan::AnalogAxisValue)
+			.def("AnalogStickValues", &UInputMan::AnalogStickValues)
+			.def("MouseUsedByPlayer", &UInputMan::MouseUsedByPlayer)
+			.def("AnyMouseButtonPress", &UInputMan::AnyMouseButtonPress)
+			.def("TrapMousePos", &UInputMan::TrapMousePos)
+			.def("GetMouseMovement", &UInputMan::GetMouseMovement)
+			.def("DisableMouseMoving", &UInputMan::DisableMouseMoving)
+			.def("SetMousePos", &UInputMan::SetMousePos)
+			.def("ForceMouseWithinBox", &UInputMan::ForceMouseWithinBox)
+			.def("ForceMouseWithinPlayerScreen", &UInputMan::ForceMouseWithinPlayerScreen)
+			.def("AnyJoyInput", &UInputMan::AnyJoyInput)
+			.def("AnyJoyPress", &UInputMan::AnyJoyPress)
+			.def("AnyJoyButtonPress", &UInputMan::AnyJoyButtonPress)
+			.def("AnyInput", &UInputMan::AnyInput)
+			.def("AnyPress", &UInputMan::AnyPress)
+			.def("AnyStartPress", &UInputMan::AnyStartPress)
+			.property("FlagAltState", &UInputMan::FlagAltState)
+			.property("FlagCtrlState", &UInputMan::FlagCtrlState)
+			.property("FlagShiftState", &UInputMan::FlagShiftState),
 
-        class_<IntRect>("IntRect")
-            .def(luabind::constructor<>())
-            .def(luabind::constructor<int, int, int, int>())
-            .def_readwrite("Left", &IntRect::m_Left)
-            .def_readwrite("Top", &IntRect::m_Top)
-            .def_readwrite("Right", &IntRect::m_Right)
-            .def_readwrite("Bottom", &IntRect::m_Bottom),
 
+		*/
+	}
+
+	{
+		/*
+		class_<IntRect>("IntRect")
+			.def(luabind::constructor<>())
+			.def(luabind::constructor<int, int, int, int>())
+			.def_readwrite("Left", &IntRect::m_Left)
+			.def_readwrite("Top", &IntRect::m_Top)
+			.def_readwrite("Right", &IntRect::m_Right)
+			.def_readwrite("Bottom", &IntRect::m_Bottom),
+
+
+		*/
+	}
+
+	{
+		/*
 				CONCRETELUABINDING(Scene, Entity)
 				.enum_("PlacedObjectSets")
 				[
@@ -2748,6 +2617,12 @@ int LuaMan::Create()
 				.def_readwrite("Deployments", &Scene::m_Deployments, luabind::return_stl_iterator())
 				.property("ScenePathSize", &Scene::GetScenePathSize),
 
+
+		*/
+	}
+
+	{
+		/*
 		ABSTRACTLUABINDING(Deployment, SceneObject)
 			.def("CreateDeployedActor", (Actor * (Deployment::*)())&Deployment::CreateDeployedActor, luabind::adopt_policy<0>())
 			.def("CreateDeployedObject", (SceneObject * (Deployment::*)())&Deployment::CreateDeployedObject, luabind::adopt_policy<0>())
@@ -2756,92 +2631,110 @@ int LuaMan::Create()
 			.property("ID", &Deployment::GetID)
 			.property("HFlipped", &Deployment::IsHFlipped),
 
-        class_<SceneMan>("SceneManager")
-            .property("Scene", &SceneMan::GetScene)
-            .def("LoadScene", (int (SceneMan::*)(string, bool, bool))&SceneMan::LoadScene)
-            .def("LoadScene", (int (SceneMan::*)(string, bool))&SceneMan::LoadScene)
-            .property("SceneDim", &SceneMan::GetSceneDim)
-            .property("SceneWidth", &SceneMan::GetSceneWidth)
-            .property("SceneHeight", &SceneMan::GetSceneHeight)
-            .property("SceneWrapsX", &SceneMan::SceneWrapsX)
-            .property("SceneWrapsY", &SceneMan::SceneWrapsY)
-            .def("GetOffset", &SceneMan::GetOffset)
-            .def("SetOffset", (void (SceneMan::*)(const Vector &, int))&SceneMan::SetOffset)
-            .def("SetOffsetX", &SceneMan::SetOffsetX)
-            .def("SetOffsetY", &SceneMan::SetOffsetY)
-            .def("GetScreenOcclusion", &SceneMan::GetScreenOcclusion)
-            .def("SetScreenOcclusion", &SceneMan::SetScreenOcclusion)
-            .def("GetTerrain", &SceneMan::GetTerrain)
-            .def("GetMaterial", &SceneMan::GetMaterial)
-            .def("GetMaterialFromID", &SceneMan::GetMaterialFromID)
+
+		*/
+	}
+
+	{
+		/*
+		class_<SceneMan>("SceneManager")
+			.property("Scene", &SceneMan::GetScene)
+			.def("LoadScene", (int (SceneMan::*)(string, bool, bool))&SceneMan::LoadScene)
+			.def("LoadScene", (int (SceneMan::*)(string, bool))&SceneMan::LoadScene)
+			.property("SceneDim", &SceneMan::GetSceneDim)
+			.property("SceneWidth", &SceneMan::GetSceneWidth)
+			.property("SceneHeight", &SceneMan::GetSceneHeight)
+			.property("SceneWrapsX", &SceneMan::SceneWrapsX)
+			.property("SceneWrapsY", &SceneMan::SceneWrapsY)
+			.def("GetOffset", &SceneMan::GetOffset)
+			.def("SetOffset", (void (SceneMan::*)(const Vector &, int))&SceneMan::SetOffset)
+			.def("SetOffsetX", &SceneMan::SetOffsetX)
+			.def("SetOffsetY", &SceneMan::SetOffsetY)
+			.def("GetScreenOcclusion", &SceneMan::GetScreenOcclusion)
+			.def("SetScreenOcclusion", &SceneMan::SetScreenOcclusion)
+			.def("GetTerrain", &SceneMan::GetTerrain)
+			.def("GetMaterial", &SceneMan::GetMaterial)
+			.def("GetMaterialFromID", &SceneMan::GetMaterialFromID)
 //            .property("MOColorBitmap", &SceneMan::GetMOColorBitmap)
 //            .property("DebugBitmap", &SceneMan::GetDebugBitmap)
 //            .property("MOIDBitmap", &SceneMan::GetMOIDBitmap)
-            .property("LayerDrawMode", &SceneMan::GetLayerDrawMode, &SceneMan::SetLayerDrawMode)
-            .def("GetTerrMatter", &SceneMan::GetTerrMatter)
-            .def("GetMOIDPixel", &SceneMan::GetMOIDPixel)
-            .property("GlobalAcc", &SceneMan::GetGlobalAcc)
-            .property("OzPerKg", &SceneMan::GetOzPerKg)
-            .property("KgPerOz", &SceneMan::GetKgPerOz)
-            .def("SetLayerDrawMode", &SceneMan::SetLayerDrawMode)
-            .def("SetScroll", &SceneMan::SetScroll)
-            .def("SetScrollTarget", &SceneMan::SetScrollTarget)
-            .def("GetScrollTarget", &SceneMan::GetScrollTarget)
-            .def("TargetDistanceScalar", &SceneMan::TargetDistanceScalar)
-            .def("CheckOffset", &SceneMan::CheckOffset)
-            .def("LoadUnseenLayer", &SceneMan::LoadUnseenLayer)
-            .def("MakeAllUnseen", &SceneMan::MakeAllUnseen)
-            .def("AnythingUnseen", &SceneMan::AnythingUnseen)
-            .def("GetUnseenResolution", &SceneMan::GetUnseenResolution)
-            .def("IsUnseen", &SceneMan::IsUnseen)
-            .def("RevealUnseen", &SceneMan::RevealUnseen)
-            .def("RevealUnseenBox", &SceneMan::RevealUnseenBox)
-            .def("RestoreUnseen", &SceneMan::RestoreUnseen)
-            .def("RestoreUnseenBox", &SceneMan::RestoreUnseenBox)
+			.property("LayerDrawMode", &SceneMan::GetLayerDrawMode, &SceneMan::SetLayerDrawMode)
+			.def("GetTerrMatter", &SceneMan::GetTerrMatter)
+			.def("GetMOIDPixel", &SceneMan::GetMOIDPixel)
+			.property("GlobalAcc", &SceneMan::GetGlobalAcc)
+			.property("OzPerKg", &SceneMan::GetOzPerKg)
+			.property("KgPerOz", &SceneMan::GetKgPerOz)
+			.def("SetLayerDrawMode", &SceneMan::SetLayerDrawMode)
+			.def("SetScroll", &SceneMan::SetScroll)
+			.def("SetScrollTarget", &SceneMan::SetScrollTarget)
+			.def("GetScrollTarget", &SceneMan::GetScrollTarget)
+			.def("TargetDistanceScalar", &SceneMan::TargetDistanceScalar)
+			.def("CheckOffset", &SceneMan::CheckOffset)
+			.def("LoadUnseenLayer", &SceneMan::LoadUnseenLayer)
+			.def("MakeAllUnseen", &SceneMan::MakeAllUnseen)
+			.def("AnythingUnseen", &SceneMan::AnythingUnseen)
+			.def("GetUnseenResolution", &SceneMan::GetUnseenResolution)
+			.def("IsUnseen", &SceneMan::IsUnseen)
+			.def("RevealUnseen", &SceneMan::RevealUnseen)
+			.def("RevealUnseenBox", &SceneMan::RevealUnseenBox)
+			.def("RestoreUnseen", &SceneMan::RestoreUnseen)
+			.def("RestoreUnseenBox", &SceneMan::RestoreUnseenBox)
 			.def("CastSeeRay", &SceneMan::CastSeeRay)
 			.def("CastUnseeRay", &SceneMan::CastUnseeRay)
 			.def("CastUnseenRay", &SceneMan::CastUnseenRay)
 			.def("CastMaterialRay", (bool (SceneMan::*)(const Vector &, const Vector &, unsigned char, Vector &, int, bool))&SceneMan::CastMaterialRay)
-            .def("CastMaterialRay", (float (SceneMan::*)(const Vector &, const Vector &, unsigned char, int))&SceneMan::CastMaterialRay)
-            .def("CastNotMaterialRay", (bool (SceneMan::*)(const Vector &, const Vector &, unsigned char, Vector &, int, bool))&SceneMan::CastNotMaterialRay)
-            .def("CastNotMaterialRay", (float (SceneMan::*)(const Vector &, const Vector &, unsigned char, int, bool))&SceneMan::CastNotMaterialRay)
-            .def("CastStrengthSumRay", &SceneMan::CastStrengthSumRay)
-            .def("CastMaxStrengthRay", &SceneMan::CastMaxStrengthRay)
-            .def("CastStrengthRay", &SceneMan::CastStrengthRay)
-            .def("CastWeaknessRay", &SceneMan::CastWeaknessRay)
-            .def("CastMORay", &SceneMan::CastMORay)
-            .def("CastFindMORay", &SceneMan::CastFindMORay)
-            .def("CastObstacleRay", &SceneMan::CastObstacleRay)
-            .def("GetLastRayHitPos", &SceneMan::GetLastRayHitPos)
-            .def("FindAltitude", &SceneMan::FindAltitude)
-            .def("MovePointToGround", &SceneMan::MovePointToGround)
-            .def("IsWithinBounds", &SceneMan::IsWithinBounds)
+			.def("CastMaterialRay", (float (SceneMan::*)(const Vector &, const Vector &, unsigned char, int))&SceneMan::CastMaterialRay)
+			.def("CastNotMaterialRay", (bool (SceneMan::*)(const Vector &, const Vector &, unsigned char, Vector &, int, bool))&SceneMan::CastNotMaterialRay)
+			.def("CastNotMaterialRay", (float (SceneMan::*)(const Vector &, const Vector &, unsigned char, int, bool))&SceneMan::CastNotMaterialRay)
+			.def("CastStrengthSumRay", &SceneMan::CastStrengthSumRay)
+			.def("CastMaxStrengthRay", &SceneMan::CastMaxStrengthRay)
+			.def("CastStrengthRay", &SceneMan::CastStrengthRay)
+			.def("CastWeaknessRay", &SceneMan::CastWeaknessRay)
+			.def("CastMORay", &SceneMan::CastMORay)
+			.def("CastFindMORay", &SceneMan::CastFindMORay)
+			.def("CastObstacleRay", &SceneMan::CastObstacleRay)
+			.def("GetLastRayHitPos", &SceneMan::GetLastRayHitPos)
+			.def("FindAltitude", &SceneMan::FindAltitude)
+			.def("MovePointToGround", &SceneMan::MovePointToGround)
+			.def("IsWithinBounds", &SceneMan::IsWithinBounds)
 //			.def("ForceBounds", (bool (SceneMan::*)(int *, int *))&SceneMan::ForceBounds)
 			.def("ForceBounds", (bool (SceneMan::*)(Vector &))&SceneMan::ForceBounds)//, out_value(_2))
 //            .def("WrapPosition", (bool (SceneMan::*)(int *, int *))&SceneMan::WrapPosition)
-            .def("WrapPosition", (bool (SceneMan::*)(Vector &))&SceneMan::WrapPosition)//, out_value(_2))
-            .def("SnapPosition", &SceneMan::SnapPosition)
-            .def("ShortestDistance", &SceneMan::ShortestDistance)
-            .def("ObscuredPoint", (bool (SceneMan::*)(Vector &, int))&SceneMan::ObscuredPoint)//, out_value(_2))
-            .def("ObscuredPoint", (bool (SceneMan::*)(int, int, int))&SceneMan::ObscuredPoint)
-            .def("RegisterPostEffect", &SceneMan::RegisterPostEffect)
-            .def("AddSceneObject", &SceneMan::AddSceneObject)
-            .def("AddTerrainObject", &SceneMan::AddTerrainObject)
+			.def("WrapPosition", (bool (SceneMan::*)(Vector &))&SceneMan::WrapPosition)//, out_value(_2))
+			.def("SnapPosition", &SceneMan::SnapPosition)
+			.def("ShortestDistance", &SceneMan::ShortestDistance)
+			.def("ObscuredPoint", (bool (SceneMan::*)(Vector &, int))&SceneMan::ObscuredPoint)//, out_value(_2))
+			.def("ObscuredPoint", (bool (SceneMan::*)(int, int, int))&SceneMan::ObscuredPoint)
+			.def("RegisterPostEffect", &SceneMan::RegisterPostEffect)
+			.def("AddSceneObject", &SceneMan::AddSceneObject)
+			.def("AddTerrainObject", &SceneMan::AddTerrainObject)
 			.def("CheckAndRemoveOrphans", (int (SceneMan::*)(int, int, int, int, bool))&SceneMan::RemoveOrphans)
-            .def("ClearPostEffects", &SceneMan::ClearPostEffects),
+			.def("ClearPostEffects", &SceneMan::ClearPostEffects),
 
+
+		*/
+	}
+
+	{
+		/*
 		class_<DataModule>("DataModule")
 			.def_readwrite("Presets", &DataModule::m_EntityList, luabind::return_stl_iterator())
 			.property("FileName", &DataModule::GetFileName)
 			.property("FriendlyName", &DataModule::GetFriendlyName),
 
-        class_<BuyMenuGUI>("BuyMenuGUI")
-            .def("SetMetaPlayer", &BuyMenuGUI::SetMetaPlayer)
-            .def("SetNativeTechModule", &BuyMenuGUI::SetNativeTechModule)
-            .def("SetForeignCostMultiplier", &BuyMenuGUI::SetForeignCostMultiplier)
-            .def("SetModuleExpanded", &BuyMenuGUI::SetModuleExpanded)
-            .def("LoadAllLoadoutsFromFile", &BuyMenuGUI::LoadAllLoadoutsFromFile)
-            .def("AddAllowedItem", &BuyMenuGUI::AddAllowedItem)
+
+		*/
+	}
+
+	{
+		/*
+		class_<BuyMenuGUI>("BuyMenuGUI")
+			.def("SetMetaPlayer", &BuyMenuGUI::SetMetaPlayer)
+			.def("SetNativeTechModule", &BuyMenuGUI::SetNativeTechModule)
+			.def("SetForeignCostMultiplier", &BuyMenuGUI::SetForeignCostMultiplier)
+			.def("SetModuleExpanded", &BuyMenuGUI::SetModuleExpanded)
+			.def("LoadAllLoadoutsFromFile", &BuyMenuGUI::LoadAllLoadoutsFromFile)
+			.def("AddAllowedItem", &BuyMenuGUI::AddAllowedItem)
 			.def("RemoveAllowedItem", &BuyMenuGUI::RemoveAllowedItem)
 			.def("ClearAllowedItems", &BuyMenuGUI::ClearAllowedItems)
 			.def("AddAlwaysAllowedItem", &BuyMenuGUI::AddAlwaysAllowedItem)
@@ -2861,242 +2754,272 @@ int LuaMan::Create()
 			.property("EnforceMaxPassengersConstraint", &BuyMenuGUI::EnforceMaxPassengersConstraint, &BuyMenuGUI::SetEnforceMaxPassengersConstraint)
 			.property("EnforceMaxMassConstraint", &BuyMenuGUI::EnforceMaxMassConstraint, &BuyMenuGUI::SetEnforceMaxMassConstraint),
 
-        class_<SceneEditorGUI>("SceneEditorGUI")
-            .enum_("EditorGUIMode")
-            [
-                value("INACTIVE", 0),
-                value("PICKINGOBJECT", 1),
-                value("ADDINGOBJECT", 2),
-                value("INSTALLINGBRAIN", 3),
-                value("PLACINGOBJECT", 4),
-                value("MOVINGOBJECT", 5),
-                value("DELETINGOBJECT", 6),
-                value("PLACEINFRONT", 7),
-                value("PLACEBEHIND", 8),
-                value("DONEEDITING", 9),
-                value("EDITORGUIMODECOUNT", 10)
-            ]
-            .def("SetCursorPos", &SceneEditorGUI::SetCursorPos)
-            .property("EditorMode", &SceneEditorGUI::GetEditorGUIMode, &SceneEditorGUI::SetEditorGUIMode)
-            .def("GetCurrentObject", &SceneEditorGUI::GetCurrentObject)
-            .def("SetCurrentObject", &SceneEditorGUI::SetCurrentObject)
-            .def("SetModuleSpace", &SceneEditorGUI::SetModuleSpace)
-            .def("SetNativeTechModule", &SceneEditorGUI::SetNativeTechModule)
-            .def("SetForeignCostMultiplier", &SceneEditorGUI::SetForeignCostMultiplier)
-            .def("TestBrainResidence", &SceneEditorGUI::TestBrainResidence)
-            .def("Update", &SceneEditorGUI::Update),
 
-        class_<Activity, Entity>("Activity")
-            .enum_("ActivityState")
-            [
-                value("NOACTIVITY", -1),
-                value("NOTSTARTED", 0),
-                value("STARTING", 1),
-                value("EDITING", 2),
-                value("PREGAME", 3),
-                value("RUNNING", 4),
-                value("DEMOEND", 5),
-                value("INERROR", 6),
-                value("OVER", 7)
-            ]
-            .enum_("Player")
-            [
-                value("NOPLAYER", -1),
-                value("PLAYER_1", 0),
-                value("PLAYER_2", 1),
-                value("PLAYER_3", 2),
-                value("PLAYER_4", 3),
-                value("MAXPLAYERCOUNT", 4)
-            ]
-            .enum_("Team")
-            [
-                value("NOTEAM", -1),
-                value("TEAM_1", 0),
-                value("TEAM_2", 1),
-                value("TEAM_3", 2),
-                value("TEAM_4", 3),
-                value("MAXTEAMCOUNT", 4)
-            ]
-            .enum_("ViewState")
-            [
-                value("NORMAL", 0),
-                value("OBSERVE", 1),
-                value("DEATHWATCH", 2),
-                value("ACTORSELECT", 3),
-                value("AISENTRYPOINT", 4),
-                value("AIPATROLPOINTS", 5),
-                value("AIGOLDDIGPOINT", 6),
-                value("AIGOTOPOINT", 7),
-                value("LZSELECT", 8)
-            ]
-            .enum_("DifficultySetting")
-            [
-                value("MINDIFFICULTY", 0),
-                value("CAKEDIFFICULTY", 15),
-                value("EASYDIFFICULTY", 40),
-                value("MEDIUMDIFFICULTY", 60),
-                value("HARDDIFFICULTY", 85),
-                value("NUTSDIFFICULTY", 98),
-                value("MAXDIFFICULTY", 100),
-                value("TESTDIFFICULTY", -1)
-            ]
-            .enum_("AISkillSetting")
-            [
+		*/
+	}
+
+	{
+		/*
+		class_<SceneEditorGUI>("SceneEditorGUI")
+			.enum_("EditorGUIMode")
+			[
+				value("INACTIVE", 0),
+				value("PICKINGOBJECT", 1),
+				value("ADDINGOBJECT", 2),
+				value("INSTALLINGBRAIN", 3),
+				value("PLACINGOBJECT", 4),
+				value("MOVINGOBJECT", 5),
+				value("DELETINGOBJECT", 6),
+				value("PLACEINFRONT", 7),
+				value("PLACEBEHIND", 8),
+				value("DONEEDITING", 9),
+				value("EDITORGUIMODECOUNT", 10)
+			]
+			.def("SetCursorPos", &SceneEditorGUI::SetCursorPos)
+			.property("EditorMode", &SceneEditorGUI::GetEditorGUIMode, &SceneEditorGUI::SetEditorGUIMode)
+			.def("GetCurrentObject", &SceneEditorGUI::GetCurrentObject)
+			.def("SetCurrentObject", &SceneEditorGUI::SetCurrentObject)
+			.def("SetModuleSpace", &SceneEditorGUI::SetModuleSpace)
+			.def("SetNativeTechModule", &SceneEditorGUI::SetNativeTechModule)
+			.def("SetForeignCostMultiplier", &SceneEditorGUI::SetForeignCostMultiplier)
+			.def("TestBrainResidence", &SceneEditorGUI::TestBrainResidence)
+			.def("Update", &SceneEditorGUI::Update),
+
+
+		*/
+	}
+
+	{
+		/*
+		class_<Activity, Entity>("Activity")
+			.enum_("ActivityState")
+			[
+				value("NOACTIVITY", -1),
+				value("NOTSTARTED", 0),
+				value("STARTING", 1),
+				value("EDITING", 2),
+				value("PREGAME", 3),
+				value("RUNNING", 4),
+				value("DEMOEND", 5),
+				value("INERROR", 6),
+				value("OVER", 7)
+			]
+			.enum_("Player")
+			[
+				value("NOPLAYER", -1),
+				value("PLAYER_1", 0),
+				value("PLAYER_2", 1),
+				value("PLAYER_3", 2),
+				value("PLAYER_4", 3),
+				value("MAXPLAYERCOUNT", 4)
+			]
+			.enum_("Team")
+			[
+				value("NOTEAM", -1),
+				value("TEAM_1", 0),
+				value("TEAM_2", 1),
+				value("TEAM_3", 2),
+				value("TEAM_4", 3),
+				value("MAXTEAMCOUNT", 4)
+			]
+			.enum_("ViewState")
+			[
+				value("NORMAL", 0),
+				value("OBSERVE", 1),
+				value("DEATHWATCH", 2),
+				value("ACTORSELECT", 3),
+				value("AISENTRYPOINT", 4),
+				value("AIPATROLPOINTS", 5),
+				value("AIGOLDDIGPOINT", 6),
+				value("AIGOTOPOINT", 7),
+				value("LZSELECT", 8)
+			]
+			.enum_("DifficultySetting")
+			[
+				value("MINDIFFICULTY", 0),
+				value("CAKEDIFFICULTY", 15),
+				value("EASYDIFFICULTY", 40),
+				value("MEDIUMDIFFICULTY", 60),
+				value("HARDDIFFICULTY", 85),
+				value("NUTSDIFFICULTY", 98),
+				value("MAXDIFFICULTY", 100),
+				value("TESTDIFFICULTY", -1)
+			]
+			.enum_("AISkillSetting")
+			[
 				value("INFERIORSKILL", Activity::INFERIORSKILL),
 				value("AVERAGESKILL", Activity::AVERAGESKILL),
 				value("GOODSKILL", Activity::GOODSKILL),
 				value("UNFAIRSKILL", Activity::UNFAIRSKILL),
 				value("DEFAULTSKILL", Activity::DEFAULTSKILL)
-            ]
-            .def(constructor<>())
-            .property("ClassName", &Activity::GetClassName)
-            .property("Description", &Activity::GetDescription)
-            .property("InCampaignStage", &Activity::GetInCampaignStage, &Activity::SetInCampaignStage)
-            .property("ActivityState", &Activity::GetActivityState, &Activity::SetActivityState)
-            .property("SceneName", &Activity::GetSceneName, &Activity::SetSceneName)
-            .property("PlayerCount", &Activity::GetPlayerCount, &Activity::SetPlayerCount)
-            .def("DeactivatePlayer", &Activity::DeactivatePlayer)
-            .def("PlayerActive", &Activity::PlayerActive)
-            .def("PlayerHuman", &Activity::PlayerHuman)
-            .property("HumanCount", &Activity::GetHumanCount)
-            .property("TeamCount", &Activity::GetTeamCount, &Activity::SetTeamCount)
-            .def("TeamActive", &Activity::TeamActive)
-            .def("GetTeamOfPlayer", &Activity::GetTeamOfPlayer)
-            .def("SetTeamOfPlayer", &Activity::SetTeamOfPlayer)
-            .def("PlayersInTeamCount", &Activity::PlayersInTeamCount)
-            .def("ScreenOfPlayer", &Activity::ScreenOfPlayer)
-            .def("GetViewState", &Activity::GetViewState)
-            .def("SetViewState", &Activity::SetViewState)
-            .def("GetPlayerBrain", &Activity::GetPlayerBrain)
-            .def("SetPlayerBrain", &Activity::SetPlayerBrain)
-            .def("PlayerHadBrain", &Activity::PlayerHadBrain)
-            .def("SetBrainEvacuated", &Activity::SetBrainEvacuated)
-            .def("BrainWasEvacuated", &Activity::BrainWasEvacuated)
-            .def("IsAssignedBrain", &Activity::IsAssignedBrain)
-            .def("IsBrainOfWhichPlayer", &Activity::IsBrainOfWhichPlayer)
-            .def("IsOtherPlayerBrain", &Activity::IsOtherPlayerBrain)
-            .def("HumanBrainCount", &Activity::HumanBrainCount)
-            .def("AIBrainCount", &Activity::AIBrainCount)
-            .def("GetControlledActor", &Activity::GetControlledActor)
-            .def("SetTeamFunds", &Activity::SetTeamFunds)
-            .def("GetTeamFunds", &Activity::GetTeamFunds)
-            .def("SetTeamAISkill", &Activity::SetTeamAISkill)
-            .def("GetTeamAISkill", &Activity::GetTeamAISkill)
-            .def("ChangeTeamFunds", &Activity::ChangeTeamFunds)
-            .def("TeamFundsChanged", &Activity::TeamFundsChanged)
-            .def("ReportDeath", &Activity::ReportDeath)
-            .def("GetTeamDeathCount", &Activity::GetTeamDeathCount)
-            .def("GetDemoTimeLeft", &Activity::GetDemoTimeLeft)
-            .def("Running", &Activity::Running)
-            .def("Paused", &Activity::Paused)
-            .def("ActivityOver", &Activity::ActivityOver)
-            .def("EnteredOrbit", &Activity::EnteredOrbit)
-            .def("SwitchToActor", &Activity::SwitchToActor)
-            .def("SwitchToNextActor", &Activity::SwitchToNextActor)
-            .def("SwitchToPrevActor", &Activity::SwitchToPrevActor)
-            .property("Difficulty", &Activity::GetDifficulty, &Activity::SetDifficulty)
-            .def("IsPlayerTeam", &Activity::IsPlayerTeam)
-            .def("ResetMessageTimer", &Activity::ResetMessageTimer),
+			]
+			.def(constructor<>())
+			.property("ClassName", &Activity::GetClassName)
+			.property("Description", &Activity::GetDescription)
+			.property("InCampaignStage", &Activity::GetInCampaignStage, &Activity::SetInCampaignStage)
+			.property("ActivityState", &Activity::GetActivityState, &Activity::SetActivityState)
+			.property("SceneName", &Activity::GetSceneName, &Activity::SetSceneName)
+			.property("PlayerCount", &Activity::GetPlayerCount, &Activity::SetPlayerCount)
+			.def("DeactivatePlayer", &Activity::DeactivatePlayer)
+			.def("PlayerActive", &Activity::PlayerActive)
+			.def("PlayerHuman", &Activity::PlayerHuman)
+			.property("HumanCount", &Activity::GetHumanCount)
+			.property("TeamCount", &Activity::GetTeamCount, &Activity::SetTeamCount)
+			.def("TeamActive", &Activity::TeamActive)
+			.def("GetTeamOfPlayer", &Activity::GetTeamOfPlayer)
+			.def("SetTeamOfPlayer", &Activity::SetTeamOfPlayer)
+			.def("PlayersInTeamCount", &Activity::PlayersInTeamCount)
+			.def("ScreenOfPlayer", &Activity::ScreenOfPlayer)
+			.def("GetViewState", &Activity::GetViewState)
+			.def("SetViewState", &Activity::SetViewState)
+			.def("GetPlayerBrain", &Activity::GetPlayerBrain)
+			.def("SetPlayerBrain", &Activity::SetPlayerBrain)
+			.def("PlayerHadBrain", &Activity::PlayerHadBrain)
+			.def("SetBrainEvacuated", &Activity::SetBrainEvacuated)
+			.def("BrainWasEvacuated", &Activity::BrainWasEvacuated)
+			.def("IsAssignedBrain", &Activity::IsAssignedBrain)
+			.def("IsBrainOfWhichPlayer", &Activity::IsBrainOfWhichPlayer)
+			.def("IsOtherPlayerBrain", &Activity::IsOtherPlayerBrain)
+			.def("HumanBrainCount", &Activity::HumanBrainCount)
+			.def("AIBrainCount", &Activity::AIBrainCount)
+			.def("GetControlledActor", &Activity::GetControlledActor)
+			.def("SetTeamFunds", &Activity::SetTeamFunds)
+			.def("GetTeamFunds", &Activity::GetTeamFunds)
+			.def("SetTeamAISkill", &Activity::SetTeamAISkill)
+			.def("GetTeamAISkill", &Activity::GetTeamAISkill)
+			.def("ChangeTeamFunds", &Activity::ChangeTeamFunds)
+			.def("TeamFundsChanged", &Activity::TeamFundsChanged)
+			.def("ReportDeath", &Activity::ReportDeath)
+			.def("GetTeamDeathCount", &Activity::GetTeamDeathCount)
+			.def("GetDemoTimeLeft", &Activity::GetDemoTimeLeft)
+			.def("Running", &Activity::Running)
+			.def("Paused", &Activity::Paused)
+			.def("ActivityOver", &Activity::ActivityOver)
+			.def("EnteredOrbit", &Activity::EnteredOrbit)
+			.def("SwitchToActor", &Activity::SwitchToActor)
+			.def("SwitchToNextActor", &Activity::SwitchToNextActor)
+			.def("SwitchToPrevActor", &Activity::SwitchToPrevActor)
+			.property("Difficulty", &Activity::GetDifficulty, &Activity::SetDifficulty)
+			.def("IsPlayerTeam", &Activity::IsPlayerTeam)
+			.def("ResetMessageTimer", &Activity::ResetMessageTimer),
 
-        class_<GUIBanner>("GUIBanner")
-            .enum_("AnimMode")
-            [
-                value("BLINKING", 0),
-                value("FLYBYLEFTWARD", 1),
-                value("FLYBYRIGHTWARD", 2),
-                value("ANIMMODECOUNT", 3)
-            ]
-            .enum_("AnimState")
-            [
-                value("NOTSTARTED", 0),
-                value("SHOWING", 1),
-                value("SHOW", 2),
-                value("HIDING", 3),
-                value("OVER", 4),
-                value("ANIMSTATECOUNT", 5)
-            ]
-            .enum_("BannerColor")
-            [
-                value("RED", 0),
-                value("YELLOW", 1)
-            ]
-            .property("BannerText", &GUIBanner::GetBannerText)
-            .property("AnimState", &GUIBanner::GetAnimState)
-            .def("IsVisible", &GUIBanner::IsVisible)
-            .property("Kerning", &GUIBanner::GetKerning, &GUIBanner::SetKerning)
-            .def("ShowText", &GUIBanner::ShowText)
-            .def("HideText", &GUIBanner::HideText)
-            .def("ClearText", &GUIBanner::ClearText),
 
-        def("ToGameActivity", (GameActivity *(*)(Entity *))&ToGameActivity),
-        def("ToGameActivity", (const GameActivity *(*)(const Entity *))&ToConstGameActivity),
-        class_<GameActivity, Activity>("GameActivity")
-            .enum_("ObjectiveArrowDir")
-            [
-                value("ARROWDOWN", 0),
-                value("ARROWLEFT", 1),
-                value("ARROWRIGHT", 2),
-                value("ARROWUP", 3)
-            ]
-            .def(constructor<>())
-            .def("SetObservationTarget", &GameActivity::SetObservationTarget)
-            .def("SetDeathViewTarget", &GameActivity::SetDeathViewTarget)
-            .def("SetLandingZone", &GameActivity::SetLandingZone)
-            .def("GetLandingZone", &GameActivity::GetLandingZone)
-            .def("SetActorSelectCursor", &GameActivity::SetActorSelectCursor)
-            .def("GetBuyGUI", &GameActivity::GetBuyGUI)
-            .def("GetEditorGUI", &GameActivity::GetEditorGUI)
-            .property("WinnerTeam", &GameActivity::GetWinnerTeam, &GameActivity::SetWinnerTeam)
-            .property("CPUTeam", &GameActivity::GetCPUTeam, &GameActivity::SetCPUTeam)
+		*/
+	}
+
+	{
+		/*
+
+		class_<GUIBanner>("GUIBanner")
+			.enum_("AnimMode")
+			[
+				value("BLINKING", 0),
+				value("FLYBYLEFTWARD", 1),
+				value("FLYBYRIGHTWARD", 2),
+				value("ANIMMODECOUNT", 3)
+			]
+			.enum_("AnimState")
+			[
+				value("NOTSTARTED", 0),
+				value("SHOWING", 1),
+				value("SHOW", 2),
+				value("HIDING", 3),
+				value("OVER", 4),
+				value("ANIMSTATECOUNT", 5)
+			]
+			.enum_("BannerColor")
+			[
+				value("RED", 0),
+				value("YELLOW", 1)
+			]
+			.property("BannerText", &GUIBanner::GetBannerText)
+			.property("AnimState", &GUIBanner::GetAnimState)
+			.def("IsVisible", &GUIBanner::IsVisible)
+			.property("Kerning", &GUIBanner::GetKerning, &GUIBanner::SetKerning)
+			.def("ShowText", &GUIBanner::ShowText)
+			.def("HideText", &GUIBanner::HideText)
+			.def("ClearText", &GUIBanner::ClearText),
+
+		*/
+	}
+
+	{
+		/*
+		def("ToGameActivity", (GameActivity *(*)(Entity *))&ToGameActivity),
+		def("ToGameActivity", (const GameActivity *(*)(const Entity *))&ToConstGameActivity),
+		class_<GameActivity, Activity>("GameActivity")
+			.enum_("ObjectiveArrowDir")
+			[
+				value("ARROWDOWN", 0),
+				value("ARROWLEFT", 1),
+				value("ARROWRIGHT", 2),
+				value("ARROWUP", 3)
+			]
+			.def(constructor<>())
+			.def("SetObservationTarget", &GameActivity::SetObservationTarget)
+			.def("SetDeathViewTarget", &GameActivity::SetDeathViewTarget)
+			.def("SetLandingZone", &GameActivity::SetLandingZone)
+			.def("GetLandingZone", &GameActivity::GetLandingZone)
+			.def("SetActorSelectCursor", &GameActivity::SetActorSelectCursor)
+			.def("GetBuyGUI", &GameActivity::GetBuyGUI)
+			.def("GetEditorGUI", &GameActivity::GetEditorGUI)
+			.property("WinnerTeam", &GameActivity::GetWinnerTeam, &GameActivity::SetWinnerTeam)
+			.property("CPUTeam", &GameActivity::GetCPUTeam, &GameActivity::SetCPUTeam)
 //            .def_readwrite("ActorCursor", &GameActivity::m_ActorCursor)
-            .def_readwrite("CursorTimer", &GameActivity::m_CursorTimer)
-            .def_readwrite("GameTimer", &GameActivity::m_GameTimer)
-            .def_readwrite("GameOverTimer", &GameActivity::m_GameOverTimer)
-            .def_readwrite("GameOverPeriod", &GameActivity::m_GameOverPeriod)
-            .def_readwrite("OrbitedCraft", &GameActivity::m_pOrbitedCraft)
+			.def_readwrite("CursorTimer", &GameActivity::m_CursorTimer)
+			.def_readwrite("GameTimer", &GameActivity::m_GameTimer)
+			.def_readwrite("GameOverTimer", &GameActivity::m_GameOverTimer)
+			.def_readwrite("GameOverPeriod", &GameActivity::m_GameOverPeriod)
+			.def_readwrite("OrbitedCraft", &GameActivity::m_pOrbitedCraft)
 			.def_readwrite("PieMenuActor", &GameActivity::m_pPieMenuActor)
 			.def("OtherTeam", &GameActivity::OtherTeam)
-            .def("OneOrNoneTeamsLeft", &GameActivity::OneOrNoneTeamsLeft)
-            .def("WhichTeamLeft", &GameActivity::WhichTeamLeft)
-            .def("NoTeamLeft", &GameActivity::NoTeamLeft)
-            // Backwards compat
-            .def("OnlyOneTeamLeft", &GameActivity::OneOrNoneTeamsLeft)
-            .def("GetBanner", &GameActivity::GetBanner)
-            .def("SetLZArea", &GameActivity::SetLZArea)
-            .def("GetLZArea", &GameActivity::GetLZArea)
-            .def("SetBrainLZWidth", &GameActivity::SetBrainLZWidth)
-            .def("GetBrainLZWidth", &GameActivity::GetBrainLZWidth)
+			.def("OneOrNoneTeamsLeft", &GameActivity::OneOrNoneTeamsLeft)
+			.def("WhichTeamLeft", &GameActivity::WhichTeamLeft)
+			.def("NoTeamLeft", &GameActivity::NoTeamLeft)
+			// Backwards compat
+			.def("OnlyOneTeamLeft", &GameActivity::OneOrNoneTeamsLeft)
+			.def("GetBanner", &GameActivity::GetBanner)
+			.def("SetLZArea", &GameActivity::SetLZArea)
+			.def("GetLZArea", &GameActivity::GetLZArea)
+			.def("SetBrainLZWidth", &GameActivity::SetBrainLZWidth)
+			.def("GetBrainLZWidth", &GameActivity::GetBrainLZWidth)
 			.def("GetActiveCPUTeamCount", &GameActivity::GetActiveCPUTeamCount)
 			.def("GetActiveHumanTeamCount", &GameActivity::GetActiveHumanTeamCount)
 			.def("AddObjectivePoint", &GameActivity::AddObjectivePoint)
-            .def("YSortObjectivePoints", &GameActivity::YSortObjectivePoints)
-            .def("ClearObjectivePoints", &GameActivity::ClearObjectivePoints)
-            .def("AddOverridePurchase", &GameActivity::AddOverridePurchase)
-            .def("SetOverridePurchaseList", (int (GameActivity::*)(const Loadout *, int))&GameActivity::SetOverridePurchaseList)
-            .def("SetOverridePurchaseList", (int (GameActivity::*)(string, int))&GameActivity::SetOverridePurchaseList)
-            .def("ClearOverridePurchase", &GameActivity::ClearOverridePurchase)
-            .def("CreateDelivery", (bool (GameActivity::*)(int))&GameActivity::CreateDelivery)
-            .def("CreateDelivery", (bool (GameActivity::*)(int, int))&GameActivity::CreateDelivery)
-            .def("CreateDelivery", (bool (GameActivity::*)(int, int, Vector&))&GameActivity::CreateDelivery)
-            .def("CreateDelivery", (bool (GameActivity::*)(int, int, Actor*))&GameActivity::CreateDelivery)
-            .def("GetDeliveryCount", &GameActivity::GetDeliveryCount)
-            .property("DeliveryDelay", &GameActivity::GetDeliveryDelay, &GameActivity::SetDeliveryDelay)
+			.def("YSortObjectivePoints", &GameActivity::YSortObjectivePoints)
+			.def("ClearObjectivePoints", &GameActivity::ClearObjectivePoints)
+			.def("AddOverridePurchase", &GameActivity::AddOverridePurchase)
+			.def("SetOverridePurchaseList", (int (GameActivity::*)(const Loadout *, int))&GameActivity::SetOverridePurchaseList)
+			.def("SetOverridePurchaseList", (int (GameActivity::*)(string, int))&GameActivity::SetOverridePurchaseList)
+			.def("ClearOverridePurchase", &GameActivity::ClearOverridePurchase)
+			.def("CreateDelivery", (bool (GameActivity::*)(int))&GameActivity::CreateDelivery)
+			.def("CreateDelivery", (bool (GameActivity::*)(int, int))&GameActivity::CreateDelivery)
+			.def("CreateDelivery", (bool (GameActivity::*)(int, int, Vector&))&GameActivity::CreateDelivery)
+			.def("CreateDelivery", (bool (GameActivity::*)(int, int, Actor*))&GameActivity::CreateDelivery)
+			.def("GetDeliveryCount", &GameActivity::GetDeliveryCount)
+			.property("DeliveryDelay", &GameActivity::GetDeliveryDelay, &GameActivity::SetDeliveryDelay)
 			.def("GetTeamTech", &GameActivity::GetTeamTech)
 			.def("SetTeamTech", &GameActivity::SetTeamTech)
 			.def("GetCrabToHumanSpawnRatio", &GameActivity::GetCrabToHumanSpawnRatio)
 			.property("BuyMenuEnabled", &GameActivity::GetBuyMenuEnabled, &GameActivity::SetBuyMenuEnabled)
 			.property("CraftsOrbitAtTheEdge", &GameActivity::GetCraftsOrbitAtTheEdge, &GameActivity::SetCraftsOrbitAtTheEdge)
-            .def("TeamIsCPU", &GameActivity::TeamIsCPU)
-            .def("GetStartingGold", &GameActivity::GetStartingGold)
-            .def("GetFogOfWarEnabled", &GameActivity::GetFogOfWarEnabled)
-            .def("UpdateEditing", &GameActivity::UpdateEditing)
-            .def("DisableAIs", &GameActivity::DisableAIs)
-            .def("InitAIs", &GameActivity::InitAIs)
-            .def("AddPieMenuSlice", &GameActivity::AddPieMenuSlice)
-            .def("AlterPieMenuSlice", &GameActivity::AlterPieMenuSlice)
-            .def("RemovePieMenuSlice", &GameActivity::RemovePieMenuSlice)
+			.def("TeamIsCPU", &GameActivity::TeamIsCPU)
+			.def("GetStartingGold", &GameActivity::GetStartingGold)
+			.def("GetFogOfWarEnabled", &GameActivity::GetFogOfWarEnabled)
+			.def("UpdateEditing", &GameActivity::UpdateEditing)
+			.def("DisableAIs", &GameActivity::DisableAIs)
+			.def("InitAIs", &GameActivity::InitAIs)
+			.def("AddPieMenuSlice", &GameActivity::AddPieMenuSlice)
+			.def("AlterPieMenuSlice", &GameActivity::AlterPieMenuSlice)
+			.def("RemovePieMenuSlice", &GameActivity::RemovePieMenuSlice)
 			.def_readwrite("PieMenuSlices", &GameActivity::m_CurrentPieMenuSlices, luabind::return_stl_iterator()),
-		
+
+
+		*/
+	}
+
+	{
+		/*
 		class_<PieMenuGUI::Slice>("Slice")
 			.enum_("Direction")
 			[
@@ -3154,139 +3077,209 @@ int LuaMan::Create()
 			.property("Type", &PieMenuGUI::Slice::GetType)
 			.property("Direction", &PieMenuGUI::Slice::GetDirection),
 
-        ABSTRACTLUABINDING(GlobalScript, Entity)
-            .def_readwrite("OrbitedCraft", &GlobalScript::m_pOrbitedCraft)
+
+		*/
+	}
+
+	{
+		/*
+
+		ABSTRACTLUABINDING(GlobalScript, Entity)
+			.def_readwrite("OrbitedCraft", &GlobalScript::m_pOrbitedCraft)
 			.def_readwrite("PieMenuActor", &GlobalScript::m_pPieMenuActor)
 			.def("Deactivate", &GlobalScript::Deactivate),
 
-        class_<ActivityMan>("ActivityManager")
-            .property("DefaultActivityType", &ActivityMan::GetDefaultActivityType, &ActivityMan::SetDefaultActivityType)
-            .property("DefaultActivityName", &ActivityMan::GetDefaultActivityName, &ActivityMan::SetDefaultActivityName)
-            // Transfers ownership of the Activity to start into the ActivityMan, adopts ownership (_1 is the this ptr)
-            .def("SetStartActivity", &ActivityMan::SetStartActivity, luabind::adopt_policy<2>())
-            .def("GetStartActivity", &ActivityMan::GetStartActivity)
-            .def("GetActivity", &ActivityMan::GetActivity)
-            // Transfers ownership of the Activity to start into the ActivityMan, adopts ownership (_1 is the this ptr)
-            .def("StartActivity", (int (ActivityMan::*)(Activity *))&ActivityMan::StartActivity, luabind::adopt_policy<2>())
-            .def("StartActivity", (int (ActivityMan::*)(string, string))&ActivityMan::StartActivity)
-            .def("RestartActivity", &ActivityMan::RestartActivity)
-            .def("PauseActivity", &ActivityMan::PauseActivity)
-            .def("EndActivity", &ActivityMan::EndActivity)
-            .def("ActivityRunning", &ActivityMan::ActivityRunning)
-            .def("ActivityPaused", &ActivityMan::ActivityPaused),
+		*/
+	}
 
-        class_<MetaPlayer>("MetaPlayer")
-            .def(constructor<>())
-            .property("NativeTechModule", &MetaPlayer::GetNativeTechModule)
-            .property("ForeignCostMultiplier", &MetaPlayer::GetForeignCostMultiplier)
-            .property("NativeCostMultiplier", &MetaPlayer::GetNativeCostMultiplier)
-            .property("InGamePlayer", &MetaPlayer::GetInGamePlayer)
-            .property("BrainPoolCount", &MetaPlayer::GetBrainPoolCount, &MetaPlayer::SetBrainPoolCount)
-            .def("ChangeBrainPoolCount", &MetaPlayer::ChangeBrainPoolCount),
+	{
+		/*
+		class_<ActivityMan>("ActivityManager")
+			.property("DefaultActivityType", &ActivityMan::GetDefaultActivityType, &ActivityMan::SetDefaultActivityType)
+			.property("DefaultActivityName", &ActivityMan::GetDefaultActivityName, &ActivityMan::SetDefaultActivityName)
+			// Transfers ownership of the Activity to start into the ActivityMan, adopts ownership (_1 is the this ptr)
+			.def("SetStartActivity", &ActivityMan::SetStartActivity, luabind::adopt_policy<2>())
+			.def("GetStartActivity", &ActivityMan::GetStartActivity)
+			.def("GetActivity", &ActivityMan::GetActivity)
+			// Transfers ownership of the Activity to start into the ActivityMan, adopts ownership (_1 is the this ptr)
+			.def("StartActivity", (int (ActivityMan::*)(Activity *))&ActivityMan::StartActivity, luabind::adopt_policy<2>())
+			.def("StartActivity", (int (ActivityMan::*)(string, string))&ActivityMan::StartActivity)
+			.def("RestartActivity", &ActivityMan::RestartActivity)
+			.def("PauseActivity", &ActivityMan::PauseActivity)
+			.def("EndActivity", &ActivityMan::EndActivity)
+			.def("ActivityRunning", &ActivityMan::ActivityRunning)
+			.def("ActivityPaused", &ActivityMan::ActivityPaused),
 
-        class_<MetaMan>("MetaManager")
-            .property("GameName", &MetaMan::GetGameName, &MetaMan::SetGameName)
+
+		*/
+	}
+
+	{
+		/*
+
+		class_<MetaPlayer>("MetaPlayer")
+			.def(constructor<>())
+			.property("NativeTechModule", &MetaPlayer::GetNativeTechModule)
+			.property("ForeignCostMultiplier", &MetaPlayer::GetForeignCostMultiplier)
+			.property("NativeCostMultiplier", &MetaPlayer::GetNativeCostMultiplier)
+			.property("InGamePlayer", &MetaPlayer::GetInGamePlayer)
+			.property("BrainPoolCount", &MetaPlayer::GetBrainPoolCount, &MetaPlayer::SetBrainPoolCount)
+			.def("ChangeBrainPoolCount", &MetaPlayer::ChangeBrainPoolCount),
+
+		*/
+	}
+
+	{
+		/*
+		class_<MetaMan>("MetaManager")
+			.property("GameName", &MetaMan::GetGameName, &MetaMan::SetGameName)
 //            .property("GUI", &MetaMan::GetGUI)
-            .property("PlayerTurn", &MetaMan::GetPlayerTurn)
-            .property("PlayerCount", &MetaMan::GetPlayerCount)
-            .def("GetTeamOfPlayer", &MetaMan::GetTeamOfPlayer)
-            .def("GetPlayer", &MetaMan::GetPlayer)
-            .def("GetMetaPlayerOfInGamePlayer", &MetaMan::GetMetaPlayerOfInGamePlayer)
-            .def_readwrite("Players", &MetaMan::m_Players, luabind::return_stl_iterator()),
+			.property("PlayerTurn", &MetaMan::GetPlayerTurn)
+			.property("PlayerCount", &MetaMan::GetPlayerCount)
+			.def("GetTeamOfPlayer", &MetaMan::GetTeamOfPlayer)
+			.def("GetPlayer", &MetaMan::GetPlayer)
+			.def("GetMetaPlayerOfInGamePlayer", &MetaMan::GetMetaPlayerOfInGamePlayer)
+			.def_readwrite("Players", &MetaMan::m_Players, luabind::return_stl_iterator()),
 
-        class_<AlarmEvent>("AlarmEvent")
-            .def(constructor<>())
-            .def(constructor<const Vector &, int, float>())
-            .def_readwrite("ScenePos", &AlarmEvent::m_ScenePos)
-            .def_readwrite("Team", &AlarmEvent::m_Team)
-            .def_readwrite("Range", &AlarmEvent::m_Range),
 
-        class_<MovableMan>("MovableManager")
-            .def("GetMOFromID", &MovableMan::GetMOFromID)
+		*/
+	}
+
+	{
+		/*
+		class_<AlarmEvent>("AlarmEvent")
+			.def(constructor<>())
+			.def(constructor<const Vector &, int, float>())
+			.def_readwrite("ScenePos", &AlarmEvent::m_ScenePos)
+			.def_readwrite("Team", &AlarmEvent::m_Team)
+			.def_readwrite("Range", &AlarmEvent::m_Range),
+
+
+		*/
+	}
+
+	{
+		/*
+
+		class_<MovableMan>("MovableManager")
+			.def("GetMOFromID", &MovableMan::GetMOFromID)
 			.def("FindObjectByUniqueID", &MovableMan::FindObjectByUniqueID)
 			.def("GetMOIDCount", &MovableMan::GetMOIDCount)
 			.def("GetTeamMOIDCount", &MovableMan::GetTeamMOIDCount)
-            .def("PurgeAllMOs", &MovableMan::PurgeAllMOs)
-            .def("GetNextActorInGroup", &MovableMan::GetNextActorInGroup)
-            .def("GetPrevActorInGroup", &MovableMan::GetPrevActorInGroup)
-            .def("GetNextTeamActor", &MovableMan::GetNextTeamActor)
-            .def("GetPrevTeamActor", &MovableMan::GetPrevTeamActor)
+			.def("PurgeAllMOs", &MovableMan::PurgeAllMOs)
+			.def("GetNextActorInGroup", &MovableMan::GetNextActorInGroup)
+			.def("GetPrevActorInGroup", &MovableMan::GetPrevActorInGroup)
+			.def("GetNextTeamActor", &MovableMan::GetNextTeamActor)
+			.def("GetPrevTeamActor", &MovableMan::GetPrevTeamActor)
 //            .def("GetClosestTeamActor", (Actor * (MovableMan::*)(int , int , const Vector &, int , float *, const Actor *))&MovableMan::GetClosestTeamActor)
 			.def("GetClosestEnemyActor", &MovableMan::GetClosestEnemyActor)
-            .def("GetFirstTeamActor", &MovableMan::GetFirstTeamActor)
+			.def("GetFirstTeamActor", &MovableMan::GetFirstTeamActor)
 //			.def("GetClosestActor", (Actor * (MovableMan::*)(Vector &, int, float *, const Actor *))&MovableMan::GetClosestActor)
 			.def("GetClosestBrainActor", &MovableMan::GetClosestBrainActor)
-            .def("GetFirstBrainActor", &MovableMan::GetFirstBrainActor)
+			.def("GetFirstBrainActor", &MovableMan::GetFirstBrainActor)
 			.def("GetClosestOtherBrainActor", &MovableMan::GetClosestOtherBrainActor)
-            .def("GetFirstOtherBrainActor", &MovableMan::GetFirstOtherBrainActor)
-            .def("GetUnassignedBrain", &MovableMan::GetUnassignedBrain)
-            .def("GetParticleCount", &MovableMan::GetParticleCount)
-            .def("GetAGResolution", &MovableMan::GetAGResolution)
-            .def("GetSplashRatio", &MovableMan::GetSplashRatio)
-            .property("MaxDroppedItems", &MovableMan::GetMaxDroppedItems, &MovableMan::SetMaxDroppedItems)
-            .property("ScriptedEntity", &MovableMan::GetScriptedEntity, &MovableMan::SetScriptedEntity)
-            .def("SortTeamRoster", &MovableMan::SortTeamRoster)
+			.def("GetFirstOtherBrainActor", &MovableMan::GetFirstOtherBrainActor)
+			.def("GetUnassignedBrain", &MovableMan::GetUnassignedBrain)
+			.def("GetParticleCount", &MovableMan::GetParticleCount)
+			.def("GetAGResolution", &MovableMan::GetAGResolution)
+			.def("GetSplashRatio", &MovableMan::GetSplashRatio)
+			.property("MaxDroppedItems", &MovableMan::GetMaxDroppedItems, &MovableMan::SetMaxDroppedItems)
+			.property("ScriptedEntity", &MovableMan::GetScriptedEntity, &MovableMan::SetScriptedEntity)
+			.def("SortTeamRoster", &MovableMan::SortTeamRoster)
 			.def("ChangeActorTeam", &MovableMan::ChangeActorTeam)
 			.def("AddMO", &AddMO, luabind::adopt_policy<2>())
-            .def("AddActor", &AddActor, luabind::adopt_policy<2>())
-            .def("AddItem", &AddItem, luabind::adopt_policy<2>())
-            .def("AddParticle", &AddParticle, luabind::adopt_policy<2>())
-            .def("RemoveActor", &MovableMan::RemoveActor)
-            .def("RemoveItem", &MovableMan::RemoveItem)
-            .def("RemoveParticle", &MovableMan::RemoveParticle)
-            .def("ValidMO", &MovableMan::ValidMO)
-            .def("IsActor", &MovableMan::IsActor)
-            .def("IsDevice", &MovableMan::IsDevice)
-            .def("IsParticle", &MovableMan::IsParticle)
-            .def("IsOfActor", &MovableMan::IsOfActor)
-            .def("GetRootMOID", &MovableMan::GetRootMOID)
-            .def("RemoveMO", &MovableMan::RemoveMO)
-            .def("KillAllActors", &MovableMan::KillAllActors)
-            .def("OpenAllDoors", &MovableMan::OpenAllDoors)
-            .def("IsParticleSettlingEnabled", &MovableMan::IsParticleSettlingEnabled)
-            .def("EnableParticleSettling", &MovableMan::EnableParticleSettling)
-            .def("IsMOSubtractionEnabled", &MovableMan::IsMOSubtractionEnabled)
-            .def_readwrite("Actors", &MovableMan::m_Actors, luabind::return_stl_iterator())
-            .def_readwrite("Items", &MovableMan::m_Items, luabind::return_stl_iterator())
-            .def_readwrite("Particles", &MovableMan::m_Particles, luabind::return_stl_iterator())
-            .def_readwrite("AddedActors", &MovableMan::m_AddedActors, luabind::return_stl_iterator())
-            .def_readwrite("AddedItems", &MovableMan::m_AddedItems, luabind::return_stl_iterator())
-            .def_readwrite("AddedParticles", &MovableMan::m_AddedParticles, luabind::return_stl_iterator())
-            .def_readwrite("AlarmEvents", &MovableMan::m_AlarmEvents, luabind::return_stl_iterator())
-            .def_readwrite("AddedAlarmEvents", &MovableMan::m_AddedAlarmEvents, luabind::return_stl_iterator()),
+			.def("AddActor", &AddActor, luabind::adopt_policy<2>())
+			.def("AddItem", &AddItem, luabind::adopt_policy<2>())
+			.def("AddParticle", &AddParticle, luabind::adopt_policy<2>())
+			.def("RemoveActor", &MovableMan::RemoveActor)
+			.def("RemoveItem", &MovableMan::RemoveItem)
+			.def("RemoveParticle", &MovableMan::RemoveParticle)
+			.def("ValidMO", &MovableMan::ValidMO)
+			.def("IsActor", &MovableMan::IsActor)
+			.def("IsDevice", &MovableMan::IsDevice)
+			.def("IsParticle", &MovableMan::IsParticle)
+			.def("IsOfActor", &MovableMan::IsOfActor)
+			.def("GetRootMOID", &MovableMan::GetRootMOID)
+			.def("RemoveMO", &MovableMan::RemoveMO)
+			.def("KillAllActors", &MovableMan::KillAllActors)
+			.def("OpenAllDoors", &MovableMan::OpenAllDoors)
+			.def("IsParticleSettlingEnabled", &MovableMan::IsParticleSettlingEnabled)
+			.def("EnableParticleSettling", &MovableMan::EnableParticleSettling)
+			.def("IsMOSubtractionEnabled", &MovableMan::IsMOSubtractionEnabled)
+			.def_readwrite("Actors", &MovableMan::m_Actors, luabind::return_stl_iterator())
+			.def_readwrite("Items", &MovableMan::m_Items, luabind::return_stl_iterator())
+			.def_readwrite("Particles", &MovableMan::m_Particles, luabind::return_stl_iterator())
+			.def_readwrite("AddedActors", &MovableMan::m_AddedActors, luabind::return_stl_iterator())
+			.def_readwrite("AddedItems", &MovableMan::m_AddedItems, luabind::return_stl_iterator())
+			.def_readwrite("AddedParticles", &MovableMan::m_AddedParticles, luabind::return_stl_iterator())
+			.def_readwrite("AlarmEvents", &MovableMan::m_AlarmEvents, luabind::return_stl_iterator())
+			.def_readwrite("AddedAlarmEvents", &MovableMan::m_AddedAlarmEvents, luabind::return_stl_iterator()),
 
-        class_<ConsoleMan>("ConsoleManager")
-            .def("PrintString", &ConsoleMan::PrintString)
-            .def("SaveInputLog", &ConsoleMan::SaveInputLog)
-            .def("SaveAllText", &ConsoleMan::SaveAllText)
-            .def("Clear", &ConsoleMan::ClearLog)
+		*/
+	}
+
+	{
+		/*
+		class_<ConsoleMan>("ConsoleManager")
+			.def("PrintString", &ConsoleMan::PrintString)
+			.def("SaveInputLog", &ConsoleMan::SaveInputLog)
+			.def("SaveAllText", &ConsoleMan::SaveAllText)
+			.def("Clear", &ConsoleMan::ClearLog)
 			.property("ForceVisibility", &ConsoleMan::IsForceVisible, &ConsoleMan::ForceVisibility)
 			.property("ScreenSize", &ConsoleMan::GetConsoleScreenSize, &ConsoleMan::SetConsoleScreenSize),
 
-        class_<LuaMan>("LuaManager")
-            .property("TempEntity", &LuaMan::GetTempEntity, &LuaMan::SetTempEntity)
-            .def("FileOpen", &LuaMan::FileOpen)
-            .def("FileClose", &LuaMan::FileClose)
-            .def("FileReadLine", &LuaMan::FileReadLine)
-            .def("FileWriteLine", &LuaMan::FileWriteLine)
-            .def("FileEOF", &LuaMan::FileEOF),
 
-        class_<SettingsMan>("SettingsdManager")
-            .property("PrintDebugInfo", &SettingsMan::PrintDebugInfo, &SettingsMan::SetPrintDebugInfo)
+		*/
+	}
+
+	{
+		/*
+		class_<LuaMan>("LuaManager")
+			.property("TempEntity", &LuaMan::GetTempEntity, &LuaMan::SetTempEntity)
+			.def("FileOpen", &LuaMan::FileOpen)
+			.def("FileClose", &LuaMan::FileClose)
+			.def("FileReadLine", &LuaMan::FileReadLine)
+			.def("FileWriteLine", &LuaMan::FileWriteLine)
+			.def("FileEOF", &LuaMan::FileEOF),
+
+
+
+		*/
+	}
+
+	{
+		/*
+
+		class_<SettingsMan>("SettingsdManager")
+			.property("PrintDebugInfo", &SettingsMan::PrintDebugInfo, &SettingsMan::SetPrintDebugInfo)
 			.property("RecommendedMOIDCount", &SettingsMan::RecommendedMOIDCount),
 
-        // NOT a member function, so adopting _1 instead of the _2 for the first param, since there's no "this" pointer!!
-        def("DeleteEntity", &DeleteEntity, luabind::adopt_policy<1>()),
-        def("PosRand", &PosRand),
-        def("NormalRand", &NormalRand),
-        def("RangeRand", &RangeRand),
-        def("SelectRand", &SelectRand),
-        def("LERP", &LERP),
-        def("EaseIn", &EaseIn),
-        def("EaseOut", &EaseOut),
-        def("EaseInOut", &EaseInOut),
-        def("Clamp", &Limit)
-    ];
+		*/
+	}
+
+
+	{
+		/*
+		// NOT a member function, so adopting _1 instead of the _2 for the first param, since there's no "this" pointer!!
+		def("DeleteEntity", &DeleteEntity, luabind::adopt_policy<1>()),
+		def("PosRand", &PosRand),
+		def("NormalRand", &NormalRand),
+		def("RangeRand", &RangeRand),
+		def("SelectRand", &SelectRand),
+		def("LERP", &LERP),
+		def("EaseIn", &EaseIn),
+		def("EaseOut", &EaseOut),
+		def("EaseInOut", &EaseInOut),
+		def("Clamp", &Limit)
+
+
+		*/
+	}
+
+    // Declare all useful classes in the master state
+    //module(m_pMasterState)
+    //[
+    //];
 
     // Assign the manager instances to globals in the lua master state
     //globals(m_pMasterState)["TimerMan"] = &g_TimerMan;
@@ -3301,6 +3294,20 @@ int LuaMan::Create()
     //globals(m_pMasterState)["ConsoleMan"] = &g_ConsoleMan;
     //globals(m_pMasterState)["LuaMan"] = &g_LuaMan;
     //globals(m_pMasterState)["SettingsMan"] = &g_SettingsMan;
+
+	g_pSolLuaState->set("TimerMan", &g_TimerMan);
+	g_pSolLuaState->set("FrameMan", &g_FrameMan);
+	g_pSolLuaState->set("PresetMan", &g_PresetMan);
+	g_pSolLuaState->set("AudioMan", &g_AudioMan);
+	g_pSolLuaState->set("UInputMan", &g_UInputMan);
+	g_pSolLuaState->set("SceneMan", &g_SceneMan);
+	g_pSolLuaState->set("ActivityMan", &g_ActivityMan);
+	g_pSolLuaState->set("MetaMan", &g_MetaMan);
+	g_pSolLuaState->set("MovableMan", &g_MovableMan);
+	g_pSolLuaState->set("ConsoleMan", &g_ConsoleMan);
+	g_pSolLuaState->set("LuaMan", &g_LuaMan);
+	g_pSolLuaState->set("SettingsMan", &g_SettingsMan);
+
 
 
 

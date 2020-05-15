@@ -39,7 +39,7 @@ class Leg;
 class ACraft:
     public Actor
 {
-
+    friend class LuaMan;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Public member variable, method and friend function declarations

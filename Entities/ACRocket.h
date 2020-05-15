@@ -39,6 +39,7 @@ class Leg;
 class ACRocket:
     public ACraft
 {
+    friend class LuaMan;
 
 enum LandingGearState
 {
