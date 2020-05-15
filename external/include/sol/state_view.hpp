@@ -112,7 +112,7 @@ namespace sol {
 
 		template <typename... Args>
 		void open_libraries(Args&&... args) {
-			static_assert(meta::all_same<lib, Args...>::value, "all types must be libraries");
+			static_assert(meta::all_same<lib, meta::unqualified_t<Args>...>::value, "all types must be libraries");
 			if constexpr (sizeof...(args) == 0) {
 				luaL_openlibs(L);
 				return;
@@ -682,12 +682,12 @@ namespace sol {
 		}
 
 		template <typename T>
-		proxy<global_table&, detail::proxy_key_t<T>> operator[](T&& key) {
+		table_proxy<global_table&, detail::proxy_key_t<T>> operator[](T&& key) {
 			return global[std::forward<T>(key)];
 		}
 
 		template <typename T>
-		proxy<const global_table&, detail::proxy_key_t<T>> operator[](T&& key) const {
+		table_proxy<const global_table&, detail::proxy_key_t<T>> operator[](T&& key) const {
 			return global[std::forward<T>(key)];
 		}
 

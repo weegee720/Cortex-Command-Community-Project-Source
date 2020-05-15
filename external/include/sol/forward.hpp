@@ -28,16 +28,19 @@
 
 #include <utility>
 #include <type_traits>
+#include <string_view>
 
 #if defined(SOL_USING_CXX_LUA) && SOL_USING_CXX_LUA
 struct lua_State;
 #else
 extern "C" {
-	struct lua_State;
+struct lua_State;
 }
 #endif // C++ Mangling for Lua vs. Not
 
 namespace sol {
+
+	enum class type;
 
 	class stateless_reference;
 	template <bool b>
@@ -56,7 +59,7 @@ namespace sol {
 	template <typename>
 	struct proxy_base;
 	template <typename, typename>
-	struct proxy;
+	struct table_proxy;
 
 	template <bool, typename>
 	class basic_table_core;
@@ -118,12 +121,13 @@ namespace sol {
 	using function = protected_function;
 	using main_function = main_protected_function;
 	using stack_function = stack_protected_function;
+	using stack_aligned_function = stack_aligned_safe_function;
 #else
 	using function = unsafe_function;
 	using main_function = main_unsafe_function;
 	using stack_function = stack_unsafe_function;
-#endif
 	using stack_aligned_function = stack_aligned_unsafe_function;
+#endif
 	using stack_aligned_stack_handler_function = basic_protected_function<stack_reference, true, stack_reference>;
 
 	struct unsafe_function_result;
@@ -234,6 +238,8 @@ namespace sol {
 	template <class T>
 	class optional<T&>;
 #endif
+
+	using check_handler_type = int(lua_State*, int, type, type, const char*);
 
 } // namespace sol
 

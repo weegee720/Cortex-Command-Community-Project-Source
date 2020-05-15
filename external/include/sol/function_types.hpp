@@ -70,9 +70,11 @@ namespace sol {
 		template <bool is_yielding, typename Fx, typename... Args>
 		void select(lua_State* L, Fx&& fx, Args&&... args);
 
-		template <bool is_yielding, typename Fx, typename... Args>
+		template <bool is_yielding, bool no_trampoline, typename Fx, typename... Args>
 		void select_set_fx(lua_State* L, Args&&... args) {
-			lua_CFunction freefunc = detail::static_trampoline<function_detail::call<meta::unqualified_t<Fx>, 2, is_yielding>>;
+			lua_CFunction freefunc = no_trampoline ?
+				detail::static_trampoline<function_detail::call<meta::unqualified_t<Fx>, 2, is_yielding>>
+				: function_detail::call<meta::unqualified_t<Fx>, 2, is_yielding>;
 
 			int upvalues = 0;
 			upvalues += stack::push(L, nullptr);
@@ -90,8 +92,8 @@ namespace sol {
 				select<is_yielding>(L, std::move(fxptr), std::forward<Args>(args)...);
 			}
 			else {
-				using F = function_detail::functor_function<dFx, is_yielding, true>;
-				select_set_fx<false, F>(L, std::forward<Fx>(fx), std::forward<Args>(args)...);
+				using F = function_detail::functor_function<dFx, false, true>;
+				select_set_fx<is_yielding, false, F>(L, std::forward<Fx>(fx), std::forward<Args>(args)...);
 			}
 		}
 
@@ -129,7 +131,7 @@ namespace sol {
 					dFx memfxptr(std::forward<Fx>(fx));
 					auto userptr = detail::ptr(std::forward<Args>(args)...);
 					lua_CFunction freefunc
-						= &function_detail::upvalue_member_variable<std::decay_t<decltype(*userptr)>, meta::unqualified_t<Fx>, is_yielding>::call;
+					     = &function_detail::upvalue_member_variable<std::decay_t<decltype(*userptr)>, meta::unqualified_t<Fx>, is_yielding>::call;
 
 					int upvalues = 0;
 					upvalues += stack::push(L, nullptr);
@@ -140,14 +142,14 @@ namespace sol {
 				else {
 					using clean_fx = std::remove_pointer_t<std::decay_t<Fx>>;
 					using F = function_detail::member_variable<Tu, clean_fx, is_yielding>;
-					select_set_fx<false, F>(L, std::forward<Fx>(fx), std::forward<Args>(args)...);
+					select_set_fx<false, false, F>(L, std::forward<Fx>(fx), std::forward<Args>(args)...);
 				}
 			}
 			else {
 				using C = typename meta::bind_traits<uFx>::object_type;
 				using clean_fx = std::remove_pointer_t<std::decay_t<Fx>>;
 				using F = function_detail::member_variable<C, clean_fx, is_yielding>;
-				select_set_fx<false, F>(L, std::forward<Fx>(fx), std::forward<Args>(args)...);
+				select_set_fx<false, false, F>(L, std::forward<Fx>(fx), std::forward<Args>(args)...);
 			}
 		}
 
@@ -179,7 +181,7 @@ namespace sol {
 				}
 				else {
 					using F = function_detail::member_function<Tu, dFx, is_yielding>;
-					select_set_fx<false, F>(L, std::forward<Fx>(fx), std::forward<T>(obj), std::forward<Args>(args)...);
+					select_set_fx<false, false, F>(L, std::forward<Fx>(fx), std::forward<T>(obj), std::forward<Args>(args)...);
 				}
 			}
 		}
@@ -250,13 +252,29 @@ namespace sol {
 	namespace stack {
 		template <typename... Sigs>
 		struct unqualified_pusher<function_sig<Sigs...>> {
+			template <bool is_yielding, typename Arg0, typename... Args>
+			static int push(lua_State* L, Arg0&& arg0, Args&&... args) {
+				if constexpr (meta::is_specialization_of_v<meta::unqualified_t<Arg0>, std::function>) {
+					if constexpr (is_yielding) {
+						return stack::push<meta::unqualified_t<Arg0>>(L, detail::yield_tag, std::forward<Arg0>(arg0), std::forward<Args>(args)...);
+					}
+					else {
+						return stack::push(L, std::forward<Arg0>(arg0), std::forward<Args>(args)...);
+					}
+				}
+				else {
+					function_detail::select<is_yielding>(L, std::forward<Arg0>(arg0), std::forward<Args>(args)...);
+					return 1;
+				}
+			}
+
 			template <typename Arg0, typename... Args>
 			static int push(lua_State* L, Arg0&& arg0, Args&&... args) {
 				if constexpr (std::is_same_v<meta::unqualified_t<Arg0>, detail::yield_tag_t>) {
-					function_detail::select<true>(L, std::forward<Args>(args)...);
+					push<true>(L, std::forward<Args>(args)...);
 				}
 				else {
-					function_detail::select<false>(L, std::forward<Arg0>(arg0), std::forward<Args>(args)...);
+					push<false>(L, std::forward<Arg0>(arg0), std::forward<Args>(args)...);
 				}
 				return 1;
 			}
@@ -266,14 +284,24 @@ namespace sol {
 		struct unqualified_pusher<yielding_t<T>> {
 			template <typename... Args>
 			static int push(lua_State* L, const yielding_t<T>& f, Args&&... args) {
-				function_detail::select<true>(L, f.func, std::forward<Args>(args)...);
-				return 1;
+				if constexpr (meta::is_specialization_of_v<meta::unqualified_t<T>, std::function>) {
+					return stack::push<T>(L, detail::yield_tag, f.func, std::forward<Args>(args)...);
+				}
+				else {
+					function_detail::select<true>(L, f.func, std::forward<Args>(args)...);
+					return 1;
+				}
 			}
 
 			template <typename... Args>
 			static int push(lua_State* L, yielding_t<T>&& f, Args&&... args) {
-				function_detail::select<true>(L, std::move(f.func), std::forward<Args>(args)...);
-				return 1;
+				if constexpr (meta::is_specialization_of_v<meta::unqualified_t<T>, std::function>) {
+					return stack::push<T>(L, detail::yield_tag, std::move(f.func), std::forward<Args>(args)...);
+				}
+				else {
+					function_detail::select<true>(L, std::move(f.func), std::forward<Args>(args)...);
+					return 1;
+				}
 			}
 		};
 
@@ -295,14 +323,36 @@ namespace sol {
 
 		template <typename Signature>
 		struct unqualified_pusher<std::function<Signature>> {
+			static int push(lua_State* L, detail::yield_tag_t, const std::function<Signature>& fx) {
+				if (fx) {
+					function_detail::select<true>(L, fx);
+					return 1;
+				}
+				return stack::push(L, lua_nil);
+			}
+
+			static int push(lua_State* L, detail::yield_tag_t, std::function<Signature>&& fx) {
+				if (fx) {
+					function_detail::select<true>(L, std::move(fx));
+					return 1;
+				}
+				return stack::push(L, lua_nil);
+			}
+
 			static int push(lua_State* L, const std::function<Signature>& fx) {
-				function_detail::select<false>(L, fx);
-				return 1;
+				if (fx) {
+					function_detail::select<false>(L, fx);
+					return 1;
+				}
+				return stack::push(L, lua_nil);
 			}
 
 			static int push(lua_State* L, std::function<Signature>&& fx) {
-				function_detail::select<false>(L, std::move(fx));
-				return 1;
+				if (fx) {
+					function_detail::select<false>(L, std::move(fx));
+					return 1;
+				}
+				return stack::push(L, lua_nil);
 			}
 		};
 
@@ -336,13 +386,13 @@ namespace sol {
 		struct unqualified_pusher<overload_set<Functions...>> {
 			static int push(lua_State* L, overload_set<Functions...>&& set) {
 				using F = function_detail::overloaded_function<0, Functions...>;
-				function_detail::select_set_fx<false, F>(L, std::move(set.functions));
+				function_detail::select_set_fx<false, false, F>(L, std::move(set.functions));
 				return 1;
 			}
 
 			static int push(lua_State* L, const overload_set<Functions...>& set) {
 				using F = function_detail::overloaded_function<0, Functions...>;
-				function_detail::select_set_fx<false, F>(L, set.functions);
+				function_detail::select_set_fx<false, false, F>(L, set.functions);
 				return 1;
 			}
 		};
@@ -407,25 +457,25 @@ namespace sol {
 		struct unqualified_pusher<factory_wrapper<Functions...>> {
 			static int push(lua_State* L, const factory_wrapper<Functions...>& fw) {
 				using F = function_detail::overloaded_function<0, Functions...>;
-				function_detail::select_set_fx<false, F>(L, fw.functions);
+				function_detail::select_set_fx<false, false, F>(L, fw.functions);
 				return 1;
 			}
 
 			static int push(lua_State* L, factory_wrapper<Functions...>&& fw) {
 				using F = function_detail::overloaded_function<0, Functions...>;
-				function_detail::select_set_fx<false, F>(L, std::move(fw.functions));
+				function_detail::select_set_fx<false, false, F>(L, std::move(fw.functions));
 				return 1;
 			}
 
 			static int push(lua_State* L, const factory_wrapper<Functions...>& fw, function_detail::call_indicator) {
 				using F = function_detail::overloaded_function<1, Functions...>;
-				function_detail::select_set_fx<false, F>(L, fw.functions);
+				function_detail::select_set_fx<false, false, F>(L, fw.functions);
 				return 1;
 			}
 
 			static int push(lua_State* L, factory_wrapper<Functions...>&& fw, function_detail::call_indicator) {
 				using F = function_detail::overloaded_function<1, Functions...>;
-				function_detail::select_set_fx<false, F>(L, std::move(fw.functions));
+				function_detail::select_set_fx<false, false, F>(L, std::move(fw.functions));
 				return 1;
 			}
 		};
