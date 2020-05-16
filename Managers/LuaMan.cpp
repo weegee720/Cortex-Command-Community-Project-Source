@@ -2364,57 +2364,57 @@ int LuaMan::Create()
 		sol::usertype<Controller> Bind = g_pSolLuaState->new_usertype<Controller>("Controller", sol::no_constructor);
 
 		g_pSolLuaState->set("ControlState", g_pSolLuaState->create_table_with(
-			"PRIMARY_ACTION", 0,
-			"SECONDARY_ACTION", 1,
-			"MOVE_IDLE", 2,
-			"MOVE_RIGHT", 3,
-			"MOVE_LEFT", 4,
-			"MOVE_UP", 5,
-			"MOVE_DOWN", 6,
-			"MOVE_FAST", 7,
-			"BODY_JUMPSTART", 8,
-			"BODY_JUMP", 9,
-			"BODY_CROUCH", 10,
-			"AIM_UP", 11,
-			"AIM_DOWN", 12,
-			"AIM_SHARP", 13,
-			"WEAPON_FIRE", 14,
-			"WEAPON_RELOAD", 15,
-			"PIE_MENU_ACTIVE", 16,
-			"WEAPON_CHANGE_NEXT", 17,
-			"WEAPON_CHANGE_PREV", 18,
-			"WEAPON_PICKUP", 19,
-			"WEAPON_DROP", 20,
-			"ACTOR_NEXT", 21,
-			"ACTOR_PREV", 22,
-			"ACTOR_BRAIN", 23,
-			"ACTOR_NEXT_PREP", 24,
-			"ACTOR_PREV_PREP", 25,
-			"HOLD_RIGHT", 26,
-			"HOLD_LEFT", 27,
-			"HOLD_UP", 28,
-			"HOLD_DOWN", 29,
-			"PRESS_PRIMARY", 30,
-			"PRESS_SECONDARY", 31,
-			"PRESS_RIGHT", 32,
-			"PRESS_LEFT", 33,
-			"PRESS_UP", 34,
-			"PRESS_DOWN", 35,
-			"RELEASE_PRIMARY", 36,
-			"RELEASE_SECONDARY", 37,
-			"PRESS_FACEBUTTON", 38,
-			"SCROLL_UP", 39,
-			"SCROLL_DOWN", 40,
-			"DEBUG_ONE", 41,
-			"CONTROLSTATECOUNT", 42
+			"PRIMARY_ACTION", ControlState::PRIMARY_ACTION,
+			"SECONDARY_ACTION", ControlState::SECONDARY_ACTION,
+			"MOVE_IDLE", ControlState::MOVE_IDLE,
+			"MOVE_RIGHT", ControlState::MOVE_RIGHT,
+			"MOVE_LEFT", ControlState::MOVE_LEFT,
+			"MOVE_UP", ControlState::MOVE_UP,
+			"MOVE_DOWN", ControlState::MOVE_DOWN,
+			"MOVE_FAST", ControlState::MOVE_FAST,
+			"BODY_JUMPSTART", ControlState::BODY_JUMPSTART,
+			"BODY_JUMP", ControlState::BODY_JUMP,
+			"BODY_CROUCH", ControlState::BODY_CROUCH,
+			"AIM_UP", ControlState::AIM_UP,
+			"AIM_DOWN", ControlState::AIM_DOWN,
+			"AIM_SHARP", ControlState::AIM_SHARP,
+			"WEAPON_FIRE", ControlState::WEAPON_FIRE,
+			"WEAPON_RELOAD", ControlState::WEAPON_RELOAD,
+			"PIE_MENU_ACTIVE", ControlState::PIE_MENU_ACTIVE,
+			"WEAPON_CHANGE_NEXT", ControlState::WEAPON_CHANGE_NEXT,
+			"WEAPON_CHANGE_PREV", ControlState::WEAPON_CHANGE_PREV,
+			"WEAPON_PICKUP", ControlState::WEAPON_PICKUP,
+			"WEAPON_DROP", ControlState::WEAPON_DROP,
+			"ACTOR_NEXT", ControlState::ACTOR_NEXT,
+			"ACTOR_PREV", ControlState::ACTOR_PREV,
+			"ACTOR_BRAIN", ControlState::ACTOR_BRAIN,
+			"ACTOR_NEXT_PREP", ControlState::ACTOR_NEXT_PREP,
+			"ACTOR_PREV_PREP", ControlState::ACTOR_PREV_PREP,
+			"HOLD_RIGHT", ControlState::HOLD_RIGHT,
+			"HOLD_LEFT", ControlState::HOLD_LEFT,
+			"HOLD_UP", ControlState::HOLD_UP,
+			"HOLD_DOWN", ControlState::HOLD_DOWN,
+			"PRESS_PRIMARY", ControlState::PRESS_PRIMARY,
+			"PRESS_SECONDARY", ControlState::PRESS_SECONDARY,
+			"PRESS_RIGHT", ControlState::PRESS_RIGHT,
+			"PRESS_LEFT", ControlState::PRESS_LEFT,
+			"PRESS_UP", ControlState::PRESS_UP,
+			"PRESS_DOWN", ControlState::PRESS_DOWN,
+			"RELEASE_PRIMARY", ControlState::RELEASE_PRIMARY,
+			"RELEASE_SECONDARY", ControlState::RELEASE_SECONDARY,
+			"PRESS_FACEBUTTON", ControlState::PRESS_FACEBUTTON,
+			"SCROLL_UP", ControlState::SCROLL_UP,
+			"SCROLL_DOWN", ControlState::SCROLL_DOWN,
+			"DEBUG_ONE", ControlState::DEBUG_ONE,
+			"CONTROLSTATECOUNT", ControlState::CONTROLSTATECOUNT
 		));
 
 		g_pSolLuaState->set("InputMode", g_pSolLuaState->create_table_with(
-			"CIM_DISABLED", 0,
-			"CIM_PLAYER", 1,
-			"CIM_AI", 2,
-			"CIM_NETWORK", 3,
-			"CIM_INPUTMODECOUNT", 4
+			"CIM_DISABLED", Controller::InputMode::CIM_DISABLED,
+			"CIM_PLAYER", Controller::InputMode::CIM_PLAYER,
+			"CIM_AI", Controller::InputMode::CIM_AI,
+			"CIM_NETWORK", Controller::InputMode::CIM_NETWORK,
+			"CIM_INPUTMODECOUNT", Controller::InputMode::CIM_INPUTMODECOUNT
 		));
 
 		Bind["InputMode"] = sol::property(&Controller::GetInputMode, &Controller::SetInputMode);
@@ -2836,10 +2836,127 @@ int LuaMan::Create()
 			.property("FlagAltState", &UInputMan::FlagAltState)
 			.property("FlagCtrlState", &UInputMan::FlagCtrlState)
 			.property("FlagShiftState", &UInputMan::FlagShiftState),
-
-
 		*/
 
+		sol::usertype<UInputMan> Bind = g_pSolLuaState->new_usertype<UInputMan>("UInputManager", sol::no_constructor);
+
+		g_pSolLuaState->set("Players", g_pSolLuaState->create_table_with(
+			"PLAYER_NONE", -1,
+			"PLAYER_ONE", 0,
+			"PLAYER_TWO", 1,
+			"PLAYER_THREE", 2,
+			"PLAYER_FOUR", 3,
+			"MAX_PLAYERS", 4
+		));
+
+		g_pSolLuaState->set("InputDevice", g_pSolLuaState->create_table_with(
+			"DEVICE_KEYB_ONLY", 0,
+			"DEVICE_MOUSE_KEYB", 1,
+			"DEVICE_GAMEPAD_1", 2,
+			"DEVICE_GAMEPAD_2", 3,
+			"DEVICE_GAMEPAD_3", 4,
+			"DEVICE_GAMEPAD_4", 5,
+			"DEVICE_COUNT", 6
+		));
+
+		g_pSolLuaState->set("InputElements", g_pSolLuaState->create_table_with(
+			"INPUT_L_UP", 0,
+			"INPUT_L_DOWN", 1,
+			"INPUT_L_LEFT", 2,
+			"INPUT_L_RIGHT", 3,
+			"INPUT_R_UP", 4,
+			"INPUT_R_DOWN", 5,
+			"INPUT_R_LEFT", 6,
+			"INPUT_R_RIGHT", 7,
+			"INPUT_FIRE", 8,
+			"INPUT_AIM", 9,
+			"INPUT_AIM_UP", 10,
+			"INPUT_AIM_DOWN", 11,
+			"INPUT_AIM_LEFT", 12,
+			"INPUT_AIM_RIGHT", 13,
+			"INPUT_PIEMENU", 14,
+			"INPUT_JUMP", 15,
+			"INPUT_CROUCH", 16,
+			"INPUT_NEXT", 17,
+			"INPUT_PREV", 18,
+			"INPUT_START", 19,
+			"INPUT_BACK", 20,
+			"INPUT_COUNT", 21
+		));
+
+		g_pSolLuaState->set("MouseButtons", g_pSolLuaState->create_table_with(
+			"MOUSE_NONE", -1,
+			"MOUSE_LEFT", 0,
+			"MOUSE_RIGHT", 1,
+			"MOUSE_MIDDLE", 2,
+			"MAX_MOUSE_BUTTONS", 3
+		));
+
+		g_pSolLuaState->set("JoyButtons", g_pSolLuaState->create_table_with(
+			"JOY_NONE", -1,
+			"JOY_1", 0,
+			"JOY_2", 1,
+			"JOY_3", 2,
+			"JOY_4", 3,
+			"JOY_5", 4,
+			"JOY_6", 5,
+			"JOY_7", 6,
+			"JOY_8", 7,
+			"JOY_9", 8,
+			"JOY_10", 9,
+			"JOY_11", 10,
+			"JOY_12", 11,
+			"MAX_JOY_BUTTONS", 12
+		));
+
+		g_pSolLuaState->set("JoyDirections", g_pSolLuaState->create_table_with(
+			"JOYDIR_ONE", 0,
+			"JOYDIR_TWO", 1
+		));
+
+		Bind["ElementPressed"] = &UInputMan::ElementPressed;
+		Bind["ElementReleased"] = &UInputMan::ElementReleased;
+		Bind["ElementHeld"] = &UInputMan::ElementHeld;
+		Bind["KeyPressed"] = &UInputMan::KeyPressed;
+		Bind["KeyReleased"] = &UInputMan::KeyReleased;
+		Bind["KeyHeld"] = &UInputMan::KeyHeld;
+		Bind["WhichKeyHeld"] = &UInputMan::WhichKeyHeld;
+		Bind["MouseButtonPressed"] = (bool (UInputMan::*)(int, int)) & UInputMan::MouseButtonPressed;
+		Bind["MouseButtonPressed"] = (bool (UInputMan::*)(int)) & UInputMan::MouseButtonPressed;
+		Bind["MouseButtonReleased"] = (bool (UInputMan::*)(int, int)) & UInputMan::MouseButtonReleased;
+		Bind["MouseButtonReleased"] = (bool (UInputMan::*)(int)) & UInputMan::MouseButtonReleased;
+		Bind["MouseButtonHeld"] = (bool (UInputMan::*)(int, int)) & UInputMan::MouseButtonHeld;
+		Bind["MouseButtonHeld"] = (bool (UInputMan::*)(int)) & UInputMan::MouseButtonHeld;
+		Bind["MouseWheelMoved"] = &UInputMan::MouseWheelMoved;
+		Bind["JoyButtonPressed"] = &UInputMan::JoyButtonPressed;
+		Bind["JoyButtonReleased"] = &UInputMan::JoyButtonReleased;
+		Bind["JoyButtonHeld"] = &UInputMan::JoyButtonHeld;
+		Bind["WhichJoyButtonPressed"] = &UInputMan::WhichJoyButtonPressed;
+		Bind["JoyDirectionPressed"] = &UInputMan::JoyDirectionPressed;
+		Bind["JoyDirectionReleased"] = &UInputMan::JoyDirectionReleased;
+		Bind["JoyDirectionHeld"] = &UInputMan::JoyDirectionHeld;
+		Bind["AnalogMoveValues"] = &UInputMan::AnalogMoveValues;
+		Bind["AnalogAimValues"] = &UInputMan::AnalogAimValues;
+		Bind["SetMouseValueMagnitude"] = &UInputMan::SetMouseValueMagnitude;
+		Bind["AnalogAxisValue"] = &UInputMan::AnalogAxisValue;
+		Bind["AnalogStickValues"] = &UInputMan::AnalogStickValues;
+		Bind["MouseUsedByPlayer"] = &UInputMan::MouseUsedByPlayer;
+		Bind["AnyMouseButtonPress"] = &UInputMan::AnyMouseButtonPress;
+		Bind["TrapMousePos"] = &UInputMan::TrapMousePos;
+		Bind["GetMouseMovement"] = &UInputMan::GetMouseMovement;
+		Bind["DisableMouseMoving"] = &UInputMan::DisableMouseMoving;
+		Bind["SetMousePos"] = &UInputMan::SetMousePos;
+		Bind["ForceMouseWithinBox"] = &UInputMan::ForceMouseWithinBox;
+		Bind["ForceMouseWithinPlayerScreen"] = &UInputMan::ForceMouseWithinPlayerScreen;
+		Bind["AnyJoyInput"] = &UInputMan::AnyJoyInput;
+		Bind["AnyJoyPress"] = &UInputMan::AnyJoyPress;
+		Bind["AnyJoyButtonPress"] = &UInputMan::AnyJoyButtonPress;
+		Bind["AnyInput"] = &UInputMan::AnyInput;
+		Bind["AnyPress"] = &UInputMan::AnyPress;
+		Bind["AnyStartPress"] = &UInputMan::AnyStartPress;
+		Bind["FlagAltState"] = sol::property(&UInputMan::FlagAltState);
+		Bind["FlagCtrlState"] = sol::property(&UInputMan::FlagCtrlState);
+		Bind["FlagShiftState"] = sol::property(&UInputMan::FlagShiftState);
 	}
 
 	{
@@ -2851,56 +2968,104 @@ int LuaMan::Create()
 			.def_readwrite("Top", &IntRect::m_Top)
 			.def_readwrite("Right", &IntRect::m_Right)
 			.def_readwrite("Bottom", &IntRect::m_Bottom),
-
-
 		*/
+
+		sol::usertype<IntRect> Bind = g_pSolLuaState->new_usertype<IntRect>("IntRect",
+			sol::constructors<IntRect(), IntRect()>(),
+			sol::constructors<IntRect(), IntRect(int, int, int, int)>()
+		);
+
+		Bind["Left"] = &IntRect::m_Left;
+		Bind["Top"] = &IntRect::m_Top;
+		Bind["Right"] = &IntRect::m_Right;
+		Bind["Bottom"] = &IntRect::m_Bottom;
 	}
 
 	{
 		/*
-				CONCRETELUABINDING(Scene, Entity)
-				.enum_("PlacedObjectSets")
-				[
-					value("PLACEONLOAD", 0),
-					value("BLUEPRINT", 1),
-					value("AIPLAN", 2),
-					value("PLACEDSETSCOUNT", 3)
-				]
+			CONCRETELUABINDING(Scene, Entity)
+			.enum_("PlacedObjectSets")
+			[
+				value("PLACEONLOAD", 0),
+				value("BLUEPRINT", 1),
+				value("AIPLAN", 2),
+				value("PLACEDSETSCOUNT", 3)
+			]
 			.property("Location", &Scene::GetLocation, &Scene::SetLocation)
-				//            .property("Terrain", &Scene::GetTerrain)
-				.property("Dimensions", &Scene::GetDimensions)
-				.property("Width", &Scene::GetWidth)
-				.property("Height", &Scene::GetHeight)
-				.property("WrapsX", &Scene::WrapsX)
-				.property("WrapsY", &Scene::WrapsY)
-				.property("TeamOwnership", &Scene::GetTeamOwnership, &Scene::SetTeamOwnership)
-				.def("GetBuildBudget", &Scene::GetBuildBudget)
-				.def("SetBuildBudget", &Scene::SetBuildBudget)
-				.def("IsScanScheduled", &Scene::IsScanScheduled)
-				.def("SetScheduledScan", &Scene::SetScheduledScan)
-				.def("ClearPlacedObjectSet", &Scene::ClearPlacedObjectSet)
-				.def("PlaceResidentBrain", &Scene::PlaceResidentBrain)
-				.def("PlaceResidentBrains", &Scene::PlaceResidentBrains)
-				.def("RetrieveResidentBrains", &Scene::RetrieveResidentBrains)
-				.def("GetResidentBrain", &Scene::GetResidentBrain)
-				.def("SetResidentBrain", &Scene::SetResidentBrain)
-				.def("SetArea", &Scene::SetArea)
-				.def("HasArea", &Scene::HasArea)
-				.def("GetArea", &Scene::GetArea)
-				.def("GetOptionalArea", &Scene::GetOptionalArea)
-				.def("WithinArea", &Scene::WithinArea)
-				.property("GlobalAcc", &Scene::GetGlobalAcc, &Scene::SetGlobalAcc)
-				.property("GlocalAcc", &Scene::GetGlobalAcc, &Scene::SetGlobalAcc)
-				.def("ResetPathFinding", &Scene::ResetPathFinding)
-				.def("UpdatePathFinding", &Scene::UpdatePathFinding)
-				.def("PathFindingUpdated", &Scene::PathFindingUpdated)
-				.def("CalculatePath", &Scene::CalculateScenePath)
-				.def_readwrite("ScenePath", &Scene::m_ScenePath, luabind::return_stl_iterator())
-				.def_readwrite("Deployments", &Scene::m_Deployments, luabind::return_stl_iterator())
-				.property("ScenePathSize", &Scene::GetScenePathSize),
-
-
+			//            .property("Terrain", &Scene::GetTerrain)
+			.property("Dimensions", &Scene::GetDimensions)
+			.property("Width", &Scene::GetWidth)
+			.property("Height", &Scene::GetHeight)
+			.property("WrapsX", &Scene::WrapsX)
+			.property("WrapsY", &Scene::WrapsY)
+			.property("TeamOwnership", &Scene::GetTeamOwnership, &Scene::SetTeamOwnership)
+			.def("GetBuildBudget", &Scene::GetBuildBudget)
+			.def("SetBuildBudget", &Scene::SetBuildBudget)
+			.def("IsScanScheduled", &Scene::IsScanScheduled)
+			.def("SetScheduledScan", &Scene::SetScheduledScan)
+			.def("ClearPlacedObjectSet", &Scene::ClearPlacedObjectSet)
+			.def("PlaceResidentBrain", &Scene::PlaceResidentBrain)
+			.def("PlaceResidentBrains", &Scene::PlaceResidentBrains)
+			.def("RetrieveResidentBrains", &Scene::RetrieveResidentBrains)
+			.def("GetResidentBrain", &Scene::GetResidentBrain)
+			.def("SetResidentBrain", &Scene::SetResidentBrain)
+			.def("SetArea", &Scene::SetArea)
+			.def("HasArea", &Scene::HasArea)
+			.def("GetArea", &Scene::GetArea)
+			.def("GetOptionalArea", &Scene::GetOptionalArea)
+			.def("WithinArea", &Scene::WithinArea)
+			.property("GlobalAcc", &Scene::GetGlobalAcc, &Scene::SetGlobalAcc)
+			.property("GlocalAcc", &Scene::GetGlobalAcc, &Scene::SetGlobalAcc)
+			.def("ResetPathFinding", &Scene::ResetPathFinding)
+			.def("UpdatePathFinding", &Scene::UpdatePathFinding)
+			.def("PathFindingUpdated", &Scene::PathFindingUpdated)
+			.def("CalculatePath", &Scene::CalculateScenePath)
+			.def_readwrite("ScenePath", &Scene::m_ScenePath, luabind::return_stl_iterator())
+			.def_readwrite("Deployments", &Scene::m_Deployments, luabind::return_stl_iterator())
+			.property("ScenePathSize", &Scene::GetScenePathSize),
 		*/
+
+		CONCRETELUABINDING_SOL(Scene, Entity);
+		 
+		g_pSolLuaState->set("PlacedObjectSets", g_pSolLuaState->create_table_with(
+			"PLACEONLOAD", 0,
+			"BLUEPRINT", 1,
+			"AIPLAN", 2,
+			"PLACEDSETSCOUNT", 3
+		));
+
+		Bind["Location"] = sol::property(&Scene::GetLocation, &Scene::SetLocation);
+		//            Bind["Terrain"] = sol::property(&Scene::GetTerrain);
+		Bind["Dimensions"] = sol::property(&Scene::GetDimensions);
+		Bind["Width"] = sol::property(&Scene::GetWidth);
+		Bind["Height"] = sol::property(&Scene::GetHeight);
+		Bind["WrapsX"] = sol::property(&Scene::WrapsX);
+		Bind["WrapsY"] = sol::property(&Scene::WrapsY);
+		Bind["TeamOwnership"] = sol::property(&Scene::GetTeamOwnership, &Scene::SetTeamOwnership);
+		Bind["GetBuildBudget"] = &Scene::GetBuildBudget;
+		Bind["SetBuildBudget"] = &Scene::SetBuildBudget;
+		Bind["IsScanScheduled"] = &Scene::IsScanScheduled;
+		Bind["SetScheduledScan"] = &Scene::SetScheduledScan;
+		Bind["ClearPlacedObjectSet"] = &Scene::ClearPlacedObjectSet;
+		Bind["PlaceResidentBrain"] = &Scene::PlaceResidentBrain;
+		Bind["PlaceResidentBrains"] = &Scene::PlaceResidentBrains;
+		Bind["RetrieveResidentBrains"] = &Scene::RetrieveResidentBrains;
+		Bind["GetResidentBrain"] = &Scene::GetResidentBrain;
+		Bind["SetResidentBrain"] = &Scene::SetResidentBrain;
+		Bind["SetArea"] = &Scene::SetArea;
+		Bind["HasArea"] = &Scene::HasArea;
+		Bind["GetArea"] = &Scene::GetArea;
+		Bind["GetOptionalArea"] = &Scene::GetOptionalArea;
+		Bind["WithinArea"] = &Scene::WithinArea;
+		Bind["GlobalAcc"] = sol::property(&Scene::GetGlobalAcc, &Scene::SetGlobalAcc);
+		Bind["GlocalAcc"] = sol::property(&Scene::GetGlobalAcc, &Scene::SetGlobalAcc);
+		Bind["ResetPathFinding"] = &Scene::ResetPathFinding;
+		Bind["UpdatePathFinding"] = &Scene::UpdatePathFinding;
+		Bind["PathFindingUpdated"] = &Scene::PathFindingUpdated;
+		Bind["CalculatePath"] = &Scene::CalculateScenePath;
+		Bind["ScenePath"] = sol::property(&Scene::m_ScenePath);
+		Bind["Deployments"] = sol::property(&Scene::m_Deployments);
+		Bind["ScenePathSize"] = sol::property(&Scene::GetScenePathSize);
 	}
 
 	{
@@ -2912,9 +3077,16 @@ int LuaMan::Create()
 			.property("SpawnRadius", &Deployment::GetSpawnRadius)
 			.property("ID", &Deployment::GetID)
 			.property("HFlipped", &Deployment::IsHFlipped),
-
-
 		*/
+		
+		ABSTRACTLUABINDING_SOL(Deployment, SceneObject);
+
+		Bind["CreateDeployedActor"] = (Actor * (Deployment::*)()) & Deployment::CreateDeployedActor;
+		Bind["CreateDeployedObject"] = (SceneObject * (Deployment::*)()) & Deployment::CreateDeployedObject;
+		Bind["GetLoadoutName"] = &Deployment::GetLoadoutName;
+		Bind["SpawnRadius"] = sol::property(&Deployment::GetSpawnRadius);
+		Bind["ID"] = sol::property(&Deployment::GetID);
+		Bind["HFlipped"] = sol::property(&Deployment::IsHFlipped);
 	}
 
 	{
@@ -2992,9 +3164,82 @@ int LuaMan::Create()
 			.def("AddTerrainObject", &SceneMan::AddTerrainObject)
 			.def("CheckAndRemoveOrphans", (int (SceneMan::*)(int, int, int, int, bool))&SceneMan::RemoveOrphans)
 			.def("ClearPostEffects", &SceneMan::ClearPostEffects),
-
-
 		*/
+
+		sol::usertype<IntRect> Bind = g_pSolLuaState->new_usertype<IntRect>("SceneManager", sol::no_constructor);
+
+		Bind["Scene"] = sol::property(&SceneMan::GetScene);
+		Bind["LoadScene"] = (int (SceneMan::*)(string, bool, bool)) & SceneMan::LoadScene;
+		Bind["LoadScene"] = (int (SceneMan::*)(string, bool)) & SceneMan::LoadScene;
+		Bind["SceneDim"] = sol::property(&SceneMan::GetSceneDim);
+		Bind["SceneWidth"] = sol::property(&SceneMan::GetSceneWidth);
+		Bind["SceneHeight"] = sol::property(&SceneMan::GetSceneHeight);
+		Bind["SceneWrapsX"] = sol::property(&SceneMan::SceneWrapsX);
+		Bind["SceneWrapsY"] = sol::property(&SceneMan::SceneWrapsY);
+		Bind["GetOffset"] = &SceneMan::GetOffset;
+		Bind["SetOffset"] = (void (SceneMan::*)(const Vector&, int)) & SceneMan::SetOffset;
+		Bind["SetOffsetX"] = &SceneMan::SetOffsetX;
+		Bind["SetOffsetY"] = &SceneMan::SetOffsetY;
+		Bind["GetScreenOcclusion"] = &SceneMan::GetScreenOcclusion;
+		Bind["SetScreenOcclusion"] = &SceneMan::SetScreenOcclusion;
+		Bind["GetTerrain"] = &SceneMan::GetTerrain;
+		Bind["GetMaterial"] = &SceneMan::GetMaterial;
+		Bind["GetMaterialFromID"] = &SceneMan::GetMaterialFromID;
+		//            Bind["MOColorBitmap"] = &SceneMan::GetMOColorBitmap)
+		//            Bind["DebugBitmap"] = &SceneMan::GetDebugBitmap)
+		//            Bind["MOIDBitmap"] = &SceneMan::GetMOIDBitmap)
+		Bind["LayerDrawMode"] = sol::property(&SceneMan::GetLayerDrawMode, &SceneMan::SetLayerDrawMode);
+		Bind["GetTerrMatter"] = &SceneMan::GetTerrMatter;
+		Bind["GetMOIDPixel"] = &SceneMan::GetMOIDPixel;
+		Bind["GlobalAcc"] = sol::property(&SceneMan::GetGlobalAcc);
+		Bind["OzPerKg"] = sol::property(&SceneMan::GetOzPerKg);
+		Bind["KgPerOz"] = sol::property(&SceneMan::GetKgPerOz);
+		Bind["SetLayerDrawMode"] = &SceneMan::SetLayerDrawMode;
+		Bind["SetScroll"] = &SceneMan::SetScroll;
+		Bind["SetScrollTarget"] = &SceneMan::SetScrollTarget;
+		Bind["GetScrollTarget"] = &SceneMan::GetScrollTarget;
+		Bind["TargetDistanceScalar"] = &SceneMan::TargetDistanceScalar;
+		Bind["CheckOffset"] = &SceneMan::CheckOffset;
+		Bind["LoadUnseenLayer"] = &SceneMan::LoadUnseenLayer;
+		Bind["MakeAllUnseen"] = &SceneMan::MakeAllUnseen;
+		Bind["AnythingUnseen"] = &SceneMan::AnythingUnseen;
+		Bind["GetUnseenResolution"] = &SceneMan::GetUnseenResolution;
+		Bind["IsUnseen"] = &SceneMan::IsUnseen;
+		Bind["RevealUnseen"] = &SceneMan::RevealUnseen;
+		Bind["RevealUnseenBox"] = &SceneMan::RevealUnseenBox;
+		Bind["RestoreUnseen"] = &SceneMan::RestoreUnseen;
+		Bind["RestoreUnseenBox"] = &SceneMan::RestoreUnseenBox;
+		Bind["CastSeeRay"] = &SceneMan::CastSeeRay;
+		Bind["CastUnseeRay"] = &SceneMan::CastUnseeRay;
+		Bind["CastUnseenRay"] = &SceneMan::CastUnseenRay;
+		Bind["CastMaterialRay"] = (bool (SceneMan::*)(const Vector&, const Vector&, unsigned char, Vector&, int, bool)) & SceneMan::CastMaterialRay;
+		Bind["CastMaterialRay"] = (float (SceneMan::*)(const Vector&, const Vector&, unsigned char, int)) & SceneMan::CastMaterialRay;
+		Bind["CastNotMaterialRay"] = (bool (SceneMan::*)(const Vector&, const Vector&, unsigned char, Vector&, int, bool)) & SceneMan::CastNotMaterialRay;
+		Bind["CastNotMaterialRay"] = (float (SceneMan::*)(const Vector&, const Vector&, unsigned char, int, bool)) & SceneMan::CastNotMaterialRay;
+		Bind["CastStrengthSumRay"] = &SceneMan::CastStrengthSumRay;
+		Bind["CastMaxStrengthRay"] = &SceneMan::CastMaxStrengthRay;
+		Bind["CastStrengthRay"] = &SceneMan::CastStrengthRay;
+		Bind["CastWeaknessRay"] = &SceneMan::CastWeaknessRay;
+		Bind["CastMORay"] = &SceneMan::CastMORay;
+		Bind["CastFindMORay"] = &SceneMan::CastFindMORay;
+		Bind["CastObstacleRay"] = &SceneMan::CastObstacleRay;
+		Bind["GetLastRayHitPos"] = &SceneMan::GetLastRayHitPos;
+		Bind["FindAltitude"] = &SceneMan::FindAltitude;
+		Bind["MovePointToGround"] = &SceneMan::MovePointToGround;
+		Bind["IsWithinBounds"] = &SceneMan::IsWithinBounds;
+//			Bind["ForceBounds"] = (bool (SceneMan::*)(int *, int *))&SceneMan::ForceBounds)
+		Bind["ForceBounds"] = (bool (SceneMan::*)(Vector&)) & SceneMan::ForceBounds;//, out_value(_2))
+//            Bind["WrapPosition"] = (bool (SceneMan::*)(int *, int *))&SceneMan::WrapPosition)
+		Bind["WrapPosition"] = (bool (SceneMan::*)(Vector&)) & SceneMan::WrapPosition;//, out_value(_2))
+		Bind["SnapPosition"] = &SceneMan::SnapPosition;
+		Bind["ShortestDistance"] = &SceneMan::ShortestDistance;
+		Bind["ObscuredPoint"] = (bool (SceneMan::*)(Vector&, int)) & SceneMan::ObscuredPoint;//, out_value(_2))
+		Bind["ObscuredPoint"] = (bool (SceneMan::*)(int, int, int)) & SceneMan::ObscuredPoint;
+		Bind["RegisterPostEffect"] = &SceneMan::RegisterPostEffect;
+		Bind["AddSceneObject"] = &SceneMan::AddSceneObject;
+		Bind["AddTerrainObject"] = &SceneMan::AddTerrainObject;
+		Bind["CheckAndRemoveOrphans"] = (int (SceneMan::*)(int, int, int, int, bool)) & SceneMan::RemoveOrphans;
+		Bind["ClearPostEffects"] = &SceneMan::ClearPostEffects;
 	}
 
 	{
@@ -3003,9 +3248,13 @@ int LuaMan::Create()
 			.def_readwrite("Presets", &DataModule::m_EntityList, luabind::return_stl_iterator())
 			.property("FileName", &DataModule::GetFileName)
 			.property("FriendlyName", &DataModule::GetFriendlyName),
-
-
 		*/
+
+		sol::usertype<DataModule> Bind = g_pSolLuaState->new_usertype<DataModule>("DataModule", sol::no_constructor);
+
+		Bind["Presets"] = &DataModule::m_EntityList;
+		Bind["FileName"] = sol::property(&DataModule::GetFileName);
+		Bind["FriendlyName"] = sol::property(&DataModule::GetFriendlyName);
 	}
 
 	{
@@ -3035,9 +3284,34 @@ int LuaMan::Create()
 			.property("ShowOnlyOwnedItems", &BuyMenuGUI::GetOnlyShowOwnedItems, &BuyMenuGUI::SetOnlyShowOwnedItems)
 			.property("EnforceMaxPassengersConstraint", &BuyMenuGUI::EnforceMaxPassengersConstraint, &BuyMenuGUI::SetEnforceMaxPassengersConstraint)
 			.property("EnforceMaxMassConstraint", &BuyMenuGUI::EnforceMaxMassConstraint, &BuyMenuGUI::SetEnforceMaxMassConstraint),
-
-
 		*/
+
+		sol::usertype<BuyMenuGUI> Bind = g_pSolLuaState->new_usertype<BuyMenuGUI>("BuyMenuGUI", sol::no_constructor);
+
+		Bind["SetMetaPlayer"] = &BuyMenuGUI::SetMetaPlayer;
+		Bind["SetNativeTechModule"] = &BuyMenuGUI::SetNativeTechModule;
+		Bind["SetForeignCostMultiplier"] = &BuyMenuGUI::SetForeignCostMultiplier;
+		Bind["SetModuleExpanded"] = &BuyMenuGUI::SetModuleExpanded;
+		Bind["LoadAllLoadoutsFromFile"] = &BuyMenuGUI::LoadAllLoadoutsFromFile;
+		Bind["AddAllowedItem"] = &BuyMenuGUI::AddAllowedItem;
+		Bind["RemoveAllowedItem"] = &BuyMenuGUI::RemoveAllowedItem;
+		Bind["ClearAllowedItems"] = &BuyMenuGUI::ClearAllowedItems;
+		Bind["AddAlwaysAllowedItem"] = &BuyMenuGUI::AddAlwaysAllowedItem;
+		Bind["RemoveAlwaysAllowedItem"] = &BuyMenuGUI::RemoveAlwaysAllowedItem;
+		Bind["ClearAlwaysAllowedItems"] = &BuyMenuGUI::ClearAlwaysAllowedItems;
+		Bind["AddProhibitedItem"] = &BuyMenuGUI::AddProhibitedItem;
+		Bind["RemoveProhibitedItem"] = &BuyMenuGUI::RemoveProhibitedItem;
+		Bind["ClearProhibitedItems"] = &BuyMenuGUI::ClearProhibitedItems;
+		Bind["ForceRefresh"] = &BuyMenuGUI::ForceRefresh;
+		Bind["SetOwnedItemsAmount"] = &BuyMenuGUI::SetOwnedItemsAmount;
+		Bind["GetOwnedItemsAmount"] = &BuyMenuGUI::GetOwnedItemsAmount;
+		Bind["SetHeaderImage"] = &BuyMenuGUI::SetHeaderImage;
+		Bind["SetLogoImage"] = &BuyMenuGUI::SetLogoImage;
+		Bind["ClearCartList"] = &BuyMenuGUI::ClearCartList;
+		Bind["LoadDefaultLoadoutToCart"] = &BuyMenuGUI::LoadDefaultLoadoutToCart;
+		Bind["ShowOnlyOwnedItems"] = sol::property(&BuyMenuGUI::GetOnlyShowOwnedItems, &BuyMenuGUI::SetOnlyShowOwnedItems);
+		Bind["EnforceMaxPassengersConstraint"] = sol::property(&BuyMenuGUI::EnforceMaxPassengersConstraint, &BuyMenuGUI::SetEnforceMaxPassengersConstraint);
+		Bind["EnforceMaxMassConstraint"] = sol::property(&BuyMenuGUI::EnforceMaxMassConstraint, &BuyMenuGUI::SetEnforceMaxMassConstraint);
 	}
 
 	{
@@ -3066,9 +3340,33 @@ int LuaMan::Create()
 			.def("SetForeignCostMultiplier", &SceneEditorGUI::SetForeignCostMultiplier)
 			.def("TestBrainResidence", &SceneEditorGUI::TestBrainResidence)
 			.def("Update", &SceneEditorGUI::Update),
-
-
 		*/
+
+		sol::usertype<SceneEditorGUI> Bind = g_pSolLuaState->new_usertype<SceneEditorGUI>("SceneEditorGUI", sol::no_constructor);
+
+		g_pSolLuaState->set("PlacedObjectSets", g_pSolLuaState->create_table_with(
+			"INACTIVE", 0,
+			"PICKINGOBJECT", 1,
+			"ADDINGOBJECT", 2,
+			"INSTALLINGBRAIN", 3,
+			"PLACINGOBJECT", 4,
+			"MOVINGOBJECT", 5,
+			"DELETINGOBJECT", 6,
+			"PLACEINFRONT", 7,
+			"PLACEBEHIND", 8,
+			"DONEEDITING", 9,
+			"EDITORGUIMODECOUNT", 10
+		));
+
+		Bind["SetCursorPos"] = &SceneEditorGUI::SetCursorPos;
+		Bind["EditorMode"] = sol::property(&SceneEditorGUI::GetEditorGUIMode, &SceneEditorGUI::SetEditorGUIMode);
+		Bind["GetCurrentObject"] = &SceneEditorGUI::GetCurrentObject;
+		Bind["SetCurrentObject"] = &SceneEditorGUI::SetCurrentObject;
+		Bind["SetModuleSpace"] = &SceneEditorGUI::SetModuleSpace;
+		Bind["SetNativeTechModule"] = &SceneEditorGUI::SetNativeTechModule;
+		Bind["SetForeignCostMultiplier"] = &SceneEditorGUI::SetForeignCostMultiplier;
+		Bind["TestBrainResidence"] = &SceneEditorGUI::TestBrainResidence;
+		Bind["Update"] = &SceneEditorGUI::Update;
 	}
 
 	{
@@ -3184,14 +3482,123 @@ int LuaMan::Create()
 			.property("Difficulty", &Activity::GetDifficulty, &Activity::SetDifficulty)
 			.def("IsPlayerTeam", &Activity::IsPlayerTeam)
 			.def("ResetMessageTimer", &Activity::ResetMessageTimer),
-
-
 		*/
+
+		sol::usertype<Activity> Bind = g_pSolLuaState->new_usertype<Activity>("Activity", sol::no_constructor);
+
+		g_pSolLuaState->set("ActivityState", g_pSolLuaState->create_table_with(
+			"NOACTIVITY", -1,
+			"NOTSTARTED", 0,
+			"STARTING", 1,
+			"EDITING", 2,
+			"PREGAME", 3,
+			"RUNNING", 4,
+			"DEMOEND", 5,
+			"INERROR", 6,
+			"OVER", 7
+		));
+
+		g_pSolLuaState->set("Player", g_pSolLuaState->create_table_with(
+			"NOPLAYER", -1,
+			"PLAYER_1", 0,
+			"PLAYER_2", 1,
+			"PLAYER_3", 2,
+			"PLAYER_4", 3,
+			"MAXPLAYERCOUNT", 4
+		));
+
+		g_pSolLuaState->set("Team", g_pSolLuaState->create_table_with(
+			"NOTEAM", -1,
+			"TEAM_1", 0,
+			"TEAM_2", 1,
+			"TEAM_3", 2,
+			"TEAM_4", 3,
+			"MAXTEAMCOUNT", 4
+		));
+
+		g_pSolLuaState->set("ViewState", g_pSolLuaState->create_table_with(
+			"NORMAL", 0,
+			"OBSERVE", 1,
+			"DEATHWATCH", 2,
+			"ACTORSELECT", 3,
+			"AISENTRYPOINT", 4,
+			"AIPATROLPOINTS", 5,
+			"AIGOLDDIGPOINT", 6,
+			"AIGOTOPOINT", 7,
+			"LZSELECT", 8
+		));
+
+		g_pSolLuaState->set("DifficultySetting", g_pSolLuaState->create_table_with(
+			"MINDIFFICULTY", 0,
+			"CAKEDIFFICULTY", 15,
+			"EASYDIFFICULTY", 40,
+			"MEDIUMDIFFICULTY", 60,
+			"HARDDIFFICULTY", 85,
+			"NUTSDIFFICULTY", 98,
+			"MAXDIFFICULTY", 100,
+			"TESTDIFFICULTY", -1
+		));
+
+		g_pSolLuaState->set("AISkillSetting", g_pSolLuaState->create_table_with(
+			"INFERIORSKILL", Activity::INFERIORSKILL,
+			"AVERAGESKILL", Activity::AVERAGESKILL,
+			"GOODSKILL", Activity::GOODSKILL,
+			"UNFAIRSKILL", Activity::UNFAIRSKILL,
+			"DEFAULTSKILL", Activity::DEFAULTSKILL
+		));
+
+		Bind["ClassName"] = sol::property(&Activity::GetClassName);
+		Bind["Description"] = sol::property(&Activity::GetDescription);
+		Bind["InCampaignStage"] = sol::property(&Activity::GetInCampaignStage, &Activity::SetInCampaignStage);
+		Bind["ActivityState"] = sol::property(&Activity::GetActivityState, &Activity::SetActivityState);
+		Bind["SceneName"] = sol::property(&Activity::GetSceneName, &Activity::SetSceneName);
+		Bind["PlayerCount"] = sol::property(&Activity::GetPlayerCount, &Activity::SetPlayerCount);
+		Bind["DeactivatePlayer"] = &Activity::DeactivatePlayer;
+		Bind["PlayerActive"] = &Activity::PlayerActive;
+		Bind["PlayerHuman"] = &Activity::PlayerHuman;
+		Bind["HumanCount"] = sol::property(&Activity::GetHumanCount);
+		Bind["TeamCount"] = sol::property(&Activity::GetTeamCount, &Activity::SetTeamCount);
+		Bind["TeamActive"] = &Activity::TeamActive;
+		Bind["GetTeamOfPlayer"] = &Activity::GetTeamOfPlayer;
+		Bind["SetTeamOfPlayer"] = &Activity::SetTeamOfPlayer;
+		Bind["PlayersInTeamCount"] = &Activity::PlayersInTeamCount;
+		Bind["ScreenOfPlayer"] = &Activity::ScreenOfPlayer;
+		Bind["GetViewState"] = &Activity::GetViewState;
+		Bind["SetViewState"] = &Activity::SetViewState;
+		Bind["GetPlayerBrain"] = &Activity::GetPlayerBrain;
+		Bind["SetPlayerBrain"] = &Activity::SetPlayerBrain;
+		Bind["PlayerHadBrain"] = &Activity::PlayerHadBrain;
+		Bind["SetBrainEvacuated"] = &Activity::SetBrainEvacuated;
+		Bind["BrainWasEvacuated"] = &Activity::BrainWasEvacuated;
+		Bind["IsAssignedBrain"] = &Activity::IsAssignedBrain;
+		Bind["IsBrainOfWhichPlayer"] = &Activity::IsBrainOfWhichPlayer;
+		Bind["IsOtherPlayerBrain"] = &Activity::IsOtherPlayerBrain;
+		Bind["HumanBrainCount"] = &Activity::HumanBrainCount;
+		Bind["AIBrainCount"] = &Activity::AIBrainCount;
+		Bind["GetControlledActor"] = &Activity::GetControlledActor;
+		Bind["SetTeamFunds"] = &Activity::SetTeamFunds;
+		Bind["GetTeamFunds"] = &Activity::GetTeamFunds;
+		Bind["SetTeamAISkill"] = &Activity::SetTeamAISkill;
+		Bind["GetTeamAISkill"] = &Activity::GetTeamAISkill;
+		Bind["ChangeTeamFunds"] = &Activity::ChangeTeamFunds;
+		Bind["TeamFundsChanged"] = &Activity::TeamFundsChanged;
+		Bind["ReportDeath"] = &Activity::ReportDeath;
+		Bind["GetTeamDeathCount"] = &Activity::GetTeamDeathCount;
+		Bind["GetDemoTimeLeft"] = &Activity::GetDemoTimeLeft;
+		Bind["Running"] = &Activity::Running;
+		Bind["Paused"] = &Activity::Paused;
+		Bind["ActivityOver"] = &Activity::ActivityOver;
+		Bind["EnteredOrbit"] = &Activity::EnteredOrbit;
+		Bind["SwitchToActor"] = &Activity::SwitchToActor;
+		Bind["SwitchToNextActor"] = &Activity::SwitchToNextActor;
+		Bind["SwitchToPrevActor"] = &Activity::SwitchToPrevActor;
+		Bind["Difficulty"] = sol::property(&Activity::GetDifficulty, &Activity::SetDifficulty);
+		Bind["IsPlayerTeam"] = &Activity::IsPlayerTeam;
+		Bind["ResetMessageTimer"] = &Activity::ResetMessageTimer;
 	}
 
 	{
 		/*
-
 		class_<GUIBanner>("GUIBanner")
 			.enum_("AnimMode")
 			[
@@ -3221,8 +3628,38 @@ int LuaMan::Create()
 			.def("ShowText", &GUIBanner::ShowText)
 			.def("HideText", &GUIBanner::HideText)
 			.def("ClearText", &GUIBanner::ClearText),
-
 		*/
+
+		sol::usertype<GUIBanner> Bind = g_pSolLuaState->new_usertype<GUIBanner>("GUIBanner", sol::no_constructor);
+
+		g_pSolLuaState->set("AnimMode", g_pSolLuaState->create_table_with(
+			"BLINKING", 0,
+			"FLYBYLEFTWARD", 1,
+			"FLYBYRIGHTWARD", 2,
+			"ANIMMODECOUNT", 3
+		));
+
+		g_pSolLuaState->set("AnimState", g_pSolLuaState->create_table_with(
+			"NOTSTARTED", 0,
+			"SHOWING", 1,
+			"SHOW", 2,
+			"HIDING", 3,
+			"OVER", 4,
+			"ANIMSTATECOUNT", 5
+		));
+
+		g_pSolLuaState->set("BannerColor", g_pSolLuaState->create_table_with(
+			"RED", 0,
+			"YELLOW", 1
+		));
+
+		Bind["BannerText"] = sol::property(&GUIBanner::GetBannerText);
+		Bind["AnimState"] = sol::property(&GUIBanner::GetAnimState);
+		Bind["IsVisible"] = &GUIBanner::IsVisible;
+		Bind["Kerning"] = sol::property(&GUIBanner::GetKerning, &GUIBanner::SetKerning);
+		Bind["ShowText"] = &GUIBanner::ShowText;
+		Bind["HideText"] = &GUIBanner::HideText;
+		Bind["ClearText"] = &GUIBanner::ClearText;
 	}
 
 	{
