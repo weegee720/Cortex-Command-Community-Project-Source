@@ -1244,6 +1244,7 @@ int LuaMan::Create()
 			.def("ResetEmissionTimers", &Emission::ResetEmissionTimers),*/
 
 		ABSTRACTLUABINDING_SOL(Emission, Entity);
+
 		Bind["ParticlesPerMinute"] = sol::property(&Emission::GetRate, &Emission::SetRate);
 		Bind["MinVelocity"] = sol::property(&Emission::GetMinVelocity, &Emission::SetMinVelocity);
 		Bind["MaxVelocity"] = sol::property(&Emission::GetMaxVelocity, &Emission::SetMaxVelocity);
@@ -1586,6 +1587,7 @@ int LuaMan::Create()
 			.property("HandPos", &Arm::GetHandPos, &Arm::SetHandPos),*/
 
 		ABSTRACTLUABINDING_SOL(Arm, Attachable);
+
 		Bind["IdleOffset"] = sol::property(&Arm::GetIdleOffset, &Arm::SetIdleOffset);
 		Bind["HandPos"] = sol::property(&Arm::GetHandPos, &Arm::SetHandPos);//*/
 	}
@@ -2139,6 +2141,35 @@ int LuaMan::Create()
 			.property("SharpLength", &HeldDevice::GetSharpLength, &HeldDevice::SetSharpLength)
 			.property("SupportOffset", &HeldDevice::GetSupportOffset, &HeldDevice::SetSupportOffset)
 			.def("SetSupported", &HeldDevice::SetSupported),*/
+
+
+		CONCRETELUABINDING_SOL(HeldDevice, Attachable)
+
+		Bind["SupportPos"] = sol::property(&HeldDevice::GetSupportPos);
+		Bind["MagazinePos"] = sol::property(&HeldDevice::GetMagazinePos);
+		Bind["MuzzlePos"] = sol::property(&HeldDevice::GetMuzzlePos);
+		Bind["MuzzleOffset"] = sol::property(&HeldDevice::GetMuzzleOffset, &HeldDevice::SetMuzzleOffset);
+		Bind["StanceOffset"] = sol::property(&HeldDevice::GetStanceOffset, &HeldDevice::SetStanceOffset);
+		Bind["SharpStanceOffset"] = sol::property(&HeldDevice::GetSharpStanceOffset, &HeldDevice::SetSharpStanceOffset);
+		Bind["SharpLength"] = sol::property(&HeldDevice::GetSharpLength, &HeldDevice::SetSharpLength);
+		Bind["IsWeapon"] = &HeldDevice::IsWeapon;
+		Bind["IsTool"] = &HeldDevice::IsTool;
+		Bind["IsShield"] = &HeldDevice::IsShield;
+		Bind["IsDualWieldable"] = &HeldDevice::IsDualWieldable;
+		Bind["SetDualWieldable"] = &HeldDevice::SetDualWieldable;
+		Bind["IsOneHanded"] = &HeldDevice::IsOneHanded;
+		Bind["SetOneHanded"] = &HeldDevice::SetOneHanded;
+		Bind["Activate"] = &HeldDevice::Activate;
+		Bind["Deactivate"] = &HeldDevice::Deactivate;
+		Bind["Reload"] = &HeldDevice::Reload;
+		Bind["IsActivated"] = &HeldDevice::IsActivated;
+		Bind["IsReloading"] = &HeldDevice::IsReloading;
+		Bind["DoneReloading"] = &HeldDevice::DoneReloading;
+		Bind["NeedsReloading"] = &HeldDevice::NeedsReloading;
+		Bind["IsFull"] = &HeldDevice::IsFull;
+		Bind["SharpLength"] = sol::property(&HeldDevice::GetSharpLength, &HeldDevice::SetSharpLength);
+		Bind["SupportOffset"] = sol::property(&HeldDevice::GetSupportOffset, &HeldDevice::SetSupportOffset);
+		Bind["SetSupported"] = &HeldDevice::SetSupported;
 	}
 
 	{
@@ -2150,9 +2181,17 @@ int LuaMan::Create()
 			.property("IsOverHalfFull", &Magazine::IsOverHalfFull)
 			.property("Capacity", &Magazine::GetCapacity)
 			.property("Discardable", &Magazine::IsDiscardable),*/
+
+		CONCRETELUABINDING_SOL(Magazine, Attachable)
+
+		Bind["NextRound"] = sol::property(&Magazine::GetNextRound);
+		Bind["RoundCount"] = sol::property(&Magazine::GetRoundCount, &Magazine::SetRoundCount);
+		Bind["IsEmpty"] = sol::property(&Magazine::IsEmpty);
+		Bind["IsFull"] = sol::property(&Magazine::IsFull);
+		Bind["IsOverHalfFull"] = sol::property(&Magazine::IsOverHalfFull);
+		Bind["Capacity"] = sol::property(&Magazine::GetCapacity);
+		Bind["Discardable"] = sol::property(&Magazine::IsDiscardable);
 	}
-
-
 
 	{
 		/*CONCRETELUABINDING(Round, Entity)
@@ -2166,6 +2205,17 @@ int LuaMan::Create()
 			.property("AIFireVel", &Round::GetAIFireVel)
 			.property("IsEmpty", &Round::IsEmpty),*/
 
+		CONCRETELUABINDING_SOL(Round, Entity);
+
+		Bind["NextParticle"] = sol::property(&Round::GetNextParticle);
+		Bind["Shell"] = sol::property(&Round::GetShell);
+		Bind["FireVel"] = sol::property(&Round::GetFireVel);
+		Bind["ShellVel"] = sol::property(&Round::GetShellVel);
+		Bind["Separation"] = sol::property(&Round::GetSeparation);
+		Bind["ParticleCount"] = sol::property(&Round::ParticleCount);
+		Bind["AILifeTime"] = sol::property(&Round::GetAILifeTime);
+		Bind["AIFireVel"] = sol::property(&Round::GetAIFireVel);
+		Bind["IsEmpty"] = sol::property(&Round::IsEmpty);
 	}
 
 
@@ -2194,17 +2244,47 @@ int LuaMan::Create()
 			.def("SetNextMagazineName", &HDFirearm::SetNextMagazineName)
 			.property("IsAnimatedManually", &HDFirearm::IsAnimatedManually, &HDFirearm::SetAnimatedManually)
 			.property("RecoilTransmission", &HDFirearm::GetRecoilTransmission, &HDFirearm::SetRecoilTransmission),*/
-	}
 
+		CONCRETELUABINDING_SOL(HDFirearm, HeldDevice);
+
+		Bind["RateOfFire"] = sol::property(&HDFirearm::GetRateOfFire, &HDFirearm::SetRateOfFire);
+		Bind["FullAuto"] = sol::property(&HDFirearm::IsFullAuto, &HDFirearm::SetFullAuto);
+		Bind["RoundInMagCount"] = sol::property(&HDFirearm::GetRoundInMagCount);
+		Bind["Magazine"] = sol::property(&HDFirearm::GetMagazine);
+		Bind["ActivationDelay"] = sol::property(&HDFirearm::GetActivationDelay, &HDFirearm::SetActivationDelay);
+		Bind["DeactivationDelay"] = sol::property(&HDFirearm::GetDeactivationDelay, &HDFirearm::SetDeactivationDelay);
+		Bind["ReloadTime"] = sol::property(&HDFirearm::GetReloadTime, &HDFirearm::SetReloadTime);
+		Bind["ShakeRange"] = sol::property(&HDFirearm::GetShakeRange, &HDFirearm::SetShakeRange);
+		Bind["SharpShakeRange"] = sol::property(&HDFirearm::GetSharpShakeRange, &HDFirearm::SetSharpShakeRange);
+		Bind["NoSupportFactor"] = sol::property(&HDFirearm::GetNoSupportFactor, &HDFirearm::SetNoSupportFactor);
+		Bind["ParticleSpreadRange"] = sol::property(&HDFirearm::GetParticleSpreadRange, &HDFirearm::SetParticleSpreadRange);
+		Bind["FiredOnce"] = sol::property(&HDFirearm::FiredOnce);
+		Bind["FiredFrame"] = sol::property(&HDFirearm::FiredFrame);
+		Bind["RoundsFired"] = sol::property(&HDFirearm::RoundsFired);
+		Bind["GetAIFireVel"] = &HDFirearm::GetAIFireVel;
+		Bind["GetAIBulletLifeTime"] = &HDFirearm::GetAIBulletLifeTime;
+		Bind["GetBulletAccScalar"] = &HDFirearm::GetBulletAccScalar;
+		Bind["GetAIBlastRadius"] = &HDFirearm::GetAIBlastRadius;
+		Bind["GetAIPenetration"] = &HDFirearm::GetAIPenetration;
+		Bind["CompareTrajectories"] = &HDFirearm::CompareTrajectories;
+		Bind["SetNextMagazineName"] = &HDFirearm::SetNextMagazineName;
+		Bind["IsAnimatedManually"] = sol::property(&HDFirearm::IsAnimatedManually, &HDFirearm::SetAnimatedManually);
+		Bind["RecoilTransmission"] = sol::property(&HDFirearm::GetRecoilTransmission, &HDFirearm::SetRecoilTransmission);
+	}
 
 	{
 		/*CONCRETELUABINDING(ThrownDevice, HeldDevice)
 			.property("MinThrowVel", &ThrownDevice::GetMinThrowVel, &ThrownDevice::SetMinThrowVel)
 			.property("MaxThrowVel", &ThrownDevice::GetMaxThrowVel, &ThrownDevice::SetMaxThrowVel),*/
+
+		CONCRETELUABINDING_SOL(ThrownDevice, HeldDevice);
+
+		Bind["MinThrowVel"] = sol::property(&ThrownDevice::GetMinThrowVel, &ThrownDevice::SetMinThrowVel);
+		Bind["MaxThrowVel"] = sol::property(&ThrownDevice::GetMaxThrowVel, &ThrownDevice::SetMaxThrowVel);
 	}
 
 	{
-		//CONCRETELUABINDING(TDExplosive, ThrownDevice),
+		CONCRETELUABINDING_SOL(TDExplosive, ThrownDevice);
 	}
 
 	{
@@ -2281,6 +2361,76 @@ int LuaMan::Create()
 			.def("IsState", &Controller::IsState),
 	*/
 	
+		sol::usertype<Controller> Bind = g_pSolLuaState->new_usertype<Controller>("Controller", sol::no_constructor);
+
+		g_pSolLuaState->set("ControlState", g_pSolLuaState->create_table_with(
+			"PRIMARY_ACTION", 0,
+			"SECONDARY_ACTION", 1,
+			"MOVE_IDLE", 2,
+			"MOVE_RIGHT", 3,
+			"MOVE_LEFT", 4,
+			"MOVE_UP", 5,
+			"MOVE_DOWN", 6,
+			"MOVE_FAST", 7,
+			"BODY_JUMPSTART", 8,
+			"BODY_JUMP", 9,
+			"BODY_CROUCH", 10,
+			"AIM_UP", 11,
+			"AIM_DOWN", 12,
+			"AIM_SHARP", 13,
+			"WEAPON_FIRE", 14,
+			"WEAPON_RELOAD", 15,
+			"PIE_MENU_ACTIVE", 16,
+			"WEAPON_CHANGE_NEXT", 17,
+			"WEAPON_CHANGE_PREV", 18,
+			"WEAPON_PICKUP", 19,
+			"WEAPON_DROP", 20,
+			"ACTOR_NEXT", 21,
+			"ACTOR_PREV", 22,
+			"ACTOR_BRAIN", 23,
+			"ACTOR_NEXT_PREP", 24,
+			"ACTOR_PREV_PREP", 25,
+			"HOLD_RIGHT", 26,
+			"HOLD_LEFT", 27,
+			"HOLD_UP", 28,
+			"HOLD_DOWN", 29,
+			"PRESS_PRIMARY", 30,
+			"PRESS_SECONDARY", 31,
+			"PRESS_RIGHT", 32,
+			"PRESS_LEFT", 33,
+			"PRESS_UP", 34,
+			"PRESS_DOWN", 35,
+			"RELEASE_PRIMARY", 36,
+			"RELEASE_SECONDARY", 37,
+			"PRESS_FACEBUTTON", 38,
+			"SCROLL_UP", 39,
+			"SCROLL_DOWN", 40,
+			"DEBUG_ONE", 41,
+			"CONTROLSTATECOUNT", 42
+		));
+
+		g_pSolLuaState->set("InputMode", g_pSolLuaState->create_table_with(
+			"CIM_DISABLED", 0,
+			"CIM_PLAYER", 1,
+			"CIM_AI", 2,
+			"CIM_NETWORK", 3,
+			"CIM_INPUTMODECOUNT", 4
+		));
+
+		Bind["InputMode"] = sol::property(&Controller::GetInputMode, &Controller::SetInputMode);
+		Bind["IsPlayerControlled"] = &Controller::IsPlayerControlled;
+		Bind["ControlledActor"] = sol::property(&Controller::GetControlledActor, &Controller::SetControlledActor);
+		Bind["Team"] = sol::property(&Controller::GetTeam, &Controller::SetTeam);
+		Bind["AnalogMove"] = sol::property(&Controller::GetAnalogMove, &Controller::SetAnalogMove);
+		Bind["AnalogAim"] = sol::property(&Controller::GetAnalogAim, &Controller::SetAnalogAim);
+		Bind["AnalogCursor"] = sol::property(&Controller::GetAnalogCursor);
+		Bind["RelativeCursorMovement"] = &Controller::RelativeCursorMovement;
+		Bind["Player"] = sol::property(&Controller::GetPlayer, &Controller::SetPlayer);
+		Bind["IsMouseControlled"] = &Controller::IsMouseControlled;
+		Bind["MouseMovement"] = sol::property(&Controller::GetMouseMovement);
+		Bind["Disabled"] = sol::property(&Controller::IsDisabled, &Controller::SetDisabled);
+		Bind["SetState"] = &Controller::SetState;
+		Bind["IsState"] = &Controller::IsState;
 	}
 
 	{
@@ -2310,6 +2460,32 @@ int LuaMan::Create()
 			.def("IsPastSimMS", &Timer::IsPastSimMS)
 			.def("AlternateSim", &Timer::AlternateSim),*/
 
+		sol::usertype<Timer> Bind = g_pSolLuaState->new_usertype<Timer>("Timer", sol::constructors<Timer(), Timer()>());
+
+		Bind["Reset"] = &Timer::Reset;
+		Bind["StartRealTimeMS"] = sol::property(&Timer::GetStartRealTimeMS, &Timer::SetStartRealTimeMS);
+		Bind["ElapsedRealTimeS"] = sol::property(&Timer::GetElapsedRealTimeS, &Timer::SetElapsedRealTimeS);
+		Bind["ElapsedRealTimeMS"] = sol::property(&Timer::GetElapsedRealTimeMS, &Timer::SetElapsedRealTimeMS);
+		Bind["SetRealTimeLimitMS"] = &Timer::SetRealTimeLimitMS;
+		Bind["SetRealTimeLimitS"] = &Timer::SetRealTimeLimitS;
+		Bind["IsPastRealTimeLimit"] = &Timer::IsPastRealTimeLimit;
+		Bind["LeftTillRealTimeLimitMS"] = &Timer::LeftTillRealTimeLimitMS;
+		Bind["LeftTillRealTimeLimitS"] = &Timer::LeftTillRealTimeLimitS;
+		Bind["LeftTillRealMS"] = &Timer::LeftTillRealMS;
+		Bind["IsPastRealMS"] = &Timer::IsPastRealMS;
+		Bind["AlternateReal"] = &Timer::AlternateReal;
+		Bind["StartSimTimeMS"] = sol::property(&Timer::GetStartSimTimeMS, &Timer::SetStartSimTimeMS);
+		Bind["ElapsedSimTimeS"] = sol::property(&Timer::GetElapsedSimTimeS, &Timer::SetElapsedSimTimeS);
+		Bind["ElapsedSimTimeMS"] = sol::property(&Timer::GetElapsedSimTimeMS, &Timer::SetElapsedSimTimeMS);
+		Bind["SetSimTimeLimitMS"] = &Timer::SetSimTimeLimitMS;
+		Bind["SetSimTimeLimitS"] = &Timer::SetSimTimeLimitS;
+		Bind["IsPastSimTimeLimit"] = &Timer::IsPastSimTimeLimit;
+		Bind["LeftTillSimTimeLimitMS"] = &Timer::LeftTillSimTimeLimitMS;
+		Bind["LeftTillSimTimeLimitS"] = &Timer::LeftTillSimTimeLimitS;
+		Bind["LeftTillSimMS"] = &Timer::LeftTillSimMS;
+		Bind["IsPastSimMS"] = &Timer::IsPastSimMS;
+		Bind["AlternateSim"] = &Timer::AlternateSim;
+
 	}
 
 	{
@@ -2327,6 +2503,20 @@ int LuaMan::Create()
             .def("TimeForSimUpdate", &TimerMan::TimeForSimUpdate)
             .def("DrawnSimUpdate", &TimerMan::DrawnSimUpdate),
 */
+
+		sol::usertype<TimerMan> Bind = g_pSolLuaState->new_usertype<TimerMan>("Timer", sol::no_constructor);
+		
+		Bind["TicksPerSecond"] = sol::property(&TimerMan::GetTicksPerSecondInLua);
+		Bind["TimeScale"] = sol::property(&TimerMan::GetTimeScale, &TimerMan::SetTimeScale);
+		Bind["EnableAveraging"] = &TimerMan::EnableAveraging;
+		Bind["RealToSimCap"] = sol::property(&TimerMan::GetRealToSimCap, &TimerMan::SetRealToSimCap);
+		Bind["DeltaTimeTicks"] = sol::property(&TimerMan::GetDeltaTimeTicks, &TimerMan::SetDeltaTimeTicks);
+		Bind["DeltaTimeSecs"] = sol::property(&TimerMan::GetDeltaTimeSecs, &TimerMan::SetDeltaTimeSecs);
+		Bind["DeltaTimeMS"] = sol::property(&TimerMan::GetDeltaTimeMS);
+		Bind["PauseSim"] = &TimerMan::PauseSim;
+		Bind["OneSimUpdatePerFrame"] = sol::property(&TimerMan::IsOneSimUpdatePerFrame, &TimerMan::SetOneSimUpdatePerFrame);
+		Bind["TimeForSimUpdate"] = &TimerMan::TimeForSimUpdate;
+		Bind["DrawnSimUpdate"] = &TimerMan::DrawnSimUpdate;
 	}
 
 	{
@@ -2381,6 +2571,56 @@ int LuaMan::Create()
 			.def("CalculateTextHeight", &FrameMan::CalculateTextHeight)
 			.def("CalculateTextWidth", &FrameMan::CalculateTextWidth),
 	*/
+		sol::usertype<FrameMan> Bind = g_pSolLuaState->new_usertype<FrameMan>("FrameManager", sol::no_constructor);
+
+		Bind["ResetSplitScreens"] = &FrameMan::ResetSplitScreens;
+		Bind["PPM"] = sol::property(&FrameMan::GetPPM, &FrameMan::SetPPM);
+		Bind["MPP"] = sol::property(&FrameMan::GetMPP);
+		Bind["PPL"] = sol::property(&FrameMan::GetPPL);
+		Bind["LPP"] = sol::property(&FrameMan::GetLPP);
+		Bind["ResX"] = sol::property(&FrameMan::GetResX);
+		Bind["ResY"] = sol::property(&FrameMan::GetResY);
+		Bind["ResBPP"] = sol::property(&FrameMan::GetBPP);
+		Bind["HSplit"] = sol::property(&FrameMan::GetHSplit, &FrameMan::SetHSplit);
+		Bind["VSplit"] = sol::property(&FrameMan::GetVSplit, &FrameMan::SetVSplit);
+		Bind["PlayerScreenWidth"] = sol::property(&FrameMan::GetPlayerScreenWidth);
+		Bind["PlayerScreenHeight"] = sol::property(&FrameMan::GetPlayerScreenHeight);
+		Bind["GetPlayerFrameBufferWidth"] = &FrameMan::GetPlayerFrameBufferWidth;
+		Bind["GetPlayerFrameBufferHeight"] = &FrameMan::GetPlayerFrameBufferHeight;
+		Bind["SetScreenText"] = &FrameMan::SetScreenText;
+		Bind["ClearScreenText"] = &FrameMan::ClearScreenText;
+		Bind["IsFullscreen"] = &FrameMan::IsFullscreen;
+		Bind["PostProcessing"] = sol::property(&FrameMan::IsPostProcessing, &FrameMan::EnablePostProcessing);
+		Bind["PostPixelGlow"] = sol::property(&FrameMan::IsPixelGlowEnabled, &FrameMan::EnablePixelGlow);
+		Bind["LoadPalette"] = &FrameMan::LoadPalette;
+		Bind["FadeInPalette"] = &FrameMan::FadeInPalette;
+		Bind["FadeOutPalette"] = &FrameMan::FadeOutPalette;
+		Bind["SaveScreenToBMP"] = &FrameMan::SaveScreenToBMP;
+		Bind["SaveBitmapToBMP"] = &FrameMan::SaveBitmapToBMP;
+		Bind["ResetFrameTimer"] = &FrameMan::ResetFrameTimer;
+		Bind["ResetRTE"] = &FrameMan::ResetRTE;
+		Bind["IsResettingRTE"] = &FrameMan::IsResettingRTE;
+		Bind["ToggleFullscreen"] = &FrameMan::ToggleFullscreen;
+		Bind["ClearBackBuffer8"] = &FrameMan::ClearBackBuffer8;
+		Bind["ClearBackBuffer32"] = &FrameMan::ClearBackBuffer32;
+		Bind["ShowPerformanceStats"] = &FrameMan::ShowPerformanceStats;
+		Bind["FlashScreen"] = &FrameMan::FlashScreen;
+		Bind["DrawCirclePrimitive"] = (void (FrameMan::*)(Vector pos, int radius, int color)) & FrameMan::DrawCirclePrimitive;
+		Bind["DrawCircleFillPrimitive"] = (void (FrameMan::*)(Vector pos, int radius, int color)) & FrameMan::DrawCircleFillPrimitive;
+		Bind["DrawLinePrimitive"] = (void (FrameMan::*)(Vector start, Vector end, int color)) & FrameMan::DrawLinePrimitive;
+		Bind["DrawTextPrimitive"] = (void (FrameMan::*)(Vector start, std::string text, bool isSmall, int alignment)) & FrameMan::DrawTextPrimitive;
+		Bind["DrawBitmapPrimitive"] = (void (FrameMan::*)(Vector start, Entity * pEntity, float rotAngle, int frame)) & FrameMan::DrawBitmapPrimitive;
+		Bind["DrawBoxPrimitive"] = (void (FrameMan::*)(Vector start, Vector end, int color)) & FrameMan::DrawBoxPrimitive;
+		Bind["DrawBoxFillPrimitive"] = (void (FrameMan::*)(Vector start, Vector end, int color)) & FrameMan::DrawBoxFillPrimitive;
+		Bind["DrawCirclePrimitive"] = (void (FrameMan::*)(int player, Vector pos, int radius, int color)) & FrameMan::DrawCirclePrimitive;
+		Bind["DrawCircleFillPrimitive"] = (void (FrameMan::*)(int player, Vector pos, int radius, int color)) & FrameMan::DrawCircleFillPrimitive;
+		Bind["DrawLinePrimitive"] = (void (FrameMan::*)(int player, Vector start, Vector end, int color)) & FrameMan::DrawLinePrimitive;
+		Bind["DrawTextPrimitive"] = (void (FrameMan::*)(int player, Vector start, std::string text, bool isSmall, int alignment)) & FrameMan::DrawTextPrimitive;
+		Bind["DrawBitmapPrimitive"] = (void (FrameMan::*)(int player, Vector start, Entity * pEntity, float rotAngle, int frame)) & FrameMan::DrawBitmapPrimitive;
+		Bind["DrawBoxPrimitive"] = (void (FrameMan::*)(int player, Vector start, Vector end, int color)) & FrameMan::DrawBoxPrimitive;
+		Bind["DrawBoxFillPrimitive"] = (void (FrameMan::*)(int player, Vector start, Vector end, int color)) & FrameMan::DrawBoxFillPrimitive;
+		Bind["CalculateTextHeight"] = &FrameMan::CalculateTextHeight;
+		Bind["CalculateTextWidth"] = &FrameMan::CalculateTextWidth;
 	}
 
 	{
@@ -2404,9 +2644,29 @@ int LuaMan::Create()
 			.def("GetEntityDataLocation", &PresetMan::GetEntityDataLocation)
 			.def("ReadReflectedPreset", &PresetMan::ReadReflectedPreset)
 			.def("ReloadAllScripts", &PresetMan::ReloadAllScripts),
-
-	
 	*/
+
+		sol::usertype<PresetMan> Bind = g_pSolLuaState->new_usertype<PresetMan>("PresetManager", sol::no_constructor);
+
+		Bind["LoadDataModule"] = (bool (PresetMan::*)(string)) & PresetMan::LoadDataModule;
+		Bind["GetDataModule"] = &PresetMan::GetDataModule;
+		Bind["GetModuleID"] = &PresetMan::GetModuleID;
+		Bind["GetModuleIDFromPath"] = &PresetMan::GetModuleIDFromPath;
+		Bind["GetTotalModuleCount"] = &PresetMan::GetTotalModuleCount;
+		Bind["GetOfficialModuleCount"] = &PresetMan::GetOfficialModuleCount;
+		Bind["AddPreset"] = &PresetMan::AddEntityPreset;
+		Bind["Modules"] = &PresetMan::m_pDataModules;
+		// Disambiguate overloaded member funcs
+		Bind["GetPreset"] = (const Entity * (PresetMan::*)(string, string, int)) & PresetMan::GetEntityPreset;
+		Bind["GetPreset"] = (const Entity * (PresetMan::*)(string, string, string)) & PresetMan::GetEntityPreset;
+		Bind["GetLoadout"] = (Actor * (PresetMan::*)(std::string, std::string, bool)) & PresetMan::GetLoadout, luabind::adopt_policy<0>();
+		Bind["GetLoadout"] = (Actor * (PresetMan::*)(std::string, int, bool)) & PresetMan::GetLoadout, luabind::adopt_policy<0>();
+		Bind["GetRandomOfGroup"] = &PresetMan::GetRandomOfGroup;
+		Bind["GetRandomOfGroupInModuleSpace"] = &PresetMan::GetRandomOfGroupInModuleSpace;
+		Bind["GetEntityDataLocation"] = &PresetMan::GetEntityDataLocation;
+		Bind["ReadReflectedPreset"] = &PresetMan::ReadReflectedPreset;
+		Bind["ReloadAllScripts"] = &PresetMan::ReloadAllScripts;
+
 	}
 
 	{
@@ -2433,6 +2693,27 @@ int LuaMan::Create()
 
 
 		*/
+
+		sol::usertype<AudioMan> Bind = g_pSolLuaState->new_usertype<AudioMan>("AudioManager", sol::no_constructor);
+		
+		Bind["SoundsVolume"] = sol::property(&AudioMan::GetSoundsVolume, &AudioMan::SetSoundsVolume);
+		Bind["MusicVolume"] = sol::property(&AudioMan::GetMusicVolume, &AudioMan::SetMusicVolume);
+		//Bind["PlayModule"] =&AudioMan::PlayModule)
+		Bind["PlayMusic"] = &AudioMan::PlayMusic;
+		Bind["QueueMusicStream"] = &AudioMan::QueueMusicStream;
+		Bind["QueueSilence"] = &AudioMan::QueueSilence;
+		Bind["ClearMusicQueue"] = &AudioMan::ClearMusicQueue;
+		Bind["PlaySound"] = (Sound * (AudioMan::*)(const char*, float, bool, bool, int)) & AudioMan::PlaySound;
+		Bind["PlaySound"] = (void (AudioMan::*)(const char*)) & AudioMan::PlaySound;
+		Bind["SetSoundAttenuation"] = &AudioMan::SetSoundAttenuation;
+		Bind["IsPlaying"] = &AudioMan::IsPlaying;
+		Bind["IsMusicPlaying"] = &AudioMan::IsMusicPlaying;
+		//Bind["StopSound"] =&AudioMan::StopSound)
+		//Bind["FadeOutSound"] =&AudioMan::FadeOutSound)
+		Bind["StopMusic"] = &AudioMan::StopMusic;
+		Bind["SetMusicPosition"] = &AudioMan::SetMusicPosition;
+		Bind["GetMusicPosition"] = &AudioMan::GetMusicPosition;
+		Bind["StopAll"] = &AudioMan::StopMusic;
 	}
 
 	{
@@ -2558,6 +2839,7 @@ int LuaMan::Create()
 
 
 		*/
+
 	}
 
 	{
