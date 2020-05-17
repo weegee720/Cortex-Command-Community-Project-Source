@@ -3028,13 +3028,16 @@ int LuaMan::Create()
 		///////////////////////////////////////////////////////////////////////////
 
 		sol::usertype<IntRect> Bind = g_pSolLuaState->new_usertype<IntRect>("IntRect",
-			sol::constructors<IntRect(), IntRect(int, int, int, int)>()
+			sol::constructors<
+				IntRect(), 
+				IntRect(int, int, int, int)
+			>()
 		);
 
-		Bind["Left"] = &IntRect::m_Left;
-		Bind["Top"] = &IntRect::m_Top;
-		Bind["Right"] = &IntRect::m_Right;
-		Bind["Bottom"] = &IntRect::m_Bottom;//*/
+		Bind["Left"] = sol::property(&IntRect::m_Left);
+		Bind["Top"] = sol::property(&IntRect::m_Top);
+		Bind["Right"] = sol::property(&IntRect::m_Right);
+		Bind["Bottom"] = sol::property(&IntRect::m_Bottom);//*/
 	}
 
 	{
@@ -3228,7 +3231,7 @@ int LuaMan::Create()
 
 		///////////////////////////////////////////////////////////////////////////
 
-		sol::usertype<IntRect> Bind = g_pSolLuaState->new_usertype<IntRect>("SceneManager", sol::no_constructor);
+		sol::usertype<SceneMan> Bind = g_pSolLuaState->new_usertype<SceneMan>("SceneManager", sol::no_constructor);
 
 		Bind["Scene"] = sol::property(&SceneMan::GetScene);
 		Bind["LoadScene"] = (int (SceneMan::*)(string, bool, bool)) & SceneMan::LoadScene;
@@ -3318,7 +3321,7 @@ int LuaMan::Create()
 
 		Bind["Presets"] = &DataModule::m_EntityList;
 		Bind["FileName"] = sol::property(&DataModule::GetFileName);
-		Bind["FriendlyName"] = sol::property(&DataModule::GetFriendlyName);
+		Bind["FriendlyName"] = sol::property(&DataModule::GetFriendlyName);//*/
 	}
 
 	{
@@ -4065,6 +4068,8 @@ int LuaMan::Create()
 			.property("BrainPoolCount", &MetaPlayer::GetBrainPoolCount, &MetaPlayer::SetBrainPoolCount)
 			.def("ChangeBrainPoolCount", &MetaPlayer::ChangeBrainPoolCount),
 		*/
+
+		///////////////////////////////////////////////////////////////////////////
 
 		sol::usertype<MetaPlayer> Bind = g_pSolLuaState->new_usertype<MetaPlayer>("MetaPlayer", sol::no_constructor);
 
