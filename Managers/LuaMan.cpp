@@ -382,7 +382,7 @@ LUAENTITYCAST(TerrainObject)
 //////////////////////////////////////////////////////////////////////////////////////////
 // Other misc adapters to eliminate/emulate default parameters etc
 
-void GibThis(MOSRotating *pThis) { pThis->GibThis(); }
+/*void GibThis(MOSRotating *pThis) { pThis->GibThis(); }
 void AddMO(MovableMan &This, MovableObject *pMO)
 {
     if (This.ValidMO(pMO))
@@ -410,7 +410,7 @@ void AddParticle(MovableMan &This, MovableObject *pParticle)
         g_ConsoleMan.PrintString("ERROR: Tried to add a Particle that already exists in the simulation!" + pParticle->GetPresetName());
     else
         This.AddParticle(pParticle);
-}
+}*/
 
 /*
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -884,6 +884,8 @@ int LuaMan::Create()
 			.def_readwrite("PieMenuActor", &MovableObject::m_pPieMenuActor)
 			.property("HitWhatParticleUniqueID", &MovableObject::HitWhatParticleUniqueID),*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		ABSTRACTLUABINDING_SOL(MovableObject, SceneObject);
 
 		Bind["Material"] = sol::property(&MovableObject::GetMaterial);
@@ -977,6 +979,8 @@ int LuaMan::Create()
 		.property("TransformsInto", &Material::GetSpawnMaterial)
 		.property("IsScrap", &Material::IsScrap),*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		sol::usertype<Material> Bind = g_pSolLuaState->new_usertype<Material>("Material", sol::no_constructor);
 
 		Bind["ID"]  = &Material::GetId;
@@ -1001,6 +1005,7 @@ int LuaMan::Create()
 //            .property("Atom", &MOPixel::GetAtom, &MOPixel:SetAtom)
 //            .property("IsGold", &MOPixel::IsGold),
 
+		///////////////////////////////////////////////////////////////////////////
 
 		CONCRETELUABINDING_SOL(MOPixel, MovableObject);//*/
 	}
@@ -1010,6 +1015,8 @@ int LuaMan::Create()
 			.def("GetBitmapOffset", &TerrainObject::GetBitmapOffset)
 			.def("GetBitmapWidth", &TerrainObject::GetBitmapWidth)
 			.def("GetBitmapHeight", &TerrainObject::GetBitmapHeight),*/
+
+		///////////////////////////////////////////////////////////////////////////
 
 		CONCRETELUABINDING_SOL(TerrainObject, SceneObject);
 
@@ -1052,6 +1059,8 @@ int LuaMan::Create()
 			.def("GetEntryWoundPresetName", &MOSprite::GetEntryWoundPresetName)
 			.def("GetExitWoundPresetName", &MOSprite::GetExitWoundPresetName),*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		ABSTRACTLUABINDING_SOL(MOSprite, MovableObject);
 
 		g_pSolLuaState->set("SpriteAnimMode", g_pSolLuaState->create_table_with(
@@ -1091,6 +1100,8 @@ int LuaMan::Create()
 		/*CONCRETELUABINDING(MOSParticle, MOSprite)
 			.property("Framerate", &MOSParticle::GetFramerate, &MOSParticle::SetFramerate)
 			.property("IsGold", &MOSParticle::IsGold),*/
+
+		///////////////////////////////////////////////////////////////////////////
 
 		CONCRETELUABINDING_SOL(MOSParticle, MOSprite);
 		
@@ -1139,6 +1150,7 @@ int LuaMan::Create()
 			.def_readwrite("Attachables", &MOSRotating::m_Attachables, luabind::return_stl_iterator())
 			.def_readwrite("Emitters", &MOSRotating::m_Emitters, luabind::return_stl_iterator()),*/
 
+		///////////////////////////////////////////////////////////////////////////
 
 		CONCRETELUABINDING_SOL(MOSRotating, MOSprite);
 
@@ -1206,6 +1218,8 @@ int LuaMan::Create()
 			.def("CollectDamage", &Attachable::CollectDamage)
 			.property("InheritsRotAngle", &Attachable::InheritsRotAngle, &Attachable::SetInheritsRotAngle),*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		CONCRETELUABINDING_SOL(Attachable, MOSRotating);
 
 		Bind["GetRootParent"] = (MovableObject * (Attachable::*)())&Attachable::GetRootParent;
@@ -1243,6 +1257,8 @@ int LuaMan::Create()
 			.property("Offset", &Emission::GetOffset, &Emission::SetOffset)
 			.def("ResetEmissionTimers", &Emission::ResetEmissionTimers),*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		ABSTRACTLUABINDING_SOL(Emission, Entity);
 
 		Bind["ParticlesPerMinute"] = sol::property(&Emission::GetRate, &Emission::SetRate);
@@ -1277,6 +1293,8 @@ int LuaMan::Create()
 			.def("IsSetToBurst", &AEmitter::IsSetToBurst)
 			.def("CanTriggerBurst", &AEmitter::CanTriggerBurst)
 			.def_readwrite("Emissions", &AEmitter::m_EmissionList, luabind::return_stl_iterator()),*/
+
+		///////////////////////////////////////////////////////////////////////////
 
 		CONCRETELUABINDING_SOL(AEmitter, Attachable)
 
@@ -1425,6 +1443,7 @@ int LuaMan::Create()
 			.property("TotalWoundLimit", &Actor::GetTotalWoundLimit)
 			.def("RemoveAnyRandomWounds", &Actor::RemoveAnyRandomWounds),*/
 
+		///////////////////////////////////////////////////////////////////////////
 
 		CONCRETELUABINDING_SOL(Actor, MOSRotating);
 
@@ -1566,6 +1585,8 @@ int LuaMan::Create()
 		.def("CloseDoor", &ADoor::CloseDoor)
 		.def("SetClosedByDefault", &ADoor::SetClosedByDefault),*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		CONCRETELUABINDING_SOL(ADoor, Actor)
 
 		g_pSolLuaState->set("DooorState", g_pSolLuaState->create_table_with(
@@ -1585,6 +1606,8 @@ int LuaMan::Create()
 		/*ABSTRACTLUABINDING(Arm, Attachable)
 			.property("IdleOffset", &Arm::GetIdleOffset, &Arm::SetIdleOffset)
 			.property("HandPos", &Arm::GetHandPos, &Arm::SetHandPos),*/
+
+		///////////////////////////////////////////////////////////////////////////
 
 		ABSTRACTLUABINDING_SOL(Arm, Attachable);
 
@@ -1702,6 +1725,8 @@ int LuaMan::Create()
 			.property("LimbPathPushForce", &AHuman::GetLimbPathPushForce, &AHuman::SetLimbPathPushForce)
 			.def("GetLimbPathSpeed", &AHuman::GetLimbPathSpeed)
 			.def("SetLimbPathSpeed", &AHuman::SetLimbPathSpeed),*/
+
+		///////////////////////////////////////////////////////////////////////////
 
 		CONCRETELUABINDING_SOL(AHuman, Actor)
 
@@ -1894,6 +1919,8 @@ int LuaMan::Create()
 			.def("GetLimbPathSpeed", &ACrab::GetLimbPathSpeed)
 			.def("SetLimbPathSpeed", &ACrab::SetLimbPathSpeed),*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		CONCRETELUABINDING_SOL(ACrab, Actor)
 
 		g_pSolLuaState->set("MovementState", g_pSolLuaState->create_table_with(
@@ -2011,6 +2038,7 @@ int LuaMan::Create()
 			.property("MaxPassengers", &ACraft::GetMaxPassengers)
 			.property("DeliveryDelayMultiplier", &ACraft::GetDeliveryDelayMultiplier),*/
 
+			///////////////////////////////////////////////////////////////////////////
 
 			ABSTRACTLUABINDING_SOL(ACraft, Actor)
 
@@ -2063,6 +2091,8 @@ int LuaMan::Create()
 			.def("DetectObstacle", &ACDropShip::DetectObstacle)
 			.def("GetAltitude", &ACDropShip::GetAltitude),//*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		CONCRETELUABINDING_SOL(ACDropShip, ACraft)
 
 		Bind["RightEngine"] = sol::property(&ACDropShip::GetRThruster);
@@ -2095,6 +2125,7 @@ int LuaMan::Create()
 			.property("RightThruster", &ACRocket::GetURThruster)
 			.property("GearState", &ACRocket::GetGearState),*/
 
+		///////////////////////////////////////////////////////////////////////////
 
 		CONCRETELUABINDING_SOL(ACRocket, ACraft)
 
@@ -2111,7 +2142,7 @@ int LuaMan::Create()
 		Bind["RightEngine"] = sol::property(&ACRocket::GetRThruster);
 		Bind["LeftThruster"] = sol::property(&ACRocket::GetULThruster);
 		Bind["RightThruster"] = sol::property(&ACRocket::GetURThruster);
-		Bind["GearState"] = sol::property(&ACRocket::GetGearState);
+		Bind["GearState"] = sol::property(&ACRocket::GetGearState);//*/
 	}
 
 	{
@@ -2142,6 +2173,7 @@ int LuaMan::Create()
 			.property("SupportOffset", &HeldDevice::GetSupportOffset, &HeldDevice::SetSupportOffset)
 			.def("SetSupported", &HeldDevice::SetSupported),*/
 
+		///////////////////////////////////////////////////////////////////////////
 
 		CONCRETELUABINDING_SOL(HeldDevice, Attachable)
 
@@ -2169,7 +2201,7 @@ int LuaMan::Create()
 		Bind["IsFull"] = &HeldDevice::IsFull;
 		Bind["SharpLength"] = sol::property(&HeldDevice::GetSharpLength, &HeldDevice::SetSharpLength);
 		Bind["SupportOffset"] = sol::property(&HeldDevice::GetSupportOffset, &HeldDevice::SetSupportOffset);
-		Bind["SetSupported"] = &HeldDevice::SetSupported;
+		Bind["SetSupported"] = &HeldDevice::SetSupported;//*/
 	}
 
 	{
@@ -2182,6 +2214,8 @@ int LuaMan::Create()
 			.property("Capacity", &Magazine::GetCapacity)
 			.property("Discardable", &Magazine::IsDiscardable),*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		CONCRETELUABINDING_SOL(Magazine, Attachable)
 
 		Bind["NextRound"] = sol::property(&Magazine::GetNextRound);
@@ -2190,7 +2224,7 @@ int LuaMan::Create()
 		Bind["IsFull"] = sol::property(&Magazine::IsFull);
 		Bind["IsOverHalfFull"] = sol::property(&Magazine::IsOverHalfFull);
 		Bind["Capacity"] = sol::property(&Magazine::GetCapacity);
-		Bind["Discardable"] = sol::property(&Magazine::IsDiscardable);
+		Bind["Discardable"] = sol::property(&Magazine::IsDiscardable);//*/
 	}
 
 	{
@@ -2205,6 +2239,8 @@ int LuaMan::Create()
 			.property("AIFireVel", &Round::GetAIFireVel)
 			.property("IsEmpty", &Round::IsEmpty),*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		CONCRETELUABINDING_SOL(Round, Entity);
 
 		Bind["NextParticle"] = sol::property(&Round::GetNextParticle);
@@ -2215,7 +2251,7 @@ int LuaMan::Create()
 		Bind["ParticleCount"] = sol::property(&Round::ParticleCount);
 		Bind["AILifeTime"] = sol::property(&Round::GetAILifeTime);
 		Bind["AIFireVel"] = sol::property(&Round::GetAIFireVel);
-		Bind["IsEmpty"] = sol::property(&Round::IsEmpty);
+		Bind["IsEmpty"] = sol::property(&Round::IsEmpty);//*/
 	}
 
 
@@ -2245,6 +2281,8 @@ int LuaMan::Create()
 			.property("IsAnimatedManually", &HDFirearm::IsAnimatedManually, &HDFirearm::SetAnimatedManually)
 			.property("RecoilTransmission", &HDFirearm::GetRecoilTransmission, &HDFirearm::SetRecoilTransmission),*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		CONCRETELUABINDING_SOL(HDFirearm, HeldDevice);
 
 		Bind["RateOfFire"] = sol::property(&HDFirearm::GetRateOfFire, &HDFirearm::SetRateOfFire);
@@ -2269,7 +2307,7 @@ int LuaMan::Create()
 		Bind["CompareTrajectories"] = &HDFirearm::CompareTrajectories;
 		Bind["SetNextMagazineName"] = &HDFirearm::SetNextMagazineName;
 		Bind["IsAnimatedManually"] = sol::property(&HDFirearm::IsAnimatedManually, &HDFirearm::SetAnimatedManually);
-		Bind["RecoilTransmission"] = sol::property(&HDFirearm::GetRecoilTransmission, &HDFirearm::SetRecoilTransmission);
+		Bind["RecoilTransmission"] = sol::property(&HDFirearm::GetRecoilTransmission, &HDFirearm::SetRecoilTransmission);//*/
 	}
 
 	{
@@ -2277,14 +2315,16 @@ int LuaMan::Create()
 			.property("MinThrowVel", &ThrownDevice::GetMinThrowVel, &ThrownDevice::SetMinThrowVel)
 			.property("MaxThrowVel", &ThrownDevice::GetMaxThrowVel, &ThrownDevice::SetMaxThrowVel),*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		CONCRETELUABINDING_SOL(ThrownDevice, HeldDevice);
 
 		Bind["MinThrowVel"] = sol::property(&ThrownDevice::GetMinThrowVel, &ThrownDevice::SetMinThrowVel);
-		Bind["MaxThrowVel"] = sol::property(&ThrownDevice::GetMaxThrowVel, &ThrownDevice::SetMaxThrowVel);
+		Bind["MaxThrowVel"] = sol::property(&ThrownDevice::GetMaxThrowVel, &ThrownDevice::SetMaxThrowVel);//*/
 	}
 
 	{
-		CONCRETELUABINDING_SOL(TDExplosive, ThrownDevice);
+		CONCRETELUABINDING_SOL(TDExplosive, ThrownDevice);//*/
 	}
 
 	{
@@ -2360,7 +2400,9 @@ int LuaMan::Create()
 			.def("SetState", &Controller::SetState)
 			.def("IsState", &Controller::IsState),
 	*/
-	
+
+		///////////////////////////////////////////////////////////////////////////
+
 		sol::usertype<Controller> Bind = g_pSolLuaState->new_usertype<Controller>("Controller", sol::no_constructor);
 
 		g_pSolLuaState->set("ControlState", g_pSolLuaState->create_table_with(
@@ -2430,7 +2472,7 @@ int LuaMan::Create()
 		Bind["MouseMovement"] = sol::property(&Controller::GetMouseMovement);
 		Bind["Disabled"] = sol::property(&Controller::IsDisabled, &Controller::SetDisabled);
 		Bind["SetState"] = &Controller::SetState;
-		Bind["IsState"] = &Controller::IsState;
+		Bind["IsState"] = &Controller::IsState;//*/
 	}
 
 	{
@@ -2460,7 +2502,9 @@ int LuaMan::Create()
 			.def("IsPastSimMS", &Timer::IsPastSimMS)
 			.def("AlternateSim", &Timer::AlternateSim),*/
 
-		sol::usertype<Timer> Bind = g_pSolLuaState->new_usertype<Timer>("Timer", sol::constructors<Timer(), Timer()>());
+		///////////////////////////////////////////////////////////////////////////
+
+		sol::usertype<Timer> Bind = g_pSolLuaState->new_usertype<Timer>("Timer", sol::constructors<Timer()>());
 
 		Bind["Reset"] = &Timer::Reset;
 		Bind["StartRealTimeMS"] = sol::property(&Timer::GetStartRealTimeMS, &Timer::SetStartRealTimeMS);
@@ -2484,7 +2528,7 @@ int LuaMan::Create()
 		Bind["LeftTillSimTimeLimitS"] = &Timer::LeftTillSimTimeLimitS;
 		Bind["LeftTillSimMS"] = &Timer::LeftTillSimMS;
 		Bind["IsPastSimMS"] = &Timer::IsPastSimMS;
-		Bind["AlternateSim"] = &Timer::AlternateSim;
+		Bind["AlternateSim"] = &Timer::AlternateSim;//*/
 
 	}
 
@@ -2502,7 +2546,9 @@ int LuaMan::Create()
             .property("OneSimUpdatePerFrame", &TimerMan::IsOneSimUpdatePerFrame, &TimerMan::SetOneSimUpdatePerFrame)
             .def("TimeForSimUpdate", &TimerMan::TimeForSimUpdate)
             .def("DrawnSimUpdate", &TimerMan::DrawnSimUpdate),
-*/
+		*/
+
+		///////////////////////////////////////////////////////////////////////////
 
 		sol::usertype<TimerMan> Bind = g_pSolLuaState->new_usertype<TimerMan>("Timer", sol::no_constructor);
 		
@@ -2516,7 +2562,7 @@ int LuaMan::Create()
 		Bind["PauseSim"] = &TimerMan::PauseSim;
 		Bind["OneSimUpdatePerFrame"] = sol::property(&TimerMan::IsOneSimUpdatePerFrame, &TimerMan::SetOneSimUpdatePerFrame);
 		Bind["TimeForSimUpdate"] = &TimerMan::TimeForSimUpdate;
-		Bind["DrawnSimUpdate"] = &TimerMan::DrawnSimUpdate;
+		Bind["DrawnSimUpdate"] = &TimerMan::DrawnSimUpdate;//*/
 	}
 
 	{
@@ -2571,6 +2617,9 @@ int LuaMan::Create()
 			.def("CalculateTextHeight", &FrameMan::CalculateTextHeight)
 			.def("CalculateTextWidth", &FrameMan::CalculateTextWidth),
 	*/
+
+		///////////////////////////////////////////////////////////////////////////
+
 		sol::usertype<FrameMan> Bind = g_pSolLuaState->new_usertype<FrameMan>("FrameManager", sol::no_constructor);
 
 		Bind["ResetSplitScreens"] = &FrameMan::ResetSplitScreens;
@@ -2620,7 +2669,7 @@ int LuaMan::Create()
 		Bind["DrawBoxPrimitive"] = (void (FrameMan::*)(int player, Vector start, Vector end, int color)) & FrameMan::DrawBoxPrimitive;
 		Bind["DrawBoxFillPrimitive"] = (void (FrameMan::*)(int player, Vector start, Vector end, int color)) & FrameMan::DrawBoxFillPrimitive;
 		Bind["CalculateTextHeight"] = &FrameMan::CalculateTextHeight;
-		Bind["CalculateTextWidth"] = &FrameMan::CalculateTextWidth;
+		Bind["CalculateTextWidth"] = &FrameMan::CalculateTextWidth;//*/
 	}
 
 	{
@@ -2646,6 +2695,8 @@ int LuaMan::Create()
 			.def("ReloadAllScripts", &PresetMan::ReloadAllScripts),
 	*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		sol::usertype<PresetMan> Bind = g_pSolLuaState->new_usertype<PresetMan>("PresetManager", sol::no_constructor);
 
 		Bind["LoadDataModule"] = (bool (PresetMan::*)(string)) & PresetMan::LoadDataModule;
@@ -2665,7 +2716,7 @@ int LuaMan::Create()
 		Bind["GetRandomOfGroupInModuleSpace"] = &PresetMan::GetRandomOfGroupInModuleSpace;
 		Bind["GetEntityDataLocation"] = &PresetMan::GetEntityDataLocation;
 		Bind["ReadReflectedPreset"] = &PresetMan::ReadReflectedPreset;
-		Bind["ReloadAllScripts"] = &PresetMan::ReloadAllScripts;
+		Bind["ReloadAllScripts"] = &PresetMan::ReloadAllScripts;//*/
 
 	}
 
@@ -2694,6 +2745,8 @@ int LuaMan::Create()
 
 		*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		sol::usertype<AudioMan> Bind = g_pSolLuaState->new_usertype<AudioMan>("AudioManager", sol::no_constructor);
 		
 		Bind["SoundsVolume"] = sol::property(&AudioMan::GetSoundsVolume, &AudioMan::SetSoundsVolume);
@@ -2713,7 +2766,7 @@ int LuaMan::Create()
 		Bind["StopMusic"] = &AudioMan::StopMusic;
 		Bind["SetMusicPosition"] = &AudioMan::SetMusicPosition;
 		Bind["GetMusicPosition"] = &AudioMan::GetMusicPosition;
-		Bind["StopAll"] = &AudioMan::StopMusic;
+		Bind["StopAll"] = &AudioMan::StopMusic;//*/
 	}
 
 	{
@@ -2838,6 +2891,8 @@ int LuaMan::Create()
 			.property("FlagShiftState", &UInputMan::FlagShiftState),
 		*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		sol::usertype<UInputMan> Bind = g_pSolLuaState->new_usertype<UInputMan>("UInputManager", sol::no_constructor);
 
 		g_pSolLuaState->set("Players", g_pSolLuaState->create_table_with(
@@ -2956,7 +3011,7 @@ int LuaMan::Create()
 		Bind["AnyStartPress"] = &UInputMan::AnyStartPress;
 		Bind["FlagAltState"] = sol::property(&UInputMan::FlagAltState);
 		Bind["FlagCtrlState"] = sol::property(&UInputMan::FlagCtrlState);
-		Bind["FlagShiftState"] = sol::property(&UInputMan::FlagShiftState);
+		Bind["FlagShiftState"] = sol::property(&UInputMan::FlagShiftState);//*/
 	}
 
 	{
@@ -2970,15 +3025,16 @@ int LuaMan::Create()
 			.def_readwrite("Bottom", &IntRect::m_Bottom),
 		*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		sol::usertype<IntRect> Bind = g_pSolLuaState->new_usertype<IntRect>("IntRect",
-			sol::constructors<IntRect(), IntRect()>(),
 			sol::constructors<IntRect(), IntRect(int, int, int, int)>()
 		);
 
 		Bind["Left"] = &IntRect::m_Left;
 		Bind["Top"] = &IntRect::m_Top;
 		Bind["Right"] = &IntRect::m_Right;
-		Bind["Bottom"] = &IntRect::m_Bottom;
+		Bind["Bottom"] = &IntRect::m_Bottom;//*/
 	}
 
 	{
@@ -3025,6 +3081,8 @@ int LuaMan::Create()
 			.property("ScenePathSize", &Scene::GetScenePathSize),
 		*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		CONCRETELUABINDING_SOL(Scene, Entity);
 		 
 		g_pSolLuaState->set("PlacedObjectSets", g_pSolLuaState->create_table_with(
@@ -3065,7 +3123,7 @@ int LuaMan::Create()
 		Bind["CalculatePath"] = &Scene::CalculateScenePath;
 		Bind["ScenePath"] = sol::property(&Scene::m_ScenePath);
 		Bind["Deployments"] = sol::property(&Scene::m_Deployments);
-		Bind["ScenePathSize"] = sol::property(&Scene::GetScenePathSize);
+		Bind["ScenePathSize"] = sol::property(&Scene::GetScenePathSize);//*/
 	}
 
 	{
@@ -3078,7 +3136,9 @@ int LuaMan::Create()
 			.property("ID", &Deployment::GetID)
 			.property("HFlipped", &Deployment::IsHFlipped),
 		*/
-		
+
+		///////////////////////////////////////////////////////////////////////////
+
 		ABSTRACTLUABINDING_SOL(Deployment, SceneObject);
 
 		Bind["CreateDeployedActor"] = (Actor * (Deployment::*)()) & Deployment::CreateDeployedActor;
@@ -3086,7 +3146,7 @@ int LuaMan::Create()
 		Bind["GetLoadoutName"] = &Deployment::GetLoadoutName;
 		Bind["SpawnRadius"] = sol::property(&Deployment::GetSpawnRadius);
 		Bind["ID"] = sol::property(&Deployment::GetID);
-		Bind["HFlipped"] = sol::property(&Deployment::IsHFlipped);
+		Bind["HFlipped"] = sol::property(&Deployment::IsHFlipped);//*/
 	}
 
 	{
@@ -3166,6 +3226,8 @@ int LuaMan::Create()
 			.def("ClearPostEffects", &SceneMan::ClearPostEffects),
 		*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		sol::usertype<IntRect> Bind = g_pSolLuaState->new_usertype<IntRect>("SceneManager", sol::no_constructor);
 
 		Bind["Scene"] = sol::property(&SceneMan::GetScene);
@@ -3239,7 +3301,7 @@ int LuaMan::Create()
 		Bind["AddSceneObject"] = &SceneMan::AddSceneObject;
 		Bind["AddTerrainObject"] = &SceneMan::AddTerrainObject;
 		Bind["CheckAndRemoveOrphans"] = (int (SceneMan::*)(int, int, int, int, bool)) & SceneMan::RemoveOrphans;
-		Bind["ClearPostEffects"] = &SceneMan::ClearPostEffects;
+		Bind["ClearPostEffects"] = &SceneMan::ClearPostEffects;//*/
 	}
 
 	{
@@ -3249,6 +3311,8 @@ int LuaMan::Create()
 			.property("FileName", &DataModule::GetFileName)
 			.property("FriendlyName", &DataModule::GetFriendlyName),
 		*/
+
+		///////////////////////////////////////////////////////////////////////////
 
 		sol::usertype<DataModule> Bind = g_pSolLuaState->new_usertype<DataModule>("DataModule", sol::no_constructor);
 
@@ -3286,6 +3350,8 @@ int LuaMan::Create()
 			.property("EnforceMaxMassConstraint", &BuyMenuGUI::EnforceMaxMassConstraint, &BuyMenuGUI::SetEnforceMaxMassConstraint),
 		*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		sol::usertype<BuyMenuGUI> Bind = g_pSolLuaState->new_usertype<BuyMenuGUI>("BuyMenuGUI", sol::no_constructor);
 
 		Bind["SetMetaPlayer"] = &BuyMenuGUI::SetMetaPlayer;
@@ -3311,7 +3377,7 @@ int LuaMan::Create()
 		Bind["LoadDefaultLoadoutToCart"] = &BuyMenuGUI::LoadDefaultLoadoutToCart;
 		Bind["ShowOnlyOwnedItems"] = sol::property(&BuyMenuGUI::GetOnlyShowOwnedItems, &BuyMenuGUI::SetOnlyShowOwnedItems);
 		Bind["EnforceMaxPassengersConstraint"] = sol::property(&BuyMenuGUI::EnforceMaxPassengersConstraint, &BuyMenuGUI::SetEnforceMaxPassengersConstraint);
-		Bind["EnforceMaxMassConstraint"] = sol::property(&BuyMenuGUI::EnforceMaxMassConstraint, &BuyMenuGUI::SetEnforceMaxMassConstraint);
+		Bind["EnforceMaxMassConstraint"] = sol::property(&BuyMenuGUI::EnforceMaxMassConstraint, &BuyMenuGUI::SetEnforceMaxMassConstraint);//*/
 	}
 
 	{
@@ -3342,6 +3408,8 @@ int LuaMan::Create()
 			.def("Update", &SceneEditorGUI::Update),
 		*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		sol::usertype<SceneEditorGUI> Bind = g_pSolLuaState->new_usertype<SceneEditorGUI>("SceneEditorGUI", sol::no_constructor);
 
 		g_pSolLuaState->set("PlacedObjectSets", g_pSolLuaState->create_table_with(
@@ -3366,7 +3434,7 @@ int LuaMan::Create()
 		Bind["SetNativeTechModule"] = &SceneEditorGUI::SetNativeTechModule;
 		Bind["SetForeignCostMultiplier"] = &SceneEditorGUI::SetForeignCostMultiplier;
 		Bind["TestBrainResidence"] = &SceneEditorGUI::TestBrainResidence;
-		Bind["Update"] = &SceneEditorGUI::Update;
+		Bind["Update"] = &SceneEditorGUI::Update;//*/
 	}
 
 	{
@@ -3484,6 +3552,8 @@ int LuaMan::Create()
 			.def("ResetMessageTimer", &Activity::ResetMessageTimer),
 		*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		sol::usertype<Activity> Bind = g_pSolLuaState->new_usertype<Activity>("Activity", sol::no_constructor);
 
 		g_pSolLuaState->set("ActivityState", g_pSolLuaState->create_table_with(
@@ -3594,7 +3664,7 @@ int LuaMan::Create()
 		Bind["SwitchToPrevActor"] = &Activity::SwitchToPrevActor;
 		Bind["Difficulty"] = sol::property(&Activity::GetDifficulty, &Activity::SetDifficulty);
 		Bind["IsPlayerTeam"] = &Activity::IsPlayerTeam;
-		Bind["ResetMessageTimer"] = &Activity::ResetMessageTimer;
+		Bind["ResetMessageTimer"] = &Activity::ResetMessageTimer;//*/
 	}
 
 	{
@@ -3630,6 +3700,8 @@ int LuaMan::Create()
 			.def("ClearText", &GUIBanner::ClearText),
 		*/
 
+		///////////////////////////////////////////////////////////////////////////
+
 		sol::usertype<GUIBanner> Bind = g_pSolLuaState->new_usertype<GUIBanner>("GUIBanner", sol::no_constructor);
 
 		g_pSolLuaState->set("AnimMode", g_pSolLuaState->create_table_with(
@@ -3659,7 +3731,7 @@ int LuaMan::Create()
 		Bind["Kerning"] = sol::property(&GUIBanner::GetKerning, &GUIBanner::SetKerning);
 		Bind["ShowText"] = &GUIBanner::ShowText;
 		Bind["HideText"] = &GUIBanner::HideText;
-		Bind["ClearText"] = &GUIBanner::ClearText;
+		Bind["ClearText"] = &GUIBanner::ClearText;//*/
 	}
 
 	{
@@ -3732,9 +3804,81 @@ int LuaMan::Create()
 			.def("AlterPieMenuSlice", &GameActivity::AlterPieMenuSlice)
 			.def("RemovePieMenuSlice", &GameActivity::RemovePieMenuSlice)
 			.def_readwrite("PieMenuSlices", &GameActivity::m_CurrentPieMenuSlices, luabind::return_stl_iterator()),
-
-
 		*/
+
+		//def("ToGameActivity", (GameActivity* (*)(Entity*))& ToGameActivity),
+		//def("ToGameActivity", (const GameActivity* (*)(const Entity*))& ToConstGameActivity),
+
+		///////////////////////////////////////////////////////////////////////////
+
+		g_pSolLuaState->set("ToGameActivity", (GameActivity* (*)(Entity*))& ToGameActivity);
+		g_pSolLuaState->set("ToGameActivity", (const GameActivity* (*)(const Entity*))& ToConstGameActivity);
+
+		sol::usertype<GameActivity> Bind = g_pSolLuaState->new_usertype<GameActivity>("GameActivity", sol::no_constructor);
+		g_pSolLuaState->set("ObjectiveArrowDir", g_pSolLuaState->create_table_with(
+			"ARROWDOWN", 0,
+			"ARROWLEFT", 1,
+			"ARROWRIGHT", 2,
+			"ARROWUP", 3
+		));
+		
+		Bind["SetObservationTarget"] = &GameActivity::SetObservationTarget;
+		Bind["SetDeathViewTarget"] = &GameActivity::SetDeathViewTarget;
+		Bind["SetLandingZone"] = &GameActivity::SetLandingZone;
+		Bind["GetLandingZone"] = &GameActivity::GetLandingZone;
+		Bind["SetActorSelectCursor"] = &GameActivity::SetActorSelectCursor;
+		Bind["GetBuyGUI"] = &GameActivity::GetBuyGUI;
+		Bind["GetEditorGUI"] = &GameActivity::GetEditorGUI;
+		Bind["WinnerTeam"] = sol::property(&GameActivity::GetWinnerTeam, &GameActivity::SetWinnerTeam);
+		Bind["CPUTeam"] = sol::property(&GameActivity::GetCPUTeam, &GameActivity::SetCPUTeam);
+		//            Bind["ActorCursor"] = &GameActivity::m_ActorCursor)
+		Bind["CursorTimer"] = sol::property(&GameActivity::m_CursorTimer);
+		Bind["GameTimer"] = sol::property(&GameActivity::m_GameTimer);
+		Bind["GameOverTimer"] = sol::property(&GameActivity::m_GameOverTimer);
+		Bind["GameOverPeriod"] = sol::property(&GameActivity::m_GameOverPeriod);
+		Bind["OrbitedCraft"] = sol::property(&GameActivity::m_pOrbitedCraft);
+		Bind["PieMenuActor"] = sol::property(&GameActivity::m_pPieMenuActor);
+		Bind["OtherTeam"] = &GameActivity::OtherTeam;
+		Bind["OneOrNoneTeamsLeft"] = &GameActivity::OneOrNoneTeamsLeft;
+		Bind["WhichTeamLeft"] = &GameActivity::WhichTeamLeft;
+		Bind["NoTeamLeft"] = &GameActivity::NoTeamLeft;
+		// Backwards compat
+		Bind["OnlyOneTeamLeft"] = &GameActivity::OneOrNoneTeamsLeft;
+		Bind["GetBanner"] = &GameActivity::GetBanner;
+		Bind["SetLZArea"] = &GameActivity::SetLZArea;
+		Bind["GetLZArea"] = &GameActivity::GetLZArea;
+		Bind["SetBrainLZWidth"] = &GameActivity::SetBrainLZWidth;
+		Bind["GetBrainLZWidth"] = &GameActivity::GetBrainLZWidth;
+		Bind["GetActiveCPUTeamCount"] = &GameActivity::GetActiveCPUTeamCount;
+		Bind["GetActiveHumanTeamCount"] = &GameActivity::GetActiveHumanTeamCount;
+		Bind["AddObjectivePoint"] = &GameActivity::AddObjectivePoint;
+		Bind["YSortObjectivePoints"] = &GameActivity::YSortObjectivePoints;
+		Bind["ClearObjectivePoints"] = &GameActivity::ClearObjectivePoints;
+		Bind["AddOverridePurchase"] = &GameActivity::AddOverridePurchase;
+		Bind["SetOverridePurchaseList"] = (int (GameActivity::*)(const Loadout*, int)) & GameActivity::SetOverridePurchaseList;
+		Bind["SetOverridePurchaseList"] = (int (GameActivity::*)(string, int)) & GameActivity::SetOverridePurchaseList;
+		Bind["ClearOverridePurchase"] = &GameActivity::ClearOverridePurchase;
+		Bind["CreateDelivery"] = (bool (GameActivity::*)(int)) & GameActivity::CreateDelivery;
+		Bind["CreateDelivery"] = (bool (GameActivity::*)(int, int)) & GameActivity::CreateDelivery;
+		Bind["CreateDelivery"] = (bool (GameActivity::*)(int, int, Vector&)) & GameActivity::CreateDelivery;
+		Bind["CreateDelivery"] = (bool (GameActivity::*)(int, int, Actor*)) & GameActivity::CreateDelivery;
+		Bind["GetDeliveryCount"] = &GameActivity::GetDeliveryCount;
+		Bind["DeliveryDelay"] = sol::property(&GameActivity::GetDeliveryDelay, &GameActivity::SetDeliveryDelay);
+		Bind["GetTeamTech"] = &GameActivity::GetTeamTech;
+		Bind["SetTeamTech"] = &GameActivity::SetTeamTech;
+		Bind["GetCrabToHumanSpawnRatio"] = &GameActivity::GetCrabToHumanSpawnRatio;
+		Bind["BuyMenuEnabled"] = sol::property(&GameActivity::GetBuyMenuEnabled, &GameActivity::SetBuyMenuEnabled);
+		Bind["CraftsOrbitAtTheEdge"] = sol::property(&GameActivity::GetCraftsOrbitAtTheEdge, &GameActivity::SetCraftsOrbitAtTheEdge);
+		Bind["TeamIsCPU"] = &GameActivity::TeamIsCPU;
+		Bind["GetStartingGold"] = &GameActivity::GetStartingGold;
+		Bind["GetFogOfWarEnabled"] = &GameActivity::GetFogOfWarEnabled;
+		Bind["UpdateEditing"] = &GameActivity::UpdateEditing;
+		Bind["DisableAIs"] = &GameActivity::DisableAIs;
+		Bind["InitAIs"] = &GameActivity::InitAIs;
+		Bind["AddPieMenuSlice"] = &GameActivity::AddPieMenuSlice;
+		Bind["AlterPieMenuSlice"] = &GameActivity::AlterPieMenuSlice;
+		Bind["RemovePieMenuSlice"] = &GameActivity::RemovePieMenuSlice;
+		Bind["PieMenuSlices"] = sol::property(&GameActivity::m_CurrentPieMenuSlices);//*/
 	}
 
 	{
@@ -3750,65 +3894,125 @@ int LuaMan::Create()
 			]
 
 			.enum_("Type")
-				[
-					value("PSI_NONE", 0),
-					value("PSI_PICKUP", 1),
-					value("PSI_DROP", 2),
-					value("PSI_NEXTITEM", 3),
-					value("PSI_PREVITEM", 4),
-					value("PSI_RELOAD", 5),
-					value("PSI_BUYMENU", 6),
-					value("PSI_STATS", 7),
-					value("PSI_MINIMAP", 8),
-					value("PSI_FORMSQUAD", 9),
-					value("PSI_CEASEFIRE", 10),
-					value("PSI_SENTRY", 11),
-					value("PSI_PATROL", 12),
-					value("PSI_BRAINHUNT", 13),
-					value("PSI_GOLDDIG", 14),
-					value("PSI_GOTO", 15),
-					value("PSI_RETURN", 16),
-					value("PSI_STAY", 17),
-					value("PSI_DELIVER", 18),
-					value("PSI_SCUTTLE", 19),
-					value("PSI_DONE", 20),
-					value("PSI_LOAD", 21),
-					value("PSI_SAVE", 22),
-					value("PSI_NEW", 23),
-					value("PSI_PICK", 24),
-					value("PSI_MOVE", 25),
-					value("PSI_REMOVE", 26),
-					value("PSI_INFRONT", 27),
-					value("PSI_BEHIND", 28),
-					value("PSI_ZOOMIN", 29),
-					value("PSI_ZOOMOUT", 30),
-					value("PSI_TEAM1", 31),
-					value("PSI_TEAM2", 32),
-					value("PSI_TEAM3", 33),
-					value("PSI_TEAM4", 34),
-					value("PSI_SCRIPTED", 35),
-					value("PSI_COUNT", 36)
-				]
+			[
+				value("PSI_NONE", 0),
+				value("PSI_PICKUP", 1),
+				value("PSI_DROP", 2),
+				value("PSI_NEXTITEM", 3),
+				value("PSI_PREVITEM", 4),
+				value("PSI_RELOAD", 5),
+				value("PSI_BUYMENU", 6),
+				value("PSI_STATS", 7),
+				value("PSI_MINIMAP", 8),
+				value("PSI_FORMSQUAD", 9),
+				value("PSI_CEASEFIRE", 10),
+				value("PSI_SENTRY", 11),
+				value("PSI_PATROL", 12),
+				value("PSI_BRAINHUNT", 13),
+				value("PSI_GOLDDIG", 14),
+				value("PSI_GOTO", 15),
+				value("PSI_RETURN", 16),
+				value("PSI_STAY", 17),
+				value("PSI_DELIVER", 18),
+				value("PSI_SCUTTLE", 19),
+				value("PSI_DONE", 20),
+				value("PSI_LOAD", 21),
+				value("PSI_SAVE", 22),
+				value("PSI_NEW", 23),
+				value("PSI_PICK", 24),
+				value("PSI_MOVE", 25),
+				value("PSI_REMOVE", 26),
+				value("PSI_INFRONT", 27),
+				value("PSI_BEHIND", 28),
+				value("PSI_ZOOMIN", 29),
+				value("PSI_ZOOMOUT", 30),
+				value("PSI_TEAM1", 31),
+				value("PSI_TEAM2", 32),
+				value("PSI_TEAM3", 33),
+				value("PSI_TEAM4", 34),
+				value("PSI_SCRIPTED", 35),
+				value("PSI_COUNT", 36)
+			]
 
 			.def(constructor<>())
 			.property("FunctionName", &PieMenuGUI::Slice::GetFunctionName)
 			.property("Description", &PieMenuGUI::Slice::GetDescription)
 			.property("Type", &PieMenuGUI::Slice::GetType)
 			.property("Direction", &PieMenuGUI::Slice::GetDirection),
-
-
 		*/
+
+		///////////////////////////////////////////////////////////////////////////
+
+		sol::usertype<PieMenuGUI::Slice> Bind = g_pSolLuaState->new_usertype<PieMenuGUI::Slice>("Slice", sol::no_constructor);
+		g_pSolLuaState->set("Direction", g_pSolLuaState->create_table_with(
+			"NONE", 0,
+			"UP", 1,
+			"RIGHT", 2,
+			"DOWN", 3,
+			"LEFT", 4
+		));
+
+		g_pSolLuaState->set("Type", g_pSolLuaState->create_table_with(
+			"PSI_NONE", 0,
+			"PSI_PICKUP", 1,
+			"PSI_DROP", 2,
+			"PSI_NEXTITEM", 3,
+			"PSI_PREVITEM", 4,
+			"PSI_RELOAD", 5,
+			"PSI_BUYMENU", 6,
+			"PSI_STATS", 7,
+			"PSI_MINIMAP", 8,
+			"PSI_FORMSQUAD", 9,
+			"PSI_CEASEFIRE", 10,
+			"PSI_SENTRY", 11,
+			"PSI_PATROL", 12,
+			"PSI_BRAINHUNT", 13,
+			"PSI_GOLDDIG", 14,
+			"PSI_GOTO", 15,
+			"PSI_RETURN", 16,
+			"PSI_STAY", 17,
+			"PSI_DELIVER", 18,
+			"PSI_SCUTTLE", 19,
+			"PSI_DONE", 20,
+			"PSI_LOAD", 21,
+			"PSI_SAVE", 22,
+			"PSI_NEW", 23,
+			"PSI_PICK", 24,
+			"PSI_MOVE", 25,
+			"PSI_REMOVE", 26,
+			"PSI_INFRONT", 27,
+			"PSI_BEHIND", 28,
+			"PSI_ZOOMIN", 29,
+			"PSI_ZOOMOUT", 30,
+			"PSI_TEAM1", 31,
+			"PSI_TEAM2", 32,
+			"PSI_TEAM3", 33,
+			"PSI_TEAM4", 34,
+			"PSI_SCRIPTED", 35,
+			"PSI_COUNT", 36
+		));
+
+		Bind["FunctionName"] = sol::property(&PieMenuGUI::Slice::GetFunctionName);
+		Bind["Description"] = sol::property(&PieMenuGUI::Slice::GetDescription);
+		Bind["Type"] = sol::property(&PieMenuGUI::Slice::GetType);
+		Bind["Direction"] = sol::property(&PieMenuGUI::Slice::GetDirection);//*/
 	}
 
 	{
 		/*
-
 		ABSTRACTLUABINDING(GlobalScript, Entity)
 			.def_readwrite("OrbitedCraft", &GlobalScript::m_pOrbitedCraft)
 			.def_readwrite("PieMenuActor", &GlobalScript::m_pPieMenuActor)
 			.def("Deactivate", &GlobalScript::Deactivate),
-
 		*/
+
+		///////////////////////////////////////////////////////////////////////////
+
+		ABSTRACTLUABINDING_SOL(GlobalScript, Entity);
+
+		Bind["OrbitedCraft"] = sol::property(&GlobalScript::m_pOrbitedCraft);
+		Bind["PieMenuActor"] = sol::property(&GlobalScript::m_pPieMenuActor);
+		Bind["Deactivate"] = &GlobalScript::Deactivate;//*/
 	}
 
 	{
@@ -3828,14 +4032,30 @@ int LuaMan::Create()
 			.def("EndActivity", &ActivityMan::EndActivity)
 			.def("ActivityRunning", &ActivityMan::ActivityRunning)
 			.def("ActivityPaused", &ActivityMan::ActivityPaused),
-
-
 		*/
+
+		///////////////////////////////////////////////////////////////////////////
+
+		sol::usertype<ActivityMan> Bind = g_pSolLuaState->new_usertype<ActivityMan>("ActivityManager", sol::no_constructor);
+
+		Bind["DefaultActivityType"] = sol::property(&ActivityMan::GetDefaultActivityType, &ActivityMan::SetDefaultActivityType);
+		Bind["DefaultActivityName"] = sol::property(&ActivityMan::GetDefaultActivityName, &ActivityMan::SetDefaultActivityName);
+		// Transfers ownership of the Activity to start into the ActivityMan, adopts ownership (_1 is the this ptr)
+		Bind["SetStartActivity"] = &ActivityMan::SetStartActivity;
+		Bind["GetStartActivity"] = &ActivityMan::GetStartActivity;
+		Bind["GetActivity"] = &ActivityMan::GetActivity;
+		// Transfers ownership of the Activity to start into the ActivityMan, adopts ownership (_1 is the this ptr;
+		Bind["StartActivity"] = (int (ActivityMan::*)(Activity*)) & ActivityMan::StartActivity;
+		Bind["StartActivity"] = (int (ActivityMan::*)(string, string)) & ActivityMan::StartActivity;
+		Bind["RestartActivity"] = &ActivityMan::RestartActivity;
+		Bind["PauseActivity"] = &ActivityMan::PauseActivity;
+		Bind["EndActivity"] = &ActivityMan::EndActivity;
+		Bind["ActivityRunning"] = &ActivityMan::ActivityRunning;
+		Bind["ActivityPaused"] = &ActivityMan::ActivityPaused;//*/
 	}
 
 	{
 		/*
-
 		class_<MetaPlayer>("MetaPlayer")
 			.def(constructor<>())
 			.property("NativeTechModule", &MetaPlayer::GetNativeTechModule)
@@ -3844,8 +4064,16 @@ int LuaMan::Create()
 			.property("InGamePlayer", &MetaPlayer::GetInGamePlayer)
 			.property("BrainPoolCount", &MetaPlayer::GetBrainPoolCount, &MetaPlayer::SetBrainPoolCount)
 			.def("ChangeBrainPoolCount", &MetaPlayer::ChangeBrainPoolCount),
-
 		*/
+
+		sol::usertype<MetaPlayer> Bind = g_pSolLuaState->new_usertype<MetaPlayer>("MetaPlayer", sol::no_constructor);
+
+		Bind["NativeTechModule"] = sol::property(&MetaPlayer::GetNativeTechModule);
+		Bind["ForeignCostMultiplier"] = sol::property(&MetaPlayer::GetForeignCostMultiplier);
+		Bind["NativeCostMultiplier"] = sol::property(&MetaPlayer::GetNativeCostMultiplier);
+		Bind["InGamePlayer"] = sol::property(&MetaPlayer::GetInGamePlayer);
+		Bind["BrainPoolCount"] = sol::property(&MetaPlayer::GetBrainPoolCount, &MetaPlayer::SetBrainPoolCount);
+		Bind["ChangeBrainPoolCount"] = &MetaPlayer::ChangeBrainPoolCount;//*/
 	}
 
 	{
@@ -3859,9 +4087,20 @@ int LuaMan::Create()
 			.def("GetPlayer", &MetaMan::GetPlayer)
 			.def("GetMetaPlayerOfInGamePlayer", &MetaMan::GetMetaPlayerOfInGamePlayer)
 			.def_readwrite("Players", &MetaMan::m_Players, luabind::return_stl_iterator()),
-
-
 		*/
+
+		///////////////////////////////////////////////////////////////////////////
+
+		sol::usertype<MetaMan> Bind = g_pSolLuaState->new_usertype<MetaMan>("MetaManager", sol::no_constructor);
+
+		Bind["GameName"] = sol::property(&MetaMan::GetGameName, &MetaMan::SetGameName);
+		//	Bind["GUI", &MetaMan::GetGUI)
+		Bind["PlayerTurn"] = sol::property(&MetaMan::GetPlayerTurn);
+		Bind["PlayerCount"] = sol::property(&MetaMan::GetPlayerCount);
+		Bind["GetTeamOfPlayer"] = &MetaMan::GetTeamOfPlayer;
+		Bind["GetPlayer"] = &MetaMan::GetPlayer;
+		Bind["GetMetaPlayerOfInGamePlayer"] = &MetaMan::GetMetaPlayerOfInGamePlayer;
+		Bind["Players"] = sol::property(&MetaMan::m_Players);//*/
 	}
 
 	{
@@ -3872,9 +4111,15 @@ int LuaMan::Create()
 			.def_readwrite("ScenePos", &AlarmEvent::m_ScenePos)
 			.def_readwrite("Team", &AlarmEvent::m_Team)
 			.def_readwrite("Range", &AlarmEvent::m_Range),
-
-
 		*/
+
+		///////////////////////////////////////////////////////////////////////////
+
+		sol::usertype<AlarmEvent> Bind = g_pSolLuaState->new_usertype<AlarmEvent>("AlarmEvent", sol::no_constructor);
+
+		Bind["ScenePos"] = sol::property(&AlarmEvent::m_ScenePos);
+		Bind["Team"] = sol::property(&AlarmEvent::m_Team);
+		Bind["Range"] = sol::property(&AlarmEvent::m_Range);//*/
 	}
 
 	{
@@ -3933,8 +4178,64 @@ int LuaMan::Create()
 			.def_readwrite("AddedParticles", &MovableMan::m_AddedParticles, luabind::return_stl_iterator())
 			.def_readwrite("AlarmEvents", &MovableMan::m_AlarmEvents, luabind::return_stl_iterator())
 			.def_readwrite("AddedAlarmEvents", &MovableMan::m_AddedAlarmEvents, luabind::return_stl_iterator()),
-
 		*/
+
+		///////////////////////////////////////////////////////////////////////////
+
+		sol::usertype<MovableMan> Bind = g_pSolLuaState->new_usertype<MovableMan>("MovableManager", sol::no_constructor);
+
+		Bind["GetMOFromID"] = &MovableMan::GetMOFromID;
+		Bind["FindObjectByUniqueID"] = &MovableMan::FindObjectByUniqueID;
+		Bind["GetMOIDCount"] = &MovableMan::GetMOIDCount;
+		Bind["GetTeamMOIDCount"] = &MovableMan::GetTeamMOIDCount;
+		Bind["PurgeAllMOs"] = &MovableMan::PurgeAllMOs;
+		Bind["GetNextActorInGroup"] = &MovableMan::GetNextActorInGroup;
+		Bind["GetPrevActorInGroup"] = &MovableMan::GetPrevActorInGroup;
+		Bind["GetNextTeamActor"] = &MovableMan::GetNextTeamActor;
+		Bind["GetPrevTeamActor"] = &MovableMan::GetPrevTeamActor;
+		// Bind["GetClosestTeamActor"] = (Actor * (MovableMan::*;(int , int , const Vector &, int , float *, const Actor *;;&MovableMan::GetClosestTeamActor;
+		Bind["GetClosestEnemyActor"] = &MovableMan::GetClosestEnemyActor;
+		Bind["GetFirstTeamActor"] = &MovableMan::GetFirstTeamActor;
+		// Bind["GetClosestActor"] = (Actor * (MovableMan::*;(Vector &, int, float *, const Actor *;;&MovableMan::GetClosestActor;
+		Bind["GetClosestBrainActor"] = &MovableMan::GetClosestBrainActor;
+		Bind["GetFirstBrainActor"] = &MovableMan::GetFirstBrainActor;
+		Bind["GetClosestOtherBrainActor"] = &MovableMan::GetClosestOtherBrainActor;
+		Bind["GetFirstOtherBrainActor"] = &MovableMan::GetFirstOtherBrainActor;
+		Bind["GetUnassignedBrain"] = &MovableMan::GetUnassignedBrain;
+		Bind["GetParticleCount"] = &MovableMan::GetParticleCount;
+		Bind["GetAGResolution"] = &MovableMan::GetAGResolution;
+		Bind["GetSplashRatio"] = &MovableMan::GetSplashRatio;
+		Bind["MaxDroppedItems"] = sol::property(&MovableMan::GetMaxDroppedItems, &MovableMan::SetMaxDroppedItems);
+		Bind["ScriptedEntity"] = sol::property(&MovableMan::GetScriptedEntity, &MovableMan::SetScriptedEntity);
+		Bind["SortTeamRoster"] = &MovableMan::SortTeamRoster;
+		Bind["ChangeActorTeam"] = &MovableMan::ChangeActorTeam;
+		Bind["AddMO"] = &MovableMan::AddMO;
+		Bind["AddActor"] = &MovableMan::AddActor;
+		Bind["AddItem"] = &MovableMan::AddItem;
+		Bind["AddParticle"] = &MovableMan::AddParticle;
+		Bind["RemoveActor"] = &MovableMan::RemoveActor;
+		Bind["RemoveItem"] = &MovableMan::RemoveItem;
+		Bind["RemoveParticle"] = &MovableMan::RemoveParticle;
+		Bind["ValidMO"] = &MovableMan::ValidMO;
+		Bind["IsActor"] = &MovableMan::IsActor;
+		Bind["IsDevice"] = &MovableMan::IsDevice;
+		Bind["IsParticle"] = &MovableMan::IsParticle;
+		Bind["IsOfActor"] = &MovableMan::IsOfActor;
+		Bind["GetRootMOID"] = &MovableMan::GetRootMOID;
+		Bind["RemoveMO"] = &MovableMan::RemoveMO;
+		Bind["KillAllActors"] = &MovableMan::KillAllActors;
+		Bind["OpenAllDoors"] = &MovableMan::OpenAllDoors;
+		Bind["IsParticleSettlingEnabled"] = &MovableMan::IsParticleSettlingEnabled;
+		Bind["EnableParticleSettling"] = &MovableMan::EnableParticleSettling;
+		Bind["IsMOSubtractionEnabled"] = &MovableMan::IsMOSubtractionEnabled;
+		Bind["Actors"] = sol::property(&MovableMan::m_Actors);
+		Bind["Items"] = sol::property(&MovableMan::m_Items);
+		Bind["Particles"] = sol::property(&MovableMan::m_Particles);
+		Bind["AddedActors"] = sol::property(&MovableMan::m_AddedActors);
+		Bind["AddedItems"] = sol::property(&MovableMan::m_AddedItems);
+		Bind["AddedParticles"] = sol::property(&MovableMan::m_AddedParticles);
+		Bind["AlarmEvents"] = sol::property(&MovableMan::m_AlarmEvents);
+		Bind["AddedAlarmEvents"] = sol::property(&MovableMan::m_AddedAlarmEvents);//*/
 	}
 
 	{
@@ -3946,34 +4247,56 @@ int LuaMan::Create()
 			.def("Clear", &ConsoleMan::ClearLog)
 			.property("ForceVisibility", &ConsoleMan::IsForceVisible, &ConsoleMan::ForceVisibility)
 			.property("ScreenSize", &ConsoleMan::GetConsoleScreenSize, &ConsoleMan::SetConsoleScreenSize),
-
-
 		*/
+
+		///////////////////////////////////////////////////////////////////////////
+
+		sol::usertype<ConsoleMan> Bind = g_pSolLuaState->new_usertype<ConsoleMan>("ConsoleManager", sol::no_constructor);
+
+		Bind["PrintString"] = &ConsoleMan::PrintString;
+		Bind["SaveInputLog"] = &ConsoleMan::SaveInputLog;
+		Bind["SaveAllText"] = &ConsoleMan::SaveAllText;
+		Bind["Clear"] = &ConsoleMan::ClearLog;
+		Bind["ForceVisibility"] = sol::property(&ConsoleMan::IsForceVisible, &ConsoleMan::ForceVisibility);
+		Bind["ScreenSize"] = sol::property(&ConsoleMan::GetConsoleScreenSize, &ConsoleMan::SetConsoleScreenSize);//*/
 	}
 
 	{
 		/*
 		class_<LuaMan>("LuaManager")
-			.property("TempEntity", &LuaMan::GetTempEntity, &LuaMan::SetTempEntity)
+			Bind["TempEntity", &LuaMan::GetTempEntity, &LuaMan::SetTempEntity)
 			.def("FileOpen", &LuaMan::FileOpen)
 			.def("FileClose", &LuaMan::FileClose)
 			.def("FileReadLine", &LuaMan::FileReadLine)
 			.def("FileWriteLine", &LuaMan::FileWriteLine)
 			.def("FileEOF", &LuaMan::FileEOF),
-
-
-
 		*/
+
+		///////////////////////////////////////////////////////////////////////////
+
+		sol::usertype<LuaMan> Bind = g_pSolLuaState->new_usertype<LuaMan>("LuaManager", sol::no_constructor);
+
+		Bind["TempEntity"] = sol::property(&LuaMan::GetTempEntity, &LuaMan::SetTempEntity);
+		Bind["FileOpen"] = &LuaMan::FileOpen;
+		Bind["FileClose"] = &LuaMan::FileClose;
+		Bind["FileReadLine"] = &LuaMan::FileReadLine;
+		Bind["FileWriteLine"] = &LuaMan::FileWriteLine;
+		Bind["FileEOF"] = &LuaMan::FileEOF;//*/
 	}
 
 	{
 		/*
-
 		class_<SettingsMan>("SettingsdManager")
-			.property("PrintDebugInfo", &SettingsMan::PrintDebugInfo, &SettingsMan::SetPrintDebugInfo)
-			.property("RecommendedMOIDCount", &SettingsMan::RecommendedMOIDCount),
-
+			Bind["PrintDebugInfo", &SettingsMan::PrintDebugInfo, &SettingsMan::SetPrintDebugInfo)
+			Bind["RecommendedMOIDCount", &SettingsMan::RecommendedMOIDCount),
 		*/
+
+		///////////////////////////////////////////////////////////////////////////
+
+		sol::usertype<SettingsMan> Bind = g_pSolLuaState->new_usertype<SettingsMan>("SettingsManager", sol::no_constructor);
+
+		Bind["PrintDebugInfo"] = sol::property(&SettingsMan::PrintDebugInfo, &SettingsMan::SetPrintDebugInfo);
+		Bind["RecommendedMOIDCount"] = sol::property(&SettingsMan::RecommendedMOIDCount);//*/
 	}
 
 
@@ -3990,9 +4313,18 @@ int LuaMan::Create()
 		def("EaseOut", &EaseOut),
 		def("EaseInOut", &EaseInOut),
 		def("Clamp", &Limit)
-
-
 		*/
+
+		g_pSolLuaState->set("DeleteEntity", &DeleteEntity);
+		g_pSolLuaState->set("PosRand", &PosRand);
+		g_pSolLuaState->set("NormalRand", &NormalRand);
+		g_pSolLuaState->set("RangeRand", &RangeRand);
+		g_pSolLuaState->set("SelectRand", &SelectRand);
+		g_pSolLuaState->set("LERP", &LERP);
+		g_pSolLuaState->set("EaseIn", &EaseIn);
+		g_pSolLuaState->set("EaseOut", &EaseOut);
+		g_pSolLuaState->set("EaseInOut", &EaseInOut);
+		g_pSolLuaState->set("Clamp", &Limit);//*/
 	}
 
     // Declare all useful classes in the master state
