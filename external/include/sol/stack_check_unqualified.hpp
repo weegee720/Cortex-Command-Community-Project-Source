@@ -32,15 +32,13 @@
 #include <utility>
 #include <cmath>
 #include <optional>
-#if defined(SOL_STD_VARIANT) && SOL_STD_VARIANT
+#if SOL_ON(SOL_STD_VARIANT_)
 #include <variant>
-#endif // SOL_STD_VARIANT
+#endif // variant shenanigans
 
 namespace sol { namespace stack {
 	namespace stack_detail {
-		template <typename T, bool poptable = true>
-		inline bool check_metatable(lua_State* L, int index = -2) {
-			const auto& metakey = usertype_traits<T>::metatable();
+		inline bool impl_check_metatable(lua_State* L, int index, const std::string& metakey, bool poptable) {
 			luaL_getmetatable(L, &metakey[0]);
 			const type expectedmetatabletype = static_cast<type>(lua_type(L, -1));
 			if (expectedmetatabletype != type::lua_nil) {
@@ -51,6 +49,11 @@ namespace sol { namespace stack {
 			}
 			lua_pop(L, 1);
 			return false;
+		}
+
+		template <typename T, bool poptable = true>
+		inline bool check_metatable(lua_State* L, int index = -2) {
+			return impl_check_metatable(L, index, usertype_traits<T>::metatable(), poptable);
 		}
 
 		template <type expected, int (*check_func)(lua_State*, int)>
@@ -463,7 +466,7 @@ namespace sol { namespace stack {
 	};
 
 	template <typename T>
-	struct unqualified_checker<non_null<T>, type::userdata> : unqualified_checker<T, lua_type_of_v<T>> {};
+	struct unqualified_checker<non_null<T>, type::userdata> : unqualified_checker<T, lua_type_of_v<T>> { };
 
 	template <typename T>
 	struct unqualified_checker<detail::as_value_tag<T>, type::userdata> {
@@ -567,7 +570,7 @@ namespace sol { namespace stack {
 		}
 	};
 
-#if defined(SOL_STD_VARIANT) && SOL_STD_VARIANT
+#if SOL_ON(SOL_STD_VARIANT_)
 
 	template <typename... Tn>
 	struct unqualified_checker<std::variant<Tn...>, type::poly> {
@@ -604,7 +607,7 @@ namespace sol { namespace stack {
 		}
 	};
 
-#endif // SOL_STD_VARIANT
+#endif // variant shenanigans
 
 }} // namespace sol::stack
 

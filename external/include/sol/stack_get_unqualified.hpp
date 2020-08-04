@@ -37,7 +37,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <string_view>
-#if defined(SOL_STD_VARIANT) && SOL_STD_VARIANT
+#if SOL_ON(SOL_STD_VARIANT_)
 #include <variant>
 #endif // Apple clang screwed up
 
@@ -153,7 +153,7 @@ namespace sol { namespace stack {
 			}
 			else if constexpr (meta::is_optional_v<T>) {
 				using ValueType = typename T::value_type;
-				return stack::unqualified_check_get<ValueType>(L, index, no_panic, tracking);
+				return unqualified_check_getter<ValueType>::template get_using<T>(L, index, no_panic, tracking);
 			}
 			else if constexpr (std::is_same_v<T, luaL_Stream*>) {
 				luaL_Stream* pstream = static_cast<luaL_Stream*>(lua_touserdata(L, index));
@@ -986,7 +986,8 @@ namespace sol { namespace stack {
 		}
 	};
 
-#if defined(SOL_STD_VARIANT) && SOL_STD_VARIANT
+#if SOL_ON(SOL_STD_VARIANT_)
+
 	template <typename... Tn>
 	struct unqualified_getter<std::variant<Tn...>> {
 		using V = std::variant<Tn...>;
@@ -1020,7 +1021,7 @@ namespace sol { namespace stack {
 			return get_one(std::integral_constant<std::size_t, 0>(), L, index, tracking);
 		}
 	};
-#endif // SOL_STD_VARIANT
+#endif // variant
 
 }} // namespace sol::stack
 
