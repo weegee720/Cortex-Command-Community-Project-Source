@@ -14,12 +14,15 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 // Inclusions of header files
 
+
 #include <string>
 #include <vector>
 #include <set>
 #include "GameActivity.h"
 #include "GlobalScript.h"
 #include "Box.h"
+
+#include "sol/sol.hpp"
 
 namespace RTE
 {
@@ -154,7 +157,6 @@ ENTITYALLOCATION(GAScripted)
 
     virtual void Destroy(bool notInherited = false);
 
-
 //////////////////////////////////////////////////////////////////////////////////////////
 // Virtual method:  ReloadScripts
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -168,6 +170,9 @@ ENTITYALLOCATION(GAScripted)
 
     virtual int ReloadScripts();
 
+    void LuaSolDynamicSet(std::string key, sol::stack_object value);
+
+    sol::object LuaSolDynamicGet(std::string key);
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Virtual method:  GetClass
@@ -371,6 +376,7 @@ protected:
     // The list of global scripts allowed to run during this activity
     std::vector<GlobalScript *> m_GlobalScriptsList;
 
+    std::map<std::string, sol::object> m_LuaSolMetaProperties;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Private member variable and method declarations

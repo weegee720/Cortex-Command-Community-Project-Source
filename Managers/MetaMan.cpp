@@ -11,6 +11,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 // Inclusions of header files
 
+#include <sol/sol.hpp>
+
 #include "MetaMan.h"
 #include "PresetMan.h"
 #include "UInputMan.h"
@@ -24,6 +26,8 @@
 #include "MetagameGUI.h"
 #include "Scene.h"
 #include "SLTerrain.h"
+
+#include "GAScripted.h"
 
 extern bool g_ResetActivity;
 extern bool g_ResumeActivity;

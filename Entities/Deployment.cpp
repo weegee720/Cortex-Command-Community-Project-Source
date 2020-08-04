@@ -11,6 +11,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 // Inclusions of header files
 
+#include <sol/sol.hpp>
+
 #include "Deployment.h"
 #include "PresetMan.h"
 #include "MetaMan.h"
@@ -21,6 +23,7 @@
 #include "ACraft.h"
 #include "ActivityMan.h"
 #include "DataModule.h"
+#include "GameActivity.h"
 
 using namespace std;
 

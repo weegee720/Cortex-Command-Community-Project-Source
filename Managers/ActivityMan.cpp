@@ -11,6 +11,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 // Inclusions of header files
 
+#include <sol/sol.hpp>
+
 #include "ActivityMan.h"
 #include "PresetMan.h"
 #include "MovableMan.h"

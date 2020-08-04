@@ -13,6 +13,8 @@
 // and we can't move "Network.h" here because for whatever reasons everything will collapse
 #define WIN32_LEAN_AND_MEAN
 
+#include <sol/sol.hpp>
+
 #include "MultiplayerServerLobby.h"
 #include "PresetMan.h"
 #include "MovableMan.h"

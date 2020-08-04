@@ -9,8 +9,8 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include "RTEManagers.h"
-#include "MetaMan.h"
 #include "ConsoleMan.h"
+#include "MetaMan.h"
 #include "GUI.h"
 #include "GUICollectionBox.h"
 #include "GUIProgressBar.h"
@@ -71,6 +71,7 @@
 #if defined(WIN32)
 extern "C" { FILE __iob_func[3] = { *stdin,*stdout,*stderr }; }
 #endif
+
 
 using namespace RTE;
 

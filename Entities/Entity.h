@@ -74,7 +74,6 @@ namespace RTE
                                                          pEnt->Create(*this); \
                                                          return pEnt; }
 
-
 //////////////////////////////////////////////////////////////////////////////////////////
 // Static ClassInfo definitions everywhere
 

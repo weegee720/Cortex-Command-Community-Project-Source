@@ -19,12 +19,10 @@
 #include "ConsoleMan.h"
 #include "SettingsMan.h"
 #include "SLTerrain.h"
-#include "GAScripted.h"
 #include "Box.h"
 #include "BuyMenuGUI.h"
 #include "SceneEditorGUI.h"
 #include "MetaPlayer.h"
-#include "MetaMan.h"
 #include "GUIBanner.h"
 #include "TerrainObject.h"
 #include "Emission.h"
@@ -66,6 +64,10 @@ extern "C"
 
 #define SOL_ALL_SAFETIES_ON 1
 #include <sol/sol.hpp>
+
+#include "GAScripted.h"
+#include "MetaMan.h"
+
 
 // Boost
 //#include "boost/detail/shared_ptr_nmt.hpp"
@@ -201,32 +203,87 @@ void LuaMan::CreateSolState(lua_State * L)
             g_ConsoleMan.PrintString(string("ERROR: Could not find any ") + string(#TYPE) + string(" defined in a Group called \"") + group + string("\" in module ") + module + string("!")); \
             return 0; \
         } \
-        return dynamic_cast<TYPE *>(pPreset->Clone()); \
+        return dynamic_cast<TYPE *>(dynamic_cast<TYPE *>(pPreset->Clone())); \
     } \
     TYPE * Random##TYPE(std::string group) { return Random##TYPE(group, "All"); }
 
+
+	/*shared_ptr<Attachable> CreateAttachable(std::string preset, std::string module)
+    {
+		const Entity *pPreset = g_PresetMan.GetEntityPreset("Attachable", preset, module);
+        if (!pPreset)
+        {
+            g_ConsoleMan.PrintString(string("ERROR: There is no ") + string("Attachable") + string(" of the Preset name \"") + preset + string("\" defined in the \"") + module + string("\" Data Module!"));
+            return 0;
+        }
+        return shared_ptr<Attachable>(dynamic_cast<Attachable*>(pPreset->Clone()));
+    }*/
+
+#define LUAENTITYCREATE_SOL(TYPE) \
+    shared_ptr<TYPE> Create##TYPE(std::string preset, std::string module) \
+    { \
+        const Entity *pPreset = g_PresetMan.GetEntityPreset(#TYPE, preset, module); \
+        if (!pPreset) \
+        { \
+            g_ConsoleMan.PrintString(string("ERROR: There is no ") + string(#TYPE) + string(" of the Preset name \"") + preset + string("\" defined in the \"") + module + string("\" Data Module!")); \
+            return 0; \
+        } \
+        return shared_ptr<TYPE>(dynamic_cast<TYPE *>(pPreset->Clone())); \
+    } \
+    shared_ptr<TYPE> Create##TYPE(std::string preset) { return Create##TYPE(preset, "All"); } \
+    shared_ptr<TYPE> Random##TYPE(std::string group, int moduleSpaceID) \
+    { \
+        const Entity *pPreset = g_PresetMan.GetRandomBuyableOfGroupFromTech(group, #TYPE, moduleSpaceID); \
+        if (!pPreset) \
+            pPreset = g_PresetMan.GetRandomBuyableOfGroupFromTech(group, #TYPE, g_PresetMan.GetModuleID("Base.rte")); \
+        if (!pPreset) \
+            pPreset = g_PresetMan.GetRandomBuyableOfGroupFromTech("Any", #TYPE, moduleSpaceID); \
+        if (!pPreset) \
+        { \
+            g_ConsoleMan.PrintString(string("ERROR: Could not find any ") + string(#TYPE) + string(" defined in a Group called \"") + group + string("\" in module ") + g_PresetMan.GetDataModuleName(moduleSpaceID) + string("!")); \
+            return 0; \
+        } \
+        return shared_ptr<TYPE>(dynamic_cast<TYPE *>(pPreset->Clone())); \
+    } \
+    shared_ptr<TYPE> Random##TYPE(std::string group, std::string module) \
+    { \
+        int moduleSpaceID = g_PresetMan.GetModuleID(module); \
+        const Entity *pPreset = g_PresetMan.GetRandomBuyableOfGroupFromTech(group, #TYPE, moduleSpaceID); \
+        if (!pPreset) \
+            pPreset = g_PresetMan.GetRandomBuyableOfGroupFromTech(group, #TYPE, g_PresetMan.GetModuleID("Base.rte")); \
+        if (!pPreset) \
+            pPreset = g_PresetMan.GetRandomBuyableOfGroupFromTech("Any", #TYPE, moduleSpaceID); \
+        if (!pPreset) \
+        { \
+            g_ConsoleMan.PrintString(string("ERROR: Could not find any ") + string(#TYPE) + string(" defined in a Group called \"") + group + string("\" in module ") + module + string("!")); \
+            return 0; \
+        } \
+        return shared_ptr<TYPE>(dynamic_cast<TYPE *>(pPreset->Clone())); \
+    } \
+    shared_ptr<TYPE> Random##TYPE(std::string group) { return Random##TYPE(group, "All"); }
+
 // These are expanded by the preprocessor to all the different cloning function definitions.
-LUAENTITYCREATE(Attachable)
-LUAENTITYCREATE(AEmitter)
-LUAENTITYCREATE(Turret)
-LUAENTITYCREATE(Actor)
-LUAENTITYCREATE(ADoor)
-LUAENTITYCREATE(AHuman)
-LUAENTITYCREATE(ACrab)
-LUAENTITYCREATE(ACraft)
-LUAENTITYCREATE(ACDropShip)
-LUAENTITYCREATE(ACRocket)
-LUAENTITYCREATE(MOSParticle)
-LUAENTITYCREATE(MOSRotating)
-LUAENTITYCREATE(MOPixel)
-LUAENTITYCREATE(Scene)
-LUAENTITYCREATE(HeldDevice)
-LUAENTITYCREATE(Round)
-LUAENTITYCREATE(Magazine)
-LUAENTITYCREATE(HDFirearm)
-LUAENTITYCREATE(ThrownDevice)
-LUAENTITYCREATE(TDExplosive)
-LUAENTITYCREATE(TerrainObject)
+LUAENTITYCREATE_SOL(Attachable)
+LUAENTITYCREATE_SOL(AEmitter)
+LUAENTITYCREATE_SOL(Turret)
+LUAENTITYCREATE_SOL(Actor)
+LUAENTITYCREATE_SOL(ADoor)
+LUAENTITYCREATE_SOL(AHuman)
+LUAENTITYCREATE_SOL(ACrab)
+LUAENTITYCREATE_SOL(ACraft)
+LUAENTITYCREATE_SOL(ACDropShip)
+LUAENTITYCREATE_SOL(ACRocket)
+LUAENTITYCREATE_SOL(MOSParticle)
+LUAENTITYCREATE_SOL(MOSRotating)
+LUAENTITYCREATE_SOL(MOPixel)
+LUAENTITYCREATE_SOL(Scene)
+LUAENTITYCREATE_SOL(HeldDevice)
+LUAENTITYCREATE_SOL(Round)
+LUAENTITYCREATE_SOL(Magazine)
+LUAENTITYCREATE_SOL(HDFirearm)
+LUAENTITYCREATE_SOL(ThrownDevice)
+LUAENTITYCREATE_SOL(TDExplosive)
+LUAENTITYCREATE_SOL(TerrainObject)
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -367,11 +424,11 @@ LUAENTITYCAST(TerrainObject)
 //        .property("ClassName", &TYPE::GetClassName)
 
 #define CONCRETELUABINDING_SOL(TYPE, PARENT) \
-	g_pSolLuaState->set((string("Create") + string(#TYPE)).c_str(), (TYPE *(*)(string, string))Create##TYPE); \
-	g_pSolLuaState->set((string("Create") + string(#TYPE)).c_str(), (TYPE *(*)(string))Create##TYPE); \
-	g_pSolLuaState->set((string("Random") + string(#TYPE)).c_str(), (TYPE *(*)(string, int))Random##TYPE); \
-	g_pSolLuaState->set((string("Random") + string(#TYPE)).c_str(), (TYPE *(*)(string, string))Random##TYPE); \
-	g_pSolLuaState->set((string("Random") + string(#TYPE)).c_str(), (TYPE *(*)(string))Random##TYPE); \
+	g_pSolLuaState->set((string("Create") + string(#TYPE)).c_str(), (shared_ptr<TYPE>(*)(string, string))Create##TYPE); \
+	g_pSolLuaState->set((string("Create") + string(#TYPE)).c_str(), (shared_ptr<TYPE>(*)(string))Create##TYPE); \
+	g_pSolLuaState->set((string("Random") + string(#TYPE)).c_str(), (shared_ptr<TYPE>(*)(string, int))Random##TYPE); \
+	g_pSolLuaState->set((string("Random") + string(#TYPE)).c_str(), (shared_ptr<TYPE>(*)(string, string))Random##TYPE); \
+	g_pSolLuaState->set((string("Random") + string(#TYPE)).c_str(), (shared_ptr<TYPE>(*)(string))Random##TYPE); \
 	g_pSolLuaState->set((string("To") + string(#TYPE)).c_str(), To##TYPE); \
 	g_pSolLuaState->set((string("To") + string(#TYPE)).c_str(), ToConst##TYPE); \
 	g_pSolLuaState->set((string("Is") + string(#TYPE)).c_str(), Is##TYPE); \
@@ -735,7 +792,7 @@ int LuaMan::Create()
 
 		sol::usertype<Entity> Bind = g_pSolLuaState->new_usertype<Entity>("Entity", sol::no_constructor);
 
-		Bind["Clone"] = &CloneEntity;
+		//Bind["Clone"] = &CloneEntity; // Should the result be adopted ???
 		Bind["Reset"] = &Entity::Reset;
 		Bind["ClassName"] = sol::property(&Entity::GetClassName);
 		Bind["PresetName"] = sol::property(&Entity::GetPresetName, &Entity::SetPresetName);
@@ -3142,8 +3199,8 @@ int LuaMan::Create()
 
 		ABSTRACTLUABINDING_SOL(Deployment, SceneObject);
 
-		Bind["CreateDeployedActor"] = (Actor * (Deployment::*)()) & Deployment::CreateDeployedActor;
-		Bind["CreateDeployedObject"] = (SceneObject * (Deployment::*)()) & Deployment::CreateDeployedObject;
+		Bind["CreateDeployedActor"] = (Actor * (Deployment::*)()) & Deployment::CreateDeployedActor; // adopt 0
+		Bind["CreateDeployedObject"] = (SceneObject * (Deployment::*)()) & Deployment::CreateDeployedObject; // adopt 0
 		Bind["GetLoadoutName"] = &Deployment::GetLoadoutName;
 		Bind["SpawnRadius"] = sol::property(&Deployment::GetSpawnRadius);
 		Bind["ID"] = sol::property(&Deployment::GetID);
@@ -3436,6 +3493,12 @@ int LuaMan::Create()
 		Bind["SetForeignCostMultiplier"] = &SceneEditorGUI::SetForeignCostMultiplier;
 		Bind["TestBrainResidence"] = &SceneEditorGUI::TestBrainResidence;
 		Bind["Update"] = &SceneEditorGUI::Update;//*/
+	}
+
+	{
+		sol::usertype<GAScripted> Bind = g_pSolLuaState->new_usertype<GAScripted>("GAScripted", sol::no_constructor, 
+			sol::meta_function::index, &GAScripted::LuaSolDynamicGet,
+			sol::meta_function::new_index, &GAScripted::LuaSolDynamicSet);
 	}
 
 	{
@@ -4042,11 +4105,11 @@ int LuaMan::Create()
 		Bind["DefaultActivityType"] = sol::property(&ActivityMan::GetDefaultActivityType, &ActivityMan::SetDefaultActivityType);
 		Bind["DefaultActivityName"] = sol::property(&ActivityMan::GetDefaultActivityName, &ActivityMan::SetDefaultActivityName);
 		// Transfers ownership of the Activity to start into the ActivityMan, adopts ownership (_1 is the this ptr)
-		Bind["SetStartActivity"] = &ActivityMan::SetStartActivity;
+		Bind["SetStartActivity"] = &ActivityMan::SetStartActivity; // adopt 2
 		Bind["GetStartActivity"] = &ActivityMan::GetStartActivity;
 		Bind["GetActivity"] = &ActivityMan::GetActivity;
 		// Transfers ownership of the Activity to start into the ActivityMan, adopts ownership (_1 is the this ptr;
-		Bind["StartActivity"] = (int (ActivityMan::*)(Activity*)) & ActivityMan::StartActivity;
+		Bind["StartActivity"] = (int (ActivityMan::*)(Activity*)) & ActivityMan::StartActivity; // adopt 2
 		Bind["StartActivity"] = (int (ActivityMan::*)(string, string)) & ActivityMan::StartActivity;
 		Bind["RestartActivity"] = &ActivityMan::RestartActivity;
 		Bind["PauseActivity"] = &ActivityMan::PauseActivity;
@@ -4212,10 +4275,10 @@ int LuaMan::Create()
 		Bind["ScriptedEntity"] = sol::property(&MovableMan::GetScriptedEntity, &MovableMan::SetScriptedEntity);
 		Bind["SortTeamRoster"] = &MovableMan::SortTeamRoster;
 		Bind["ChangeActorTeam"] = &MovableMan::ChangeActorTeam;
-		Bind["AddMO"] = &MovableMan::AddMO;
-		Bind["AddActor"] = &MovableMan::AddActor;
-		Bind["AddItem"] = &MovableMan::AddItem;
-		Bind["AddParticle"] = &MovableMan::AddParticle;
+		Bind["AddMO"] = &MovableMan::AddMO; //adopt 2
+		Bind["AddActor"] = &MovableMan::AddActor; // adopt 2 
+		Bind["AddItem"] = &MovableMan::AddItem; // adopt 2
+		Bind["AddParticle"] = &MovableMan::AddParticle; // adopt 2
 		Bind["RemoveActor"] = &MovableMan::RemoveActor;
 		Bind["RemoveItem"] = &MovableMan::RemoveItem;
 		Bind["RemoveParticle"] = &MovableMan::RemoveParticle;

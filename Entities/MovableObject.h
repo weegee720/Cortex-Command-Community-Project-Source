@@ -14,6 +14,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 // Inclusions of header files, forward declarations, namespace stuff
 
+//#include <sol/sol.hpp>
+
 #include <string>
 #include <set>
 #include <deque>
@@ -181,6 +183,9 @@ ENTITYALLOCATION(MovableObject)
 
     virtual void Destroy(bool notInherited = false);
 
+//    void SetLuaValueByIndex(const std::string& key, sol::this_state state, sol::object value);
+
+    //sol::object GetLuaValueByIndex(const std::string& key, sol::this_state state);
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Virtual method:  LoadScripts
@@ -1900,6 +1905,9 @@ protected:
 	bool m_ProvidesPieMenuContext;
 	// Temp variable to process OnPieMenu events
 	Actor * m_pPieMenuActor;
+
+    //std::map<std::string, sol::object> m_MetatablePropertyValues;
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Private member variable and method declarations

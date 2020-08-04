@@ -29,7 +29,7 @@
 //#include "SceneMan.h"
 #include "ActivityMan.h"
 #include "MetaPlayer.h"
-#include "GAScripted.h"
+//#include "GAScripted.h"
 #include "Icon.h"
 #include "GUIBanner.h"
 
@@ -44,7 +44,7 @@ namespace RTE
 class MetagameGUI;
 class MetaSave;
 class Scene;
-
+class GAScripted;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Class:           MetaMan

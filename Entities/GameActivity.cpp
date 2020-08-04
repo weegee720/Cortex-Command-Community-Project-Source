@@ -11,6 +11,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 // Inclusions of header files
 
+#include <sol/sol.hpp>
+
 #include "GameActivity.h"
 #include "PresetMan.h"
 #include "MovableMan.h"
@@ -3101,7 +3103,5 @@ void GameActivity::SetNetworkPlayerName(int player, std::string name)
 	if (player >= 0 && player < MAXPLAYERCOUNT)
 		m_NetworkPlayerNames[player] = name;
 }
-
-
 
 } // namespace RTE

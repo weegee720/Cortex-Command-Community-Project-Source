@@ -11,6 +11,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 // Inclusions of header files
 
+#include <sol/sol.hpp>
+
 #include "GAScripted.h"
 #include "SceneMan.h"
 #include "PresetMan.h"
@@ -186,6 +188,26 @@ void GAScripted::Destroy(bool notInherited)
     if (!notInherited)
         GameActivity::Destroy();
     Clear();
+}
+
+void GAScripted::LuaSolDynamicSet(std::string key, sol::stack_object value) {
+    auto it = m_LuaSolMetaProperties.find(key);
+    if (it == m_LuaSolMetaProperties.cend()) {
+        m_LuaSolMetaProperties.insert(it, { std::move(key), std::move(value) });
+    }
+    else {
+        std::pair<const std::string, sol::object>& kvp = *it;
+        sol::object& entry = kvp.second;
+        entry = sol::object(std::move(value));
+    }
+}
+
+sol::object GAScripted::LuaSolDynamicGet(std::string key) {
+    auto it = m_LuaSolMetaProperties.find(key);
+    if (it == m_LuaSolMetaProperties.cend()) {
+        return sol::lua_nil;
+    }
+    return it->second;
 }
 
 

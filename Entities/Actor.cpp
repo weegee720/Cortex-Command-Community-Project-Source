@@ -13,7 +13,6 @@
 
 #include "UInputMan.h"
 #include "ActivityMan.h"
-#include "GameActivity.h"
 #include "Actor.h"
 #include "ACrab.h"
 #include "ACraft.h"
@@ -32,6 +31,9 @@
 #include "GUI/GUI.h"
 #include "GUI/GUIFont.h"
 #include "GUI/AllegroBitmap.h"
+
+#include "GameActivity.h"
+
 
 using namespace std;
 namespace RTE

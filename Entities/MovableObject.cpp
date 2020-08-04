@@ -104,6 +104,8 @@ void MovableObject::Clear()
 
 	m_ProvidesPieMenuContext = false;
 	m_pPieMenuActor = 0;
+
+    //m_MetatablePropertyValues.clear();
 }
 
 
@@ -481,6 +483,21 @@ void MovableObject::Destroy(bool notInherited)
 	g_MovableMan.UnregisterObject(this);
 }
 
+/*void MovableObject::SetLuaValueByIndex(const std::string& key, sol::this_state state, sol::object value)
+{
+    m_MetatablePropertyValues[key] = value;
+}
+
+
+sol::object MovableObject::GetLuaValueByIndex(const std::string& key, sol::this_state state) {
+    const auto& it = m_MetatablePropertyValues.find(key);
+
+    if (it != m_MetatablePropertyValues.cend()) {
+        return it->second;
+    }
+
+    return sol::lua_nil;
+}*/
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Virtual method:  LoadScripts
