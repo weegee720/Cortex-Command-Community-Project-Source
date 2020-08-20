@@ -29,7 +29,7 @@ namespace RTE {
 		/// <summary>
 		/// Creates the loading screen and the log writer, then calls loading all the modules.
 		/// </summary>
-		void InitLoadingScreen();
+		void InitLoadingScreen(bool measureLoadTime);
 
 		/// <summary>
 		/// Updates the loading progress report.
@@ -41,7 +41,7 @@ namespace RTE {
 		/// <summary>
 		/// Finding and loading all DataModules
 		/// </summary>
-		bool LoadDataModules();
+		bool LoadDataModules(bool measureLoadTime);
 
 		/// <summary>
 		/// Unzip all *.rte.zip files found in the install directory, overwriting all files already existing.

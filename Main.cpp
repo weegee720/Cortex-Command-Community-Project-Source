@@ -122,6 +122,7 @@ const char *g_EditorToLaunch = ""; //!< String with editor activity name to laun
 bool g_InActivity = false;
 bool g_ResetActivity = false;
 bool g_ResumeActivity = false;
+bool g_MeasureModuleLoadTime = false;
 int g_IntroState = START;
 int g_StationOffsetX;
 int g_StationOffsetY;
@@ -1803,15 +1804,20 @@ bool HandleMainArgs(int argc, char *argv[], int &appExitVar) {
             // Print loading screen console to cout
 			if (std::strcmp(argv[i], "-cout") == 0) {
 				g_System.SetLogToCLI(true);
+			} else if (std::strcmp(argv[i], "-bench") == 0) {
+				// Measure load time
+				g_MeasureModuleLoadTime = true;
 			} else if (i + 1 < argc) {
 				// Launch game in server mode
                 if (std::strcmp(argv[i], "-server") == 0 && i + 1 < argc) {
                     std::string port = argv[++i];
                     g_NetworkServer.EnableServerMode();
                     g_NetworkServer.SetServerPort(port);
+				
 				// Load a single module right after the official modules
                 } else if (std::strcmp(argv[i], "-module") == 0 && i + 1 < argc) {
 					g_PresetMan.SetSingleModuleToLoad(argv[++i]);
+
 				// Launch game directly into editor activity
 				} else if (std::strcmp(argv[i], "-editor") == 0 && i + 1 < argc) {
 					const char *editorName = argv[++i];
@@ -1912,7 +1918,7 @@ int main(int argc, char *argv[]) {
 	}
 
     new LoadingGUI();
-	g_LoadingGUI.InitLoadingScreen();
+	g_LoadingGUI.InitLoadingScreen(g_MeasureModuleLoadTime);
 	InitMainMenu();
 
 	std::string screenshotSaveDir = g_System.GetWorkingDirectory() + "/" + c_ScreenshotDirectory;

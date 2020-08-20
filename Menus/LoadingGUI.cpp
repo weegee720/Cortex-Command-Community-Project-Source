@@ -33,7 +33,7 @@ namespace RTE {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//TODO Consider splitting this into a Create method and Init method to standardize LoadingGUI. Need to research if it can viably be done.
-	void LoadingGUI::InitLoadingScreen() {
+	void LoadingGUI::InitLoadingScreen(bool measureLoadTime) {
 		g_FrameMan.LoadPalette("Base.rte/palette.bmp");
 
 		// Create the main GUI
@@ -107,7 +107,7 @@ namespace RTE {
 		if (!m_LoadingLogWriter) { m_LoadingLogWriter = new Writer("LogLoading.txt"); }
 
 		// Load all the data modules
-		LoadDataModules();
+		LoadDataModules(measureLoadTime);
 	}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,11 +142,11 @@ namespace RTE {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	bool LoadingGUI::LoadDataModules() {
+	bool LoadingGUI::LoadDataModules(bool measureLoadTime) {
 		g_PresetMan.Destroy();
 		g_PresetMan.Create();
 		ExtractZippedModules();
-		g_PresetMan.LoadAllDataModules();
+		g_PresetMan.LoadAllDataModules(measureLoadTime);
 
 		return true;
 	}

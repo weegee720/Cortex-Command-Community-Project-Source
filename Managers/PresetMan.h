@@ -139,7 +139,7 @@ public:
 	/// Loads all the official data modules individually with LoadDataModule, then proceeds to look for any non-official modules and loads them as well.
 	/// </summary>
 	/// <returns></returns>
-	bool LoadAllDataModules();
+	bool LoadAllDataModules(bool measureLoadTime);
 
 	/// <summary>
 	/// Sets the single module to be loaded after the official modules. This will be the ONLY non-official module to be loaded.

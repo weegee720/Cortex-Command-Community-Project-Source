@@ -180,11 +180,21 @@ bool PresetMan::LoadDataModule(string moduleName, bool official, ProgressCallbac
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool PresetMan::LoadAllDataModules() {
+bool PresetMan::LoadAllDataModules(bool measureLoadTime) {
 	// Load all the official modules first!
+
+	long long loadStartTimeTotal = g_TimerMan.GetAbsoluteTime();
+
 	std::array<std::string, 10> officialModules = { "Base.rte", "Coalition.rte", "Imperatus.rte", "Techion.rte", "Dummy.rte", "Ronin.rte", "Browncoats.rte", "Uzira.rte", "MuIlaak.rte", "Missions.rte" };
 	for (const std::string &officialModule : officialModules) {
+		long long loadStartTime = g_TimerMan.GetAbsoluteTime();
+
 		if (!LoadDataModule(officialModule, true, &LoadingGUI::LoadingSplashProgressReport)) { return false; }
+
+		long long loadEnd = g_TimerMan.GetAbsoluteTime();
+
+		if (measureLoadTime)
+			g_ConsoleMan.PrintString(officialModule + " : " + std::to_string((loadEnd - loadStartTime) / 1000));
 	}
 
 	// If a single module is specified, skip loading all other unofficial modules and load specified module only.
@@ -200,13 +210,27 @@ bool PresetMan::LoadAllDataModules() {
 				// Make sure we don't load properties of already loaded official modules
 				if (strlen(moduleInfo.name) > 0 && (moduleID < 0 || moduleID >= GetOfficialModuleCount()) && string(moduleInfo.name) != "Metagames.rte" && string(moduleInfo.name) != "Scenes.rte") {
 					// NOTE: LoadDataModule can return false (especially since it may try to load already loaded modules, which is okay) and shouldn't cause stop, so we can ignore its return value here.
+					long long loadStartTime = g_TimerMan.GetAbsoluteTime();
+
                     LoadDataModule(string(moduleInfo.name), false, &LoadingGUI::LoadingSplashProgressReport);
+
+					long long loadFinishTime = g_TimerMan.GetAbsoluteTime();
+
+					if (measureLoadTime)
+					{
+						string loadStat(moduleInfo.name);
+						g_ConsoleMan.PrintString(loadStat + " : " + std::to_string((loadFinishTime - loadStartTime) / 1000));
+					}
 				}
 			}
 		}
 		// Close the file search to avoid memory leaks
 		al_findclose(&moduleInfo);
 	}
+
+	long long loadFinishTimeTotal = g_TimerMan.GetAbsoluteTime();
+	if (measureLoadTime)
+		g_ConsoleMan.PrintString("Total : " + std::to_string((loadFinishTimeTotal - loadStartTimeTotal) / 1000));
 
 	// Load scenes and MetaGames AFTER all other techs etc are loaded; might be referring to stuff in user mods
 	if (!g_PresetMan.LoadDataModule("Scenes.rte", false, &LoadingGUI::LoadingSplashProgressReport)) { return false; }
