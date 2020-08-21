@@ -343,6 +343,8 @@ private:
     TerrainObject(const TerrainObject &reference) {}
     void operator=(const TerrainObject &rhs) {}
 
+	static std::unordered_map<std::string, std::function<void(TerrainObject *, Reader &)>> RegisterPropertyMatchers();
+	static std::unordered_map<std::string, std::function<void(TerrainObject *, Reader &)>> m_PropertyMatchers;
 };
 
 } // namespace RTE

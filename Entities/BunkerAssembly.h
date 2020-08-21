@@ -280,6 +280,8 @@ private:
     BunkerAssembly(const BunkerAssembly &reference) {}
     void operator=(const BunkerAssembly &rhs) {}
 
+	static std::unordered_map<std::string, std::function<void(BunkerAssembly *, Reader &)>> RegisterPropertyMatchers();
+	static std::unordered_map<std::string, std::function<void(BunkerAssembly *, Reader &)>> m_PropertyMatchers;
 };
 
 } // namespace RTE

@@ -25,6 +25,96 @@ namespace RTE {
 
 ConcreteClassInfo(BunkerAssembly, SceneObject, 0)
 
+std::unordered_map<std::string, std::function<void(BunkerAssembly *, Reader &)>> BunkerAssembly::m_PropertyMatchers = BunkerAssembly::RegisterPropertyMatchers();
+
+std::unordered_map<std::string, std::function<void(BunkerAssembly *, Reader &)>> BunkerAssembly::RegisterPropertyMatchers()
+{
+	std::unordered_map<std::string, std::function<void(BunkerAssembly *, Reader &)>> m;
+
+	m["FGColorFile"] =
+	m["MaterialFile"] =
+	m["BGColorFile"] =
+	m["BitmapOffset"] =
+	m["Location"] = 
+	m["AddChildObject"] = [](BunkerAssembly * e, Reader & reader) {
+	};
+	m["SymmetricAssembly"] = [](BunkerAssembly * e, Reader & reader) {
+		reader >> e->m_SymmetricAssembly;
+	};
+	m["PlaceObject"] = [](BunkerAssembly * e, Reader & reader) {
+		SceneObject *pSO = dynamic_cast<SceneObject *>(g_PresetMan.ReadReflectedPreset(reader));
+		if (pSO)
+			e->AddPlacedObject(pSO);
+	};
+	m["ParentScheme"] = [](BunkerAssembly * e, Reader & reader) {
+		//Add to group like Entity::ReadProperty does
+		string parentScheme;
+		reader >> parentScheme;
+		e->AddToGroup(parentScheme);
+		g_PresetMan.RegisterGroup(parentScheme, reader.GetReadModuleID());
+
+		// Find the scheme's group, read it's dimensions and create presentation bitmap
+		const BunkerAssemblyScheme * pScheme = dynamic_cast<const BunkerAssemblyScheme *>(g_PresetMan.GetEntityPreset("BunkerAssemblyScheme", parentScheme, -1));
+		if (pScheme)
+		{
+			//Calculate fixed scheme price based on the scheme size
+			if (pScheme->GetGoldValue() == 0)
+				e->m_OzValue = pScheme->GetArea() * 3;
+			else
+				pScheme->GetGoldValue();
+
+			//Delete existing bitmaps to avoid leaks if someone adds assembly to multiple groups by mistake
+			delete e->m_pPresentationBitmap;
+			e->m_pPresentationBitmap = create_bitmap_ex(8, pScheme->GetBitmapWidth(), pScheme->GetBitmapHeight());
+			clear_to_color(e->m_pPresentationBitmap, g_MaskColor);
+
+			delete e->m_pFGColor;
+			e->m_pFGColor = create_bitmap_ex(8, pScheme->GetBitmapWidth(), pScheme->GetBitmapHeight());
+			clear_to_color(e->m_pFGColor, g_MaskColor);
+
+			delete e->m_pMaterial;
+			e->m_pMaterial = create_bitmap_ex(8, pScheme->GetBitmapWidth(), pScheme->GetBitmapHeight());
+			clear_to_color(e->m_pMaterial, g_MaskColor);
+
+			delete e->m_pBGColor;
+			e->m_pBGColor = create_bitmap_ex(8, pScheme->GetBitmapWidth(), pScheme->GetBitmapHeight());
+			clear_to_color(e->m_pBGColor, g_MaskColor);
+
+			e->m_ParentAssemblyScheme = parentScheme;
+			e->m_BitmapOffset = pScheme->GetBitmapOffset();
+			if (pScheme->GetAssemblyGroup().length() > 0)
+			{
+				e->AddToGroup(pScheme->GetAssemblyGroup());
+				e->m_ParentSchemeGroup = pScheme->GetAssemblyGroup();
+				g_PresetMan.RegisterGroup(pScheme->GetAssemblyGroup(), reader.GetReadModuleID());
+			}
+
+			// Also add to Assemblies group
+			e->AddToGroup("Assemblies");
+			g_PresetMan.RegisterGroup("Assemblies", reader.GetReadModuleID());
+		}
+		else {
+			// Do not allow to define assemblies prior to corresponding assembly scheme
+			char s[256];
+			sprintf_s(s, sizeof(s), "Required BunkerAssemblyScheme '%s%' not found when trying to load BunkerAssembly '%s'! BunkerAssemblySchemes MUST be defined before dependent BunkerAssmeblies.", parentScheme.c_str(), e->m_PresetName.c_str());
+			RTEAbort(s);
+		}
+	};
+
+	return m;
+}
+
+int BunkerAssembly::ReadProperty(std::string propName, Reader &reader) {
+	auto it = m_PropertyMatchers.find(propName);
+
+	if (it != m_PropertyMatchers.end())
+	{
+		(*it).second(this, reader);
+		return 0;
+	}
+
+	return TerrainObject::ReadProperty(propName, reader);
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Method:          Clear
@@ -178,96 +268,6 @@ int BunkerAssembly::Create(const BunkerAssembly &reference)
 //                  recognized by this class, then ReadProperty of the parent class
 //                  is called. If the property isn't recognized by any of the base classes,
 //                  false is returned, and the reader's position is untouched.
-
-int BunkerAssembly::ReadProperty(std::string propName, Reader &reader)
-{
-    // Ignore TerrainObject's specific properties, but don't let parent class process them
-	if (propName == "FGColorFile")
-    {
-    }
-    else if (propName == "MaterialFile")
-    {
-    }
-    else if (propName == "BGColorFile")
-    {
-    }
-    else if (propName == "BitmapOffset")
-    {
-    }
-    else if (propName == "Location")
-    {
-    }
-    else if (propName == "AddChildObject")
-    {
-    }
-    else if (propName == "SymmetricAssembly")
-    {
-		reader >> m_SymmetricAssembly;
-    }
-    else if (propName == "PlaceObject")
-    {
-        SceneObject *pSO = dynamic_cast<SceneObject *>(g_PresetMan.ReadReflectedPreset(reader));
-        if (pSO)
-			AddPlacedObject(pSO);
-    }
-    else if (propName == "ParentScheme")
-    {
-		//Add to group like Entity::ReadProperty does
-        string parentScheme;
-        reader >> parentScheme;
-        AddToGroup(parentScheme);
-        g_PresetMan.RegisterGroup(parentScheme, reader.GetReadModuleID());
-
-		// Find the scheme's group, read it's dimensions and create presentation bitmap
-		const BunkerAssemblyScheme * pScheme = dynamic_cast<const BunkerAssemblyScheme *>(g_PresetMan.GetEntityPreset("BunkerAssemblyScheme", parentScheme, -1));
-		if (pScheme)
-		{
-			//Calculate fixed scheme price based on the scheme size
-			if (pScheme->GetGoldValue() == 0)
-				m_OzValue = pScheme->GetArea() * 3;
-			else 
-				pScheme->GetGoldValue();
-
-			//Delete existing bitmaps to avoid leaks if someone adds assembly to multiple groups by mistake
-			delete m_pPresentationBitmap;
-			m_pPresentationBitmap = create_bitmap_ex(8, pScheme->GetBitmapWidth() , pScheme->GetBitmapHeight());
-			clear_to_color(m_pPresentationBitmap, g_MaskColor);
-
-			delete m_pFGColor;
-			m_pFGColor = create_bitmap_ex(8, pScheme->GetBitmapWidth() , pScheme->GetBitmapHeight());
-			clear_to_color(m_pFGColor, g_MaskColor);
-
-			delete m_pMaterial;
-			m_pMaterial = create_bitmap_ex(8, pScheme->GetBitmapWidth() , pScheme->GetBitmapHeight());
-			clear_to_color(m_pMaterial, g_MaskColor);
-
-			delete m_pBGColor;
-			m_pBGColor = create_bitmap_ex(8, pScheme->GetBitmapWidth() , pScheme->GetBitmapHeight());
-			clear_to_color(m_pBGColor, g_MaskColor);
-
-			m_ParentAssemblyScheme = parentScheme;
-			m_BitmapOffset = pScheme->GetBitmapOffset();
-			if (pScheme->GetAssemblyGroup().length() > 0)
-			{
-				AddToGroup(pScheme->GetAssemblyGroup());
-				m_ParentSchemeGroup = pScheme->GetAssemblyGroup();
-		        g_PresetMan.RegisterGroup(pScheme->GetAssemblyGroup(), reader.GetReadModuleID());
-			}
-
-			// Also add to Assemblies group
-			AddToGroup("Assemblies");
-	        g_PresetMan.RegisterGroup("Assemblies", reader.GetReadModuleID());
-		} else {
-			// Do not allow to define assemblies prior to corresponding assembly scheme
-			char s[256];
-			sprintf_s(s, sizeof(s), "Required BunkerAssemblyScheme '%s%' not found when trying to load BunkerAssembly '%s'! BunkerAssemblySchemes MUST be defined before dependent BunkerAssmeblies.", parentScheme.c_str(), m_PresetName.c_str());
-			RTEAbort(s);
-		}
-	} else
-        return SceneObject::ReadProperty(propName, reader);
-
-    return 0;
-}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////

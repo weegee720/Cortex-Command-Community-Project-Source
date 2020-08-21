@@ -20,6 +20,79 @@ namespace RTE {
 AbstractClassInfo(MOSprite, MovableObject)
 
 
+
+std::unordered_map<std::string, std::function<void(MOSprite *, Reader &)>> MOSprite::m_PropertyMatchers = MOSprite::RegisterPropertyMatchers();
+
+std::unordered_map<std::string, std::function<void(MOSprite *, Reader &)>> MOSprite::RegisterPropertyMatchers()
+{
+	std::unordered_map<std::string, std::function<void(MOSprite *, Reader &)>> m;
+
+	m["SpriteFile"] = [](MOSprite * e, Reader & reader) {
+		reader >> e->m_SpriteFile;
+	};
+	m["FrameCount"] = [](MOSprite * e, Reader & reader) {
+		reader >> e->m_FrameCount;
+	};
+	m["SpriteOffset"] = [](MOSprite * e, Reader & reader) {
+		reader >> e->m_SpriteOffset;
+	};
+	m["SpriteAnimMode"] = [](MOSprite * e, Reader & reader) {
+		//        string mode;
+		//        reader >> mode;
+		int mode;
+		reader >> mode;
+		e->m_SpriteAnimMode = (SpriteAnimMode)mode;
+		/*
+				if (mode == "NOANIM")
+					m_SpriteAnimMode = NOANIM;
+				else if (mode == "ALWAYSLOOP")
+					m_SpriteAnimMode = ALWAYSLOOP;
+				else if (mode == "ALWAYSPINGPONG")
+					m_SpriteAnimMode = ALWAYSPINGPONG;
+				else if (mode == "LOOPWHENMOVING")
+					m_SpriteAnimMode = LOOPWHENMOVING;
+				else
+					Abort
+		*/
+	};
+	m["SpriteAnimDuration"] = [](MOSprite * e, Reader & reader) {
+		reader >> e->m_SpriteAnimDuration;
+	};
+	m["HFlipped"] = [](MOSprite * e, Reader & reader) {
+		reader >> e->m_HFlipped;
+	};
+	m["Rotation"] = [](MOSprite * e, Reader & reader) {
+		reader >> e->m_Rotation;
+	};
+	m["AngularVel"] = [](MOSprite * e, Reader & reader) {
+		reader >> e->m_AngularVel;
+	};
+	m["SettleMaterialDisabled"] = [](MOSprite * e, Reader & reader) {
+		reader >> e->m_SettleMaterialDisabled;
+	};
+	m["EntryWound"] = [](MOSprite * e, Reader & reader) {
+		e->m_pEntryWound = dynamic_cast<const AEmitter *>(g_PresetMan.GetEntityPreset(reader));
+	};
+	m["ExitWound"] = [](MOSprite * e, Reader & reader) {
+		e->m_pExitWound = dynamic_cast<const AEmitter *>(g_PresetMan.GetEntityPreset(reader));
+	};
+
+	return m;
+}
+
+int MOSprite::ReadProperty(std::string propName, Reader &reader) {
+	auto it = m_PropertyMatchers.find(propName);
+
+	if (it != m_PropertyMatchers.end())
+	{
+		(*it).second(this, reader);
+		return 0;
+	}
+
+	return MovableObject::ReadProperty(propName, reader);
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // Method:          Clear
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -170,53 +243,6 @@ int MOSprite::Create(const MOSprite &reference)
 //                  is called. If the property isn't recognized by any of the base classes,
 //                  false is returned, and the reader's position is untouched.
 
-int MOSprite::ReadProperty(std::string propName, Reader &reader)
-{
-    if (propName == "SpriteFile")
-        reader >> m_SpriteFile;
-    else if (propName == "FrameCount")
-        reader >> m_FrameCount;
-    else if (propName == "SpriteOffset")
-        reader >> m_SpriteOffset;
-    else if (propName == "SpriteAnimMode")
-    {
-//        string mode;
-//        reader >> mode;
-        int mode;
-        reader >> mode;
-        m_SpriteAnimMode = (SpriteAnimMode)mode;
-/*
-        if (mode == "NOANIM")
-            m_SpriteAnimMode = NOANIM;
-        else if (mode == "ALWAYSLOOP")
-            m_SpriteAnimMode = ALWAYSLOOP;
-        else if (mode == "ALWAYSPINGPONG")
-            m_SpriteAnimMode = ALWAYSPINGPONG;
-        else if (mode == "LOOPWHENMOVING")
-            m_SpriteAnimMode = LOOPWHENMOVING;
-        else
-            Abort
-*/
-    }
-    else if (propName == "SpriteAnimDuration")
-        reader >> m_SpriteAnimDuration;
-    else if (propName == "HFlipped")
-        reader >> m_HFlipped;
-    else if (propName == "Rotation")
-        reader >> m_Rotation;
-    else if (propName == "AngularVel")
-        reader >> m_AngularVel;
-    else if (propName == "SettleMaterialDisabled")
-        reader >> m_SettleMaterialDisabled;
-    else if (propName == "EntryWound")
-        m_pEntryWound = dynamic_cast<const AEmitter *>(g_PresetMan.GetEntityPreset(reader));
-    else if (propName == "ExitWound")
-        m_pExitWound = dynamic_cast<const AEmitter *>(g_PresetMan.GetEntityPreset(reader));
-    else
-        return MovableObject::ReadProperty(propName, reader);
-
-    return 0;
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Virtual method:  SetEntryWound

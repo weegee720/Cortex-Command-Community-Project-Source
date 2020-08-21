@@ -610,6 +610,9 @@ private:
 	MOSprite(const MOSprite &reference) {}
 	MOSprite & operator=(const MOSprite &rhs) {}
 
+	static std::unordered_map<std::string, std::function<void(MOSprite *, Reader &)>> RegisterPropertyMatchers();
+	static std::unordered_map<std::string, std::function<void(MOSprite *, Reader &)>> m_PropertyMatchers;
+
 };
 
 } // namespace RTE

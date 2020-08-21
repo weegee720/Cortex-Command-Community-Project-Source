@@ -892,6 +892,8 @@ private:
 	MOSRotating(const MOSRotating &reference) {}
 	MOSRotating& operator=(const MOSRotating &rhs) {}
 
+	static std::unordered_map<std::string, std::function<void(MOSRotating *, Reader &)>> RegisterPropertyMatchers();
+	static std::unordered_map<std::string, std::function<void(MOSRotating *, Reader &)>> m_PropertyMatchers;
 };
 
 } // namespace RTE

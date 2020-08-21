@@ -19,6 +19,57 @@ namespace RTE {
 
 ConcreteClassInfo(TerrainObject, SceneObject, 0)
 
+std::unordered_map<std::string, std::function<void(TerrainObject *, Reader &)>> TerrainObject::m_PropertyMatchers = TerrainObject::RegisterPropertyMatchers();
+
+std::unordered_map<std::string, std::function<void(TerrainObject *, Reader &)>> TerrainObject::RegisterPropertyMatchers()
+{
+	std::unordered_map<std::string, std::function<void(TerrainObject *, Reader &)>> m;
+
+	m["FGColorFile"] = [](TerrainObject * e, Reader & reader) {
+		reader >> e->m_FGColorFile;
+		e->m_pFGColor = e->m_FGColorFile.GetAsBitmap();
+	};
+	m["MaterialFile"] = [](TerrainObject * e, Reader & reader) {
+		reader >> e->m_MaterialFile;
+		e->m_pMaterial = e->m_MaterialFile.GetAsBitmap();
+	};
+	m["BGColorFile"] = [](TerrainObject * e, Reader & reader) {
+		reader >> e->m_BGColorFile;
+		e->m_pBGColor = e->m_BGColorFile.GetAsBitmap();
+	};
+	m["BitmapOffset"] = [](TerrainObject * e, Reader & reader) {
+		reader >> e->m_BitmapOffset;
+		e->m_OffsetDefined = true;
+	};
+	m["Location"] = [](TerrainObject * e, Reader & reader) {
+		reader >> e->m_Pos;
+		e->m_Pos -= e->m_BitmapOffset;
+	};
+	m["AddChildObject"] = [](TerrainObject * e, Reader & reader) {
+		SOPlacer newChild;
+		reader >> newChild;
+		newChild.SetTeam(e->m_Team);
+		e->m_ChildObjects.push_back(newChild);
+	};
+	m["DisplayAsTerrain"] = [](TerrainObject * e, Reader & reader) {
+		reader >> e->m_DisplayAsTerrain;
+	};
+
+	return m;
+}
+
+int TerrainObject::ReadProperty(std::string propName, Reader &reader) {
+	auto it = m_PropertyMatchers.find(propName);
+
+	if (it != m_PropertyMatchers.end())
+	{
+		(*it).second(this, reader);
+		return 0;
+	}
+
+	return SceneObject::ReadProperty(propName, reader);
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Method:          Clear
@@ -157,51 +208,6 @@ int TerrainObject::Create(const TerrainObject &reference)
 //                  recognized by this class, then ReadProperty of the parent class
 //                  is called. If the property isn't recognized by any of the base classes,
 //                  false is returned, and the reader's position is untouched.
-
-int TerrainObject::ReadProperty(std::string propName, Reader &reader)
-{
-    if (propName == "FGColorFile")
-    {
-        reader >> m_FGColorFile;
-        m_pFGColor = m_FGColorFile.GetAsBitmap();
-    }
-    else if (propName == "MaterialFile")
-    {
-        reader >> m_MaterialFile;
-        m_pMaterial = m_MaterialFile.GetAsBitmap();
-    }
-    else if (propName == "BGColorFile")
-    {
-        reader >> m_BGColorFile;
-        m_pBGColor = m_BGColorFile.GetAsBitmap();
-    }
-    else if (propName == "BitmapOffset")
-    {
-        reader >> m_BitmapOffset;
-        m_OffsetDefined = true;
-    }
-    // This is to handle legacy placement of terrain objects, without the bitmap offset
-    else if (propName == "Location")
-    {
-        reader >> m_Pos;
-        m_Pos -= m_BitmapOffset;
-    }
-    else if (propName == "AddChildObject")
-    {
-        SOPlacer newChild;
-        reader >> newChild;
-        newChild.SetTeam(m_Team);
-        m_ChildObjects.push_back(newChild);
-    }
-    else if (propName == "DisplayAsTerrain")
-    {
-		reader >> m_DisplayAsTerrain;
-	}
-    else
-        return SceneObject::ReadProperty(propName, reader);
-
-    return 0;
-}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////

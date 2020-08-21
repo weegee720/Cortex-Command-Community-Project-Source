@@ -41,6 +41,82 @@ BITMAP * MOSRotating::m_spTempBitmapS256 = 0;
 BITMAP * MOSRotating::m_spTempBitmapS512 = 0;
 
 
+std::unordered_map<std::string, std::function<void(MOSRotating *, Reader &)>> MOSRotating::m_PropertyMatchers = MOSRotating::RegisterPropertyMatchers();
+
+std::unordered_map<std::string, std::function<void(MOSRotating *, Reader &)>> MOSRotating::RegisterPropertyMatchers()
+{
+	std::unordered_map<std::string, std::function<void(MOSRotating *, Reader &)>> m;
+
+	m["AtomGroup"] = [](MOSRotating * e, Reader & reader) {
+		delete e->m_pAtomGroup;
+		e->m_pAtomGroup = new AtomGroup();
+		reader >> *e->m_pAtomGroup;
+	};
+	m["DeepGroup"] = [](MOSRotating * e, Reader & reader) {
+		delete e->m_pDeepGroup;
+		e->m_pDeepGroup = new AtomGroup();
+		reader >> *e->m_pDeepGroup;
+	};
+	m["DeepCheck"] = [](MOSRotating * e, Reader & reader) {
+		reader >> e->m_DeepCheck;
+	};
+	m["OrientToVel"] = [](MOSRotating * e, Reader & reader) {
+		reader >> e->m_OrientToVel;
+	};
+	m["AddEmitter"] = [](MOSRotating * e, Reader & reader) {
+		AEmitter *pEmitter = new AEmitter;
+		reader >> pEmitter;
+		e->m_Attachables.push_back(pEmitter);
+	};
+	m["AddAttachable"] = [](MOSRotating * e, Reader & reader) {
+		Attachable *pAttachable = new Attachable;
+		reader >> pAttachable;
+		e->m_Attachables.push_back(pAttachable);
+	};
+	m["AddGib"] = [](MOSRotating * e, Reader & reader) {
+		Gib gib;
+		reader >> gib;
+		e->m_Gibs.push_back(gib);
+	};
+	m["GibImpulseLimit"] = [](MOSRotating * e, Reader & reader) {
+		reader >> e->m_GibImpulseLimit;
+	};
+	m["GibWoundLimit"] = [](MOSRotating * e, Reader & reader) {
+		reader >> e->m_GibWoundLimit;
+	};
+	m["GibSound"] = [](MOSRotating * e, Reader & reader) {
+		reader >> e->m_GibSound;
+	};
+	m["EffectOnGib"] = [](MOSRotating * e, Reader & reader) {
+		reader >> e->m_EffectOnGib;
+	};
+	m["LoudnessOnGib"] = [](MOSRotating * e, Reader & reader) {
+		reader >> e->m_LoudnessOnGib;
+	};
+	m["DamageMultiplier"] = [](MOSRotating * e, Reader & reader) {
+		reader >> e->m_DamageMultiplier;
+		e->m_DamageMultiplierRedefined = true;
+	};
+	m["AddCustomValue"] = [](MOSRotating * e, Reader & reader) {
+		e->ReadCustomValueProperty(reader);
+	};
+
+	return m;
+}
+
+int MOSRotating::ReadProperty(std::string propName, Reader &reader) {
+	auto it = m_PropertyMatchers.find(propName);
+
+	if (it != m_PropertyMatchers.end())
+	{
+		(*it).second(this, reader);
+		return 0;
+	}
+
+	return MOSprite::ReadProperty(propName, reader);
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // Method:          Clear
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -298,62 +374,6 @@ int MOSRotating::Create(const MOSRotating &reference)
 //                  is called. If the property isn't recognized by any of the base classes,
 //                  false is returned, and the reader's position is untouched.
 
-int MOSRotating::ReadProperty(std::string propName, Reader &reader)
-{
-    if (propName == "AtomGroup")
-    {
-        delete m_pAtomGroup;
-        m_pAtomGroup = new AtomGroup();
-        reader >> *m_pAtomGroup;
-    }
-    else if (propName == "DeepGroup")
-    {
-        delete m_pDeepGroup;
-        m_pDeepGroup = new AtomGroup();
-        reader >> *m_pDeepGroup;
-    }
-    else if (propName == "DeepCheck")
-        reader >> m_DeepCheck;
-    else if (propName == "OrientToVel")
-        reader >> m_OrientToVel;
-    else if (propName == "AddEmitter")
-    {
-        AEmitter *pEmitter = new AEmitter;
-        reader >> pEmitter;
-		m_Attachables.push_back(pEmitter);
-    }
-    else if (propName == "AddAttachable")
-    {
-        Attachable *pAttachable = new Attachable;
-        reader >> pAttachable;
-        m_Attachables.push_back(pAttachable);
-    }
-    else if (propName == "AddGib")
-    {
-        Gib gib;
-        reader >> gib;
-        m_Gibs.push_back(gib);
-    }
-    else if (propName == "GibImpulseLimit")
-        reader >> m_GibImpulseLimit;
-    else if (propName == "GibWoundLimit" || propName == "WoundLimit")
-        reader >> m_GibWoundLimit;
-    else if (propName == "GibSound")
-        reader >> m_GibSound;
-    else if (propName == "EffectOnGib")
-        reader >> m_EffectOnGib;
-    else if (propName == "LoudnessOnGib")
-        reader >> m_LoudnessOnGib;
-	else if (propName == "DamageMultiplier") {
-		reader >> m_DamageMultiplier;
-		m_DamageMultiplierRedefined = true;
-    } else if (propName == "AddCustomValue") {
-        ReadCustomValueProperty(reader);
-    } else
-        return MOSprite::ReadProperty(propName, reader);
-
-    return 0;
-}
 
 void MOSRotating::ReadCustomValueProperty(Reader &reader) {
     std::string customValueType;

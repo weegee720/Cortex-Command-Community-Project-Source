@@ -26,6 +26,7 @@ AbstractClassInfo(MovableObject, SceneObject)
 
 unsigned long int MovableObject::m_UniqueIDCounter = 1;
 
+std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> MovableObject::m_PropertyMatchers = MovableObject::RegisterPropertyMatchers();
 
 std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> MovableObject::RegisterPropertyMatchers()
 {
@@ -165,8 +166,6 @@ std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> 
 
 	return m;
 }
-
-std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> MovableObject::m_PropertyMatchers = MovableObject::RegisterPropertyMatchers();
 
 int MovableObject::ReadProperty(std::string propName, Reader &reader) {
 	auto it = m_PropertyMatchers.find(propName);
