@@ -27,9 +27,9 @@ AbstractClassInfo(MovableObject, SceneObject)
 unsigned long int MovableObject::m_UniqueIDCounter = 1;
 
 
-std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> MovableObject::RegisterPropertyMatchers()
+std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> MovableObject::RegisterPropertyMatchers()
 {
-	std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> m = SceneObject::RegisterPropertyMatchers();
+	std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> m;
 
 	m["Mass"] = ReadMass;
 	m["Velocity"] = ReadVelocity;
@@ -73,219 +73,139 @@ std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> Movable
 	return m;
 }
 
-std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> MovableObject::GetPropertyMatchers()
-{
-	return m_PropertyMatchers;
+std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> MovableObject::m_PropertyMatchers = MovableObject::RegisterPropertyMatchers();
+
+
+void MovableObject::ReadMass(MovableObject * e, Reader & reader) {
+	reader >> e->m_Mass;
+	if (e->m_Mass == 0)
+		e->m_Mass = 0.0001;
 }
-
-std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> MovableObject::m_PropertyMatchers = MovableObject::RegisterPropertyMatchers();
-
-
-void MovableObject::ReadMass(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_Mass;
-	if (o->m_Mass == 0)
-		o->m_Mass = 0.0001;
+void MovableObject::ReadVelocity(MovableObject * e, Reader & reader) {
+	reader >> e->m_Vel;
 }
-void MovableObject::ReadVelocity(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-	reader >> o->m_Vel;
+void MovableObject::ReadScale(MovableObject * e, Reader & reader) {
+	reader >> e->m_Scale;
 }
-void MovableObject::ReadScale(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_Scale;
+void MovableObject::ReadGlobalAccScalar(MovableObject * e, Reader & reader) {
+	reader >> e->m_GlobalAccScalar;
 }
-void MovableObject::ReadGlobalAccScalar(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_GlobalAccScalar;
-}
-void MovableObject::ReadAirResistance(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_AirResistance;
+void MovableObject::ReadAirResistance(MovableObject * e, Reader & reader) {
+	reader >> e->m_AirResistance;
 	// Backwards compatibility after we made this value scaled over time
-	o->m_AirResistance /= 0.01666;
+	e->m_AirResistance /= 0.01666;
 }
-void MovableObject::ReadAirThreshold(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_AirThreshold;
+void MovableObject::ReadAirThreshold(MovableObject * e, Reader & reader) {
+	reader >> e->m_AirThreshold;
 }
-void MovableObject::ReadPinStrength(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_PinStrength;
+void MovableObject::ReadPinStrength(MovableObject * e, Reader & reader) {
+	reader >> e->m_PinStrength;
 }
-void MovableObject::ReadRestThreshold(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_RestThreshold;
+void MovableObject::ReadRestThreshold(MovableObject * e, Reader & reader) {
+	reader >> e->m_RestThreshold;
 }
-void MovableObject::ReadLifeTime(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_Lifetime;
+void MovableObject::ReadLifeTime(MovableObject * e, Reader & reader) {
+	reader >> e->m_Lifetime;
 }
-void MovableObject::ReadSharpness(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_Sharpness;
+void MovableObject::ReadSharpness(MovableObject * e, Reader & reader) {
+	reader >> e->m_Sharpness;
 }
-void MovableObject::ReadHitsMOs(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_HitsMOs;
+void MovableObject::ReadHitsMOs(MovableObject * e, Reader & reader) {
+	reader >> e->m_HitsMOs;
 }
-void MovableObject::ReadGetsHitByMOs(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_GetsHitByMOs;
+void MovableObject::ReadGetsHitByMOs(MovableObject * e, Reader & reader) {
+	reader >> e->m_GetsHitByMOs;
 }
-void MovableObject::ReadIgnoresTeamHits(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_IgnoresTeamHits;
+void MovableObject::ReadIgnoresTeamHits(MovableObject * e, Reader & reader) {
+	reader >> e->m_IgnoresTeamHits;
 }
-void MovableObject::ReadIgnoresAtomGroupHits(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_IgnoresAtomGroupHits;
+void MovableObject::ReadIgnoresAtomGroupHits(MovableObject * e, Reader & reader) {
+	reader >> e->m_IgnoresAtomGroupHits;
 }
-void MovableObject::ReadIgnoresAGHitsWhenSlowerThan(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_IgnoresAGHitsWhenSlowerThan;
+void MovableObject::ReadIgnoresAGHitsWhenSlowerThan(MovableObject * e, Reader & reader) {
+	reader >> e->m_IgnoresAGHitsWhenSlowerThan;
 }
-void MovableObject::ReadRemoveOrphanTerrainRadius(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_RemoveOrphanTerrainRadius;
-	if (o->m_RemoveOrphanTerrainRadius > MAXORPHANRADIUS)
-		o->m_RemoveOrphanTerrainRadius = MAXORPHANRADIUS;
+void MovableObject::ReadRemoveOrphanTerrainRadius(MovableObject * e, Reader & reader) {
+	reader >> e->m_RemoveOrphanTerrainRadius;
+	if (e->m_RemoveOrphanTerrainRadius > MAXORPHANRADIUS)
+		e->m_RemoveOrphanTerrainRadius = MAXORPHANRADIUS;
 }
-void MovableObject::ReadRemoveOrphanTerrainMaxArea(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_RemoveOrphanTerrainMaxArea;
-	if (o->m_RemoveOrphanTerrainMaxArea > MAXORPHANRADIUS * MAXORPHANRADIUS)
-		o->m_RemoveOrphanTerrainMaxArea = MAXORPHANRADIUS * MAXORPHANRADIUS;
+void MovableObject::ReadRemoveOrphanTerrainMaxArea(MovableObject * e, Reader & reader) {
+	reader >> e->m_RemoveOrphanTerrainMaxArea;
+	if (e->m_RemoveOrphanTerrainMaxArea > MAXORPHANRADIUS * MAXORPHANRADIUS)
+		e->m_RemoveOrphanTerrainMaxArea = MAXORPHANRADIUS * MAXORPHANRADIUS;
 }
-void MovableObject::ReadRemoveOrphanTerrainRate(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_RemoveOrphanTerrainRate;
+void MovableObject::ReadRemoveOrphanTerrainRate(MovableObject * e, Reader & reader) {
+	reader >> e->m_RemoveOrphanTerrainRate;
 }
-void MovableObject::ReadMissionCritical(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_MissionCritical;
+void MovableObject::ReadMissionCritical(MovableObject * e, Reader & reader) {
+	reader >> e->m_MissionCritical;
 }
-void MovableObject::ReadCanBeSquished(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_CanBeSquished;
+void MovableObject::ReadCanBeSquished(MovableObject * e, Reader & reader) {
+	reader >> e->m_CanBeSquished;
 }
-void MovableObject::ReadHUDVisible(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_HUDVisible;
+void MovableObject::ReadHUDVisible(MovableObject * e, Reader & reader) {
+	reader >> e->m_HUDVisible;
 }
-void MovableObject::ReadProvidesPieMenuContext(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_ProvidesPieMenuContext;
+void MovableObject::ReadProvidesPieMenuContext(MovableObject * e, Reader & reader) {
+	reader >> e->m_ProvidesPieMenuContext;
 }
-void MovableObject::ReadAddPieSlice(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
+void MovableObject::ReadAddPieSlice(MovableObject * e, Reader & reader) {
 	PieMenuGUI::Slice newSlice;
 	reader >> newSlice;
 	PieMenuGUI::AddAvailableSlice(newSlice);
 }
-void MovableObject::ReadScriptPath(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
+void MovableObject::ReadScriptPath(MovableObject * e, Reader & reader) {
 	std::string scriptPath = reader.ReadPropValue();
-	if (o->LoadScript(scriptPath) == -2) { reader.ReportError("Duplicate script path " + scriptPath); }
+	if (e->LoadScript(scriptPath) == -2) { reader.ReportError("Duplicate script path " + scriptPath); }
 }
-void MovableObject::ReadScreenEffect(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_ScreenEffectFile;
-	o->m_pScreenEffect = o->m_ScreenEffectFile.GetAsBitmap();
-	o->m_ScreenEffectHash = o->m_ScreenEffectFile.GetHash();
+void MovableObject::ReadScreenEffect(MovableObject * e, Reader & reader) {
+	reader >> e->m_ScreenEffectFile;
+	e->m_pScreenEffect = e->m_ScreenEffectFile.GetAsBitmap();
+	e->m_ScreenEffectHash = e->m_ScreenEffectFile.GetHash();
 }
-void MovableObject::ReadEffectStartTime(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_EffectStartTime;
+void MovableObject::ReadEffectStartTime(MovableObject * e, Reader & reader) {
+	reader >> e->m_EffectStartTime;
 }
-void MovableObject::ReadEffectRotAngle(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_EffectRotAngle;
+void MovableObject::ReadEffectRotAngle(MovableObject * e, Reader & reader) {
+	reader >> e->m_EffectRotAngle;
 }
-void MovableObject::ReadInheritEffectRotAngle(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_InheritEffectRotAngle;
+void MovableObject::ReadInheritEffectRotAngle(MovableObject * e, Reader & reader) {
+	reader >> e->m_InheritEffectRotAngle;
 }
-void MovableObject::ReadRandomizeEffectRotAngle(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_RandomizeEffectRotAngle;
+void MovableObject::ReadRandomizeEffectRotAngle(MovableObject * e, Reader & reader) {
+	reader >> e->m_RandomizeEffectRotAngle;
 }
-void MovableObject::ReadRandomizeEffectRotAngleEveryFrame(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_RandomizeEffectRotAngleEveryFrame;
+void MovableObject::ReadRandomizeEffectRotAngleEveryFrame(MovableObject * e, Reader & reader) {
+	reader >> e->m_RandomizeEffectRotAngleEveryFrame;
 }
-void MovableObject::ReadEffectStopTime(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_EffectStopTime;
+void MovableObject::ReadEffectStopTime(MovableObject * e, Reader & reader) {
+	reader >> e->m_EffectStopTime;
 }
-void MovableObject::ReadEffectStartStrength(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
+void MovableObject::ReadEffectStartStrength(MovableObject * e, Reader & reader) {
 	float strength;
 	reader >> strength;
-	o->m_EffectStartStrength = floorf((float)255 * strength);
+	e->m_EffectStartStrength = floorf((float)255 * strength);
 }
-void MovableObject::ReadEffectStopStrength(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
+void MovableObject::ReadEffectStopStrength(MovableObject * e, Reader & reader) {
 	float strength;
 	reader >> strength;
-	o->m_EffectStopStrength = floorf((float)255 * strength);
+	e->m_EffectStopStrength = floorf((float)255 * strength);
 }
-void MovableObject::ReadEffectAlwaysShows(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_EffectAlwaysShows;
+void MovableObject::ReadEffectAlwaysShows(MovableObject * e, Reader & reader) {
+	reader >> e->m_EffectAlwaysShows;
 }
-void MovableObject::ReadDamageOnCollision(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_DamageOnCollision;
+void MovableObject::ReadDamageOnCollision(MovableObject * e, Reader & reader) {
+	reader >> e->m_DamageOnCollision;
 }
-void MovableObject::ReadDamageOnPenetration(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_DamageOnPenetration;
+void MovableObject::ReadDamageOnPenetration(MovableObject * e, Reader & reader) {
+	reader >> e->m_DamageOnPenetration;
 }
-void MovableObject::ReadWoundDamageMultiplier(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_WoundDamageMultiplier;
+void MovableObject::ReadWoundDamageMultiplier(MovableObject * e, Reader & reader) {
+	reader >> e->m_WoundDamageMultiplier;
 }
-void MovableObject::ReadIgnoreTerrain(Entity * e, Reader & reader) {
-	MovableObject * o = dynamic_cast<MovableObject *>(e);
-
-	reader >> o->m_IgnoreTerrain;
+void MovableObject::ReadIgnoreTerrain(MovableObject * e, Reader & reader) {
+	reader >> e->m_IgnoreTerrain;
 }
 
 int MovableObject::ReadProperty(std::string propName, Reader &reader) {
@@ -297,9 +217,7 @@ int MovableObject::ReadProperty(std::string propName, Reader &reader) {
 		return 0;
 	}
 
-	// Search for a property name match failed!
-	// TODO: write this out to some log file
-	return Serializable::ReadProperty(propName, reader);
+	return SceneObject::ReadProperty(propName, reader);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

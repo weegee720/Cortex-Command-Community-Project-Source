@@ -23,9 +23,9 @@ AbstractClassInfo(SceneObject, Entity)
 const string SceneObject::SOPlacer::m_sClassName = "SOPlacer";
 
 
-std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> SceneObject::RegisterPropertyMatchers()
+std::unordered_map<std::string, std::function<void(SceneObject *, Reader &)>> SceneObject::RegisterPropertyMatchers()
 {
-	std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> m = Entity::RegisterPropertyMatchers();
+	std::unordered_map<std::string, std::function<void(SceneObject *, Reader &)>> m;
 
 	m["Position"] = ReadPosition;
 	m["GoldValue"] = ReadGoldValue;
@@ -37,40 +37,25 @@ std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> SceneOb
 	return m;
 }
 
-std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> SceneObject::GetPropertyMatchers()
-{
-	return m_PropertyMatchers;
+std::unordered_map<std::string, std::function<void(SceneObject *, Reader &)>> SceneObject::m_PropertyMatchers = SceneObject::RegisterPropertyMatchers();
+
+void SceneObject::ReadPosition(SceneObject * e, Reader & reader) {
+	reader >> e->m_Pos;
 }
-
-std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> SceneObject::m_PropertyMatchers = SceneObject::RegisterPropertyMatchers();
-
-void SceneObject::ReadPosition(Entity * e, Reader & reader) {
-	SceneObject * o = dynamic_cast<SceneObject *>(e);
-
-	reader >> o->m_Pos;
+void SceneObject::ReadGoldValue(SceneObject * e, Reader & reader) {
+	reader >> e->m_OzValue;
 }
-void SceneObject::ReadGoldValue(Entity * e, Reader & reader) {
-	SceneObject * o = dynamic_cast<SceneObject *>(e);
-
-	reader >> o->m_OzValue;
+void SceneObject::ReadBuyable(SceneObject * e, Reader & reader) {
+	reader >> e->m_Buyable;
 }
-void SceneObject::ReadBuyable(Entity * e, Reader & reader) {
-	SceneObject * o = dynamic_cast<SceneObject *>(e);
-
-	reader >> o->m_Buyable;
-}
-void SceneObject::ReadTeam(Entity * e, Reader & reader) {
-	SceneObject * o = dynamic_cast<SceneObject *>(e);
-
-	reader >> o->m_Team;
+void SceneObject::ReadTeam(SceneObject * e, Reader & reader) {
+	reader >> e->m_Team;
 	// Necessary to properly init (flag icons) some derived classes
 	// (actually, this rarely matters since tehre won't be an activity going when this is read!)
-	o->SetTeam(o->m_Team);
+	e->SetTeam(e->m_Team);
 }
-void SceneObject::ReadPlacedByPlayer(Entity * e, Reader & reader) {
-	SceneObject * o = dynamic_cast<SceneObject *>(e);
-
-	reader >> o->m_PlacedByPlayer;
+void SceneObject::ReadPlacedByPlayer(SceneObject * e, Reader & reader) {
+	reader >> e->m_PlacedByPlayer;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -319,7 +304,7 @@ int SceneObject::ReadProperty(std::string propName, Reader &reader) {
 
 	// Search for a property name match failed!
 	// TODO: write this out to some log file
-	return Serializable::ReadProperty(propName, reader);
+	return Entity::ReadProperty(propName, reader);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

@@ -23,11 +23,6 @@ namespace RTE {
 		return m;
 	}
 
-	std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> Entity::GetPropertyMatchers()
-	{
-		return m_PropertyMatchers;
-	}
-
 	std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> Entity::m_PropertyMatchers = Entity::RegisterPropertyMatchers();
 
 	void Entity::ReadCopyOf(Entity * e, Reader & reader)
