@@ -27,36 +27,30 @@ std::unordered_map<std::string, std::function<void(SceneObject *, Reader &)>> Sc
 {
 	std::unordered_map<std::string, std::function<void(SceneObject *, Reader &)>> m;
 
-	m["Position"] = ReadPosition;
-	m["GoldValue"] = ReadGoldValue;
-	m["GoldCost"] = ReadGoldValue;
-	m["Buyable"] = ReadBuyable;
-	m["Team"] = ReadTeam;
-	m["PlacedByPlayer"] = ReadPlacedByPlayer;
+	m["Position"] =   [](SceneObject * e, Reader & reader) { 
+		reader >> e->m_Pos; 
+	};
+	m["GoldValue"] = m["GoldCost"] = [](SceneObject * e, Reader & reader) {
+		reader >> e->m_OzValue; 
+	};
+	m["Buyable"] = [](SceneObject * e, Reader & reader) {	
+		reader >> e->m_Buyable; 
+	};
+	m["Team"] = [](SceneObject * e, Reader & reader) {
+		reader >> e->m_Team;
+		// Necessary to properly init (flag icons) some derived classes
+		// (actually, this rarely matters since tehre won't be an activity going when this is read!)
+		e->SetTeam(e->m_Team); 
+	};
+	m["PlacedByPlayer"] = [](SceneObject * e, Reader & reader) {
+		reader >> e->m_PlacedByPlayer; 
+	};
 
 	return m;
 }
 
 std::unordered_map<std::string, std::function<void(SceneObject *, Reader &)>> SceneObject::m_PropertyMatchers = SceneObject::RegisterPropertyMatchers();
 
-void SceneObject::ReadPosition(SceneObject * e, Reader & reader) {
-	reader >> e->m_Pos;
-}
-void SceneObject::ReadGoldValue(SceneObject * e, Reader & reader) {
-	reader >> e->m_OzValue;
-}
-void SceneObject::ReadBuyable(SceneObject * e, Reader & reader) {
-	reader >> e->m_Buyable;
-}
-void SceneObject::ReadTeam(SceneObject * e, Reader & reader) {
-	reader >> e->m_Team;
-	// Necessary to properly init (flag icons) some derived classes
-	// (actually, this rarely matters since tehre won't be an activity going when this is read!)
-	e->SetTeam(e->m_Team);
-}
-void SceneObject::ReadPlacedByPlayer(SceneObject * e, Reader & reader) {
-	reader >> e->m_PlacedByPlayer;
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Method:          Clear

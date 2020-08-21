@@ -432,16 +432,8 @@ namespace RTE {
 		/// </summary>
 		void Clear();
 
-	private:
 		static std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> RegisterPropertyMatchers();
-
 		static std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> m_PropertyMatchers;
-
-		static void ReadCopyOf(Entity * e, Reader & reader);
-		static void ReadPresetName(Entity * e, Reader & reader);
-		static void ReadDescription(Entity * e, Reader & reader);
-		static void ReadRandomWeight(Entity * e, Reader & reader);
-		static void ReadAddToGroup(Entity * e, Reader & reader);
 	};
 }
 #endif

@@ -13,81 +13,68 @@ namespace RTE {
 	{
 		std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> m;
 
-		m["CopyOf"] = ReadCopyOf;
-		m["PresetName"] = ReadPresetName;
-		m["InstanceName"] = ReadPresetName;
-		m["Description"] = ReadDescription;
-		m["RandomWeight"] = ReadRandomWeight;
-		m["AddToGroup"] = ReadAddToGroup;
+		m["CopyOf"] = [](Entity * e, Reader & reader) {		
+			std::string refName = reader.ReadPropValue();
+			std::string className = e->GetClassName();
+			const Entity *preset = g_PresetMan.GetEntityPreset(className, refName, reader.GetReadModuleID());
+			if (preset) {
+				preset->Clone(e);
+			} else {
+				if (className == "AtomGroup" || className == "Attachable" || className == "AEmitter") {
+					reader.ReportError("The PresetName to be copied was not found in data modules.");
+				}
+				// If we couldn't find the preset to copy from, read it as an original but report the problem in the console
+				g_ConsoleMan.PrintString("ERROR: Couldn't find the preset '" + refName + "' accessed in " + reader.GetCurrentFilePath() + " at line " + reader.GetCurrentFileLineString());
+				// Preset name might have "[ModuleName]/" preceding it, detect it here and select proper module!
+				int slashPos = refName.find_first_of('/');
+				e->m_PresetName = (slashPos != std::string::npos) ? refName.substr(slashPos + 1) : refName;
+				// Mark this so that the derived class knows it should be added to the PresetMan when it's done reading all properties.
+				e->m_IsOriginalPreset = true;
+				// Indicate where this was read from
+				e->m_DefinedInModule = reader.GetReadModuleID();
+			}
+		};
+		m["PresetName"] = m["InstanceName"] = [](Entity * e, Reader & reader) {
+			e->SetPresetName(reader.ReadPropValue());
+			// Preset name might have "[ModuleName]/" preceding it, detect it here and select proper module!
+			int slashPos = e->m_PresetName.find_first_of('/');
+			if (slashPos != std::string::npos) { e->m_PresetName = e->m_PresetName.substr(slashPos + 1); }
+			// Mark this so that the derived class knows it should be added to the PresetMan when it's done reading all properties.
+			e->m_IsOriginalPreset = true;
+			// Indicate where this was read from
+			e->m_DefinedInModule = reader.GetReadModuleID();
+		};
+		m["Description"] = [](Entity * e, Reader & reader) {
+			std::string descriptionValue = reader.ReadPropValue();
+			if (descriptionValue == "MultiLineText") {
+				e->m_PresetDescription.clear();
+				while (reader.NextProperty() && reader.ReadPropName() == "AddLine") {
+					e->m_PresetDescription += reader.ReadPropValue() + "\n\n";
+				}
+				if (!e->m_PresetDescription.empty()) {
+					e->m_PresetDescription.resize(e->m_PresetDescription.size() - 2);
+				}
+			}
+			else {
+				e->m_PresetDescription = descriptionValue;
+			}
+		};
+		m["RandomWeight"] = [](Entity * e, Reader & reader) {
+			reader >> e->m_RandomWeight;
+			e->m_RandomWeight = Limit(e->m_RandomWeight, 100, 0);
+		};
+		m["AddToGroup"] = [](Entity * e, Reader & reader) {
+			std::string newGroup;
+			reader >> newGroup;
+			e->AddToGroup(newGroup);
+			// Do this in AddToGroup instead?
+			g_PresetMan.RegisterGroup(newGroup, reader.GetReadModuleID());
+		};
 
 		return m;
 	}
 
 	std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> Entity::m_PropertyMatchers = Entity::RegisterPropertyMatchers();
-
-	void Entity::ReadCopyOf(Entity * e, Reader & reader)
-	{
-		std::string refName = reader.ReadPropValue();
-		std::string className = e->GetClassName();
-		const Entity *preset = g_PresetMan.GetEntityPreset(className, refName, reader.GetReadModuleID());
-		if (preset) {
-			preset->Clone(e);
-		}
-		else {
-			if (className == "AtomGroup" || className == "Attachable" || className == "AEmitter") {
-				reader.ReportError("The PresetName to be copied was not found in data modules.");
-			}
-			// If we couldn't find the preset to copy from, read it as an original but report the problem in the console
-			g_ConsoleMan.PrintString("ERROR: Couldn't find the preset '" + refName + "' accessed in " + reader.GetCurrentFilePath() + " at line " + reader.GetCurrentFileLineString());
-			// Preset name might have "[ModuleName]/" preceding it, detect it here and select proper module!
-			int slashPos = refName.find_first_of('/');
-			e->m_PresetName = (slashPos != std::string::npos) ? refName.substr(slashPos + 1) : refName;
-			// Mark this so that the derived class knows it should be added to the PresetMan when it's done reading all properties.
-			e->m_IsOriginalPreset = true;
-			// Indicate where this was read from
-			e->m_DefinedInModule = reader.GetReadModuleID();
-		}
-	}
-
-	void Entity::ReadPresetName(Entity * e, Reader & reader) {
-		e->SetPresetName(reader.ReadPropValue());
-		// Preset name might have "[ModuleName]/" preceding it, detect it here and select proper module!
-		int slashPos = e->m_PresetName.find_first_of('/');
-		if (slashPos != std::string::npos) { e->m_PresetName = e->m_PresetName.substr(slashPos + 1); }
-		// Mark this so that the derived class knows it should be added to the PresetMan when it's done reading all properties.
-		e->m_IsOriginalPreset = true;
-		// Indicate where this was read from
-		e->m_DefinedInModule = reader.GetReadModuleID();
-	}
-	
-	void Entity::ReadDescription(Entity * e, Reader & reader) {
-		std::string descriptionValue = reader.ReadPropValue();
-		if (descriptionValue == "MultiLineText") {
-			e->m_PresetDescription.clear();
-			while (reader.NextProperty() && reader.ReadPropName() == "AddLine") {
-				e->m_PresetDescription += reader.ReadPropValue() + "\n\n";
-			}
-			if (!e->m_PresetDescription.empty()) {
-				e->m_PresetDescription.resize(e->m_PresetDescription.size() - 2);
-			}
-		}
-		else {
-			e->m_PresetDescription = descriptionValue;
-		}
-	}
-	
-	void Entity::ReadRandomWeight(Entity * e, Reader & reader){
-		reader >> e->m_RandomWeight;
-		e->m_RandomWeight = Limit(e->m_RandomWeight, 100, 0);
-	}
-	
-	void Entity::ReadAddToGroup(Entity * e, Reader & reader){
-		std::string newGroup;
-		reader >> newGroup;
-		e->AddToGroup(newGroup);
-		// Do this in AddToGroup instead?
-		g_PresetMan.RegisterGroup(newGroup, reader.GetReadModuleID());
-	}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

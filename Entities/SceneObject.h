@@ -576,16 +576,8 @@ private:
 
 	void Clear();
 
-private:
 	static std::unordered_map<std::string, std::function<void(SceneObject *, Reader &)>> RegisterPropertyMatchers();
-
 	static std::unordered_map<std::string, std::function<void(SceneObject *, Reader &)>> m_PropertyMatchers;
-
-	static void ReadPosition(SceneObject * e, Reader & reader);
-	static void ReadGoldValue(SceneObject * e, Reader & reader);
-	static void ReadBuyable(SceneObject * e, Reader & reader);
-	static void ReadTeam(SceneObject * e, Reader & reader);
-	static void ReadPlacedByPlayer(SceneObject * e, Reader & reader);
 };
 
 } // namespace RTE

@@ -31,182 +31,142 @@ std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> 
 {
 	std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> m;
 
-	m["Mass"] = ReadMass;
-	m["Velocity"] = ReadVelocity;
-	m["Scale"] = ReadScale;
-	m["GlobalAccScalar"] = ReadGlobalAccScalar;
-	m["AirResistance"] = ReadAirResistance;
-	m["AirThreshold"] = ReadAirThreshold;
-	m["PinStrength"] = ReadPinStrength;
-	m["RestThreshold"] = ReadRestThreshold;
-	m["LifeTime"] = ReadLifeTime;
-	m["Sharpness"] = ReadSharpness;
-	m["HitsMOs"] = ReadHitsMOs;
-	m["GetsHitByMOs"] = ReadGetsHitByMOs;
-	m["IgnoresTeamHits"] = ReadIgnoresTeamHits;
-	m["IgnoresAtomGroupHits"] = ReadIgnoresAtomGroupHits;
-	m["IgnoresAGHitsWhenSlowerThan"] = ReadIgnoresAGHitsWhenSlowerThan;
-	m["RemoveOrphanTerrainRadius"] = ReadRemoveOrphanTerrainRadius;
-	m["RemoveOrphanTerrainMaxArea"] = ReadRemoveOrphanTerrainMaxArea;
-	m["RemoveOrphanTerrainRate"] = ReadRemoveOrphanTerrainRate;
-	m["MissionCritical"] = ReadMissionCritical;
-	m["CanBeSquished"] = ReadCanBeSquished;
-	m["HUDVisible"] = ReadHUDVisible;
-	m["ProvidesPieMenuContext"] = ReadProvidesPieMenuContext;
-	m["AddPieSlice"] = ReadAddPieSlice;
-	m["ScriptPath"] = ReadScriptPath;
-	m["ScreenEffect"] = ReadScreenEffect;
-	m["EffectStartTime"] = ReadEffectStartTime;
-	m["EffectRotAngle"] = ReadEffectRotAngle;
-	m["InheritEffectRotAngle"] = ReadInheritEffectRotAngle;
-	m["RandomizeEffectRotAngle"] = ReadRandomizeEffectRotAngle;
-	m["RandomizeEffectRotAngleEveryFrame"] = ReadRandomizeEffectRotAngleEveryFrame;
-	m["EffectStopTime"] = ReadEffectStopTime;
-	m["EffectStartStrength"] = ReadEffectStartStrength;
-	m["EffectStopStrength"] = ReadEffectStopStrength;
-	m["EffectAlwaysShows"] = ReadEffectAlwaysShows;
-	m["DamageOnCollision"] = ReadDamageOnCollision;
-	m["DamageOnPenetration"] = ReadDamageOnPenetration;
-	m["WoundDamageMultiplier"] = ReadWoundDamageMultiplier;
-	m["IgnoreTerrain"] = ReadIgnoreTerrain;
+	m["Mass"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_Mass;
+		if (e->m_Mass == 0)
+			e->m_Mass = 0.0001;
+	};
+	m["Velocity"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_Vel; 
+	};
+	m["Scale"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_Scale; 
+	};
+	m["GlobalAccScalar"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_GlobalAccScalar; 
+	};
+	m["AirResistance"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_AirResistance;
+		// Backwards compatibility after we made this value scaled over time
+		e->m_AirResistance /= 0.01666;
+	};
+	m["AirThreshold"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_AirThreshold;
+	};
+	m["PinStrength"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_PinStrength; 
+	};
+	m["RestThreshold"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_RestThreshold; 
+	};
+	m["LifeTime"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_Lifetime; 
+	};
+	m["Sharpness"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_Sharpness; 
+	};
+	m["HitsMOs"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_HitsMOs; 
+	};
+	m["GetsHitByMOs"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_GetsHitByMOs; 
+	};
+	m["IgnoresTeamHits"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_IgnoresTeamHits; 
+	};
+	m["IgnoresAtomGroupHits"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_IgnoresAtomGroupHits; 
+	};
+	m["IgnoresAGHitsWhenSlowerThan"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_IgnoresAGHitsWhenSlowerThan; 
+	};
+	m["RemoveOrphanTerrainRadius"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_RemoveOrphanTerrainRadius;
+		if (e->m_RemoveOrphanTerrainRadius > MAXORPHANRADIUS)
+			e->m_RemoveOrphanTerrainRadius = MAXORPHANRADIUS;
+	};
+	m["RemoveOrphanTerrainMaxArea"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_RemoveOrphanTerrainMaxArea;
+		if (e->m_RemoveOrphanTerrainMaxArea > MAXORPHANRADIUS * MAXORPHANRADIUS)
+			e->m_RemoveOrphanTerrainMaxArea = MAXORPHANRADIUS * MAXORPHANRADIUS;
+	};
+	m["RemoveOrphanTerrainRate"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_RemoveOrphanTerrainRate; 
+	};
+	m["MissionCritical"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_MissionCritical; 
+	};
+	m["CanBeSquished"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_CanBeSquished; 
+	};
+	m["HUDVisible"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_HUDVisible; 
+	};
+	m["ProvidesPieMenuContext"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_ProvidesPieMenuContext; 
+	};
+	m["AddPieSlice"] = [](MovableObject * e, Reader & reader) {
+		PieMenuGUI::Slice newSlice;
+		reader >> newSlice;
+		PieMenuGUI::AddAvailableSlice(newSlice);
+	};
+	m["ScriptPath"] = [](MovableObject * e, Reader & reader) {
+		std::string scriptPath = reader.ReadPropValue();
+		if (e->LoadScript(scriptPath) == -2) { reader.ReportError("Duplicate script path " + scriptPath); }
+	};
+	m["ScreenEffect"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_ScreenEffectFile;
+		e->m_pScreenEffect = e->m_ScreenEffectFile.GetAsBitmap();
+		e->m_ScreenEffectHash = e->m_ScreenEffectFile.GetHash();
+	};
+	m["EffectStartTime"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_EffectStartTime; 
+	};
+	m["EffectRotAngle"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_EffectRotAngle; 
+	};
+	m["InheritEffectRotAngle"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_InheritEffectRotAngle; 
+	};
+	m["RandomizeEffectRotAngle"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_RandomizeEffectRotAngle; 
+	};
+	m["RandomizeEffectRotAngleEveryFrame"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_RandomizeEffectRotAngleEveryFrame; 
+	};
+	m["EffectStopTime"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_EffectStopTime; 
+	};
+	m["EffectStartStrength"] = [](MovableObject * e, Reader & reader) {
+		float strength;
+		reader >> strength;
+		e->m_EffectStartStrength = floorf((float)255 * strength);
+	};
+	m["EffectStopStrength"] = [](MovableObject * e, Reader & reader) {
+		float strength;
+		reader >> strength;
+		e->m_EffectStopStrength = floorf((float)255 * strength);
+	};
+	m["EffectAlwaysShows"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_EffectAlwaysShows;
+	};
+	m["DamageOnCollision"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_DamageOnCollision; 
+	};
+	m["DamageOnPenetration"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_DamageOnPenetration; 
+	};
+	m["WoundDamageMultiplier"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_WoundDamageMultiplier; 
+	};
+	m["IgnoreTerrain"] = [](MovableObject * e, Reader & reader) {
+		reader >> e->m_IgnoreTerrain; 
+	};
 
 	return m;
 }
 
 std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> MovableObject::m_PropertyMatchers = MovableObject::RegisterPropertyMatchers();
-
-
-void MovableObject::ReadMass(MovableObject * e, Reader & reader) {
-	reader >> e->m_Mass;
-	if (e->m_Mass == 0)
-		e->m_Mass = 0.0001;
-}
-void MovableObject::ReadVelocity(MovableObject * e, Reader & reader) {
-	reader >> e->m_Vel;
-}
-void MovableObject::ReadScale(MovableObject * e, Reader & reader) {
-	reader >> e->m_Scale;
-}
-void MovableObject::ReadGlobalAccScalar(MovableObject * e, Reader & reader) {
-	reader >> e->m_GlobalAccScalar;
-}
-void MovableObject::ReadAirResistance(MovableObject * e, Reader & reader) {
-	reader >> e->m_AirResistance;
-	// Backwards compatibility after we made this value scaled over time
-	e->m_AirResistance /= 0.01666;
-}
-void MovableObject::ReadAirThreshold(MovableObject * e, Reader & reader) {
-	reader >> e->m_AirThreshold;
-}
-void MovableObject::ReadPinStrength(MovableObject * e, Reader & reader) {
-	reader >> e->m_PinStrength;
-}
-void MovableObject::ReadRestThreshold(MovableObject * e, Reader & reader) {
-	reader >> e->m_RestThreshold;
-}
-void MovableObject::ReadLifeTime(MovableObject * e, Reader & reader) {
-	reader >> e->m_Lifetime;
-}
-void MovableObject::ReadSharpness(MovableObject * e, Reader & reader) {
-	reader >> e->m_Sharpness;
-}
-void MovableObject::ReadHitsMOs(MovableObject * e, Reader & reader) {
-	reader >> e->m_HitsMOs;
-}
-void MovableObject::ReadGetsHitByMOs(MovableObject * e, Reader & reader) {
-	reader >> e->m_GetsHitByMOs;
-}
-void MovableObject::ReadIgnoresTeamHits(MovableObject * e, Reader & reader) {
-	reader >> e->m_IgnoresTeamHits;
-}
-void MovableObject::ReadIgnoresAtomGroupHits(MovableObject * e, Reader & reader) {
-	reader >> e->m_IgnoresAtomGroupHits;
-}
-void MovableObject::ReadIgnoresAGHitsWhenSlowerThan(MovableObject * e, Reader & reader) {
-	reader >> e->m_IgnoresAGHitsWhenSlowerThan;
-}
-void MovableObject::ReadRemoveOrphanTerrainRadius(MovableObject * e, Reader & reader) {
-	reader >> e->m_RemoveOrphanTerrainRadius;
-	if (e->m_RemoveOrphanTerrainRadius > MAXORPHANRADIUS)
-		e->m_RemoveOrphanTerrainRadius = MAXORPHANRADIUS;
-}
-void MovableObject::ReadRemoveOrphanTerrainMaxArea(MovableObject * e, Reader & reader) {
-	reader >> e->m_RemoveOrphanTerrainMaxArea;
-	if (e->m_RemoveOrphanTerrainMaxArea > MAXORPHANRADIUS * MAXORPHANRADIUS)
-		e->m_RemoveOrphanTerrainMaxArea = MAXORPHANRADIUS * MAXORPHANRADIUS;
-}
-void MovableObject::ReadRemoveOrphanTerrainRate(MovableObject * e, Reader & reader) {
-	reader >> e->m_RemoveOrphanTerrainRate;
-}
-void MovableObject::ReadMissionCritical(MovableObject * e, Reader & reader) {
-	reader >> e->m_MissionCritical;
-}
-void MovableObject::ReadCanBeSquished(MovableObject * e, Reader & reader) {
-	reader >> e->m_CanBeSquished;
-}
-void MovableObject::ReadHUDVisible(MovableObject * e, Reader & reader) {
-	reader >> e->m_HUDVisible;
-}
-void MovableObject::ReadProvidesPieMenuContext(MovableObject * e, Reader & reader) {
-	reader >> e->m_ProvidesPieMenuContext;
-}
-void MovableObject::ReadAddPieSlice(MovableObject * e, Reader & reader) {
-	PieMenuGUI::Slice newSlice;
-	reader >> newSlice;
-	PieMenuGUI::AddAvailableSlice(newSlice);
-}
-void MovableObject::ReadScriptPath(MovableObject * e, Reader & reader) {
-	std::string scriptPath = reader.ReadPropValue();
-	if (e->LoadScript(scriptPath) == -2) { reader.ReportError("Duplicate script path " + scriptPath); }
-}
-void MovableObject::ReadScreenEffect(MovableObject * e, Reader & reader) {
-	reader >> e->m_ScreenEffectFile;
-	e->m_pScreenEffect = e->m_ScreenEffectFile.GetAsBitmap();
-	e->m_ScreenEffectHash = e->m_ScreenEffectFile.GetHash();
-}
-void MovableObject::ReadEffectStartTime(MovableObject * e, Reader & reader) {
-	reader >> e->m_EffectStartTime;
-}
-void MovableObject::ReadEffectRotAngle(MovableObject * e, Reader & reader) {
-	reader >> e->m_EffectRotAngle;
-}
-void MovableObject::ReadInheritEffectRotAngle(MovableObject * e, Reader & reader) {
-	reader >> e->m_InheritEffectRotAngle;
-}
-void MovableObject::ReadRandomizeEffectRotAngle(MovableObject * e, Reader & reader) {
-	reader >> e->m_RandomizeEffectRotAngle;
-}
-void MovableObject::ReadRandomizeEffectRotAngleEveryFrame(MovableObject * e, Reader & reader) {
-	reader >> e->m_RandomizeEffectRotAngleEveryFrame;
-}
-void MovableObject::ReadEffectStopTime(MovableObject * e, Reader & reader) {
-	reader >> e->m_EffectStopTime;
-}
-void MovableObject::ReadEffectStartStrength(MovableObject * e, Reader & reader) {
-	float strength;
-	reader >> strength;
-	e->m_EffectStartStrength = floorf((float)255 * strength);
-}
-void MovableObject::ReadEffectStopStrength(MovableObject * e, Reader & reader) {
-	float strength;
-	reader >> strength;
-	e->m_EffectStopStrength = floorf((float)255 * strength);
-}
-void MovableObject::ReadEffectAlwaysShows(MovableObject * e, Reader & reader) {
-	reader >> e->m_EffectAlwaysShows;
-}
-void MovableObject::ReadDamageOnCollision(MovableObject * e, Reader & reader) {
-	reader >> e->m_DamageOnCollision;
-}
-void MovableObject::ReadDamageOnPenetration(MovableObject * e, Reader & reader) {
-	reader >> e->m_DamageOnPenetration;
-}
-void MovableObject::ReadWoundDamageMultiplier(MovableObject * e, Reader & reader) {
-	reader >> e->m_WoundDamageMultiplier;
-}
-void MovableObject::ReadIgnoreTerrain(MovableObject * e, Reader & reader) {
-	reader >> e->m_IgnoreTerrain;
-}
 
 int MovableObject::ReadProperty(std::string propName, Reader &reader) {
 	auto it = m_PropertyMatchers.find(propName);

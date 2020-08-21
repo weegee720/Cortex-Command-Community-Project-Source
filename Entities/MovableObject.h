@@ -1969,49 +1969,8 @@ private:
 	MovableObject(const MovableObject &reference) {}
 	MovableObject& operator=(const MovableObject& ref) {}
 
-private:
 	static std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> RegisterPropertyMatchers();
-
 	static std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> m_PropertyMatchers;
-
-	static void ReadMass(MovableObject * e, Reader & reader);
-	static void ReadVelocity(MovableObject * e, Reader & reader);
-	static void ReadScale(MovableObject * e, Reader & reader);
-	static void ReadGlobalAccScalar(MovableObject * e, Reader & reader);
-	static void ReadAirResistance(MovableObject * e, Reader & reader);
-	static void ReadAirThreshold(MovableObject * e, Reader & reader);
-	static void ReadPinStrength(MovableObject * e, Reader & reader);
-	static void ReadRestThreshold(MovableObject * e, Reader & reader);
-	static void ReadLifeTime(MovableObject * e, Reader & reader);
-	static void ReadSharpness(MovableObject * e, Reader & reader);
-	static void ReadHitsMOs(MovableObject * e, Reader & reader);
-	static void ReadGetsHitByMOs(MovableObject * e, Reader & reader);
-	static void ReadIgnoresTeamHits(MovableObject * e, Reader & reader);
-	static void ReadIgnoresAtomGroupHits(MovableObject * e, Reader & reader);
-	static void ReadIgnoresAGHitsWhenSlowerThan(MovableObject * e, Reader & reader);
-	static void ReadRemoveOrphanTerrainRadius(MovableObject * e, Reader & reader);
-	static void ReadRemoveOrphanTerrainMaxArea(MovableObject * e, Reader & reader);
-	static void ReadRemoveOrphanTerrainRate(MovableObject * e, Reader & reader);
-	static void ReadMissionCritical(MovableObject * e, Reader & reader);
-	static void ReadCanBeSquished(MovableObject * e, Reader & reader);
-	static void ReadHUDVisible(MovableObject * e, Reader & reader);
-	static void ReadProvidesPieMenuContext(MovableObject * e, Reader & reader);
-	static void ReadAddPieSlice(MovableObject * e, Reader & reader);
-	static void ReadScriptPath(MovableObject * e, Reader & reader);
-	static void ReadScreenEffect(MovableObject * e, Reader & reader);
-	static void ReadEffectStartTime(MovableObject * e, Reader & reader);
-	static void ReadEffectRotAngle(MovableObject * e, Reader & reader);
-	static void ReadInheritEffectRotAngle(MovableObject * e, Reader & reader);
-	static void ReadRandomizeEffectRotAngle(MovableObject * e, Reader & reader);
-	static void ReadRandomizeEffectRotAngleEveryFrame(MovableObject * e, Reader & reader);
-	static void ReadEffectStopTime(MovableObject * e, Reader & reader);
-	static void ReadEffectStartStrength(MovableObject * e, Reader & reader);
-	static void ReadEffectStopStrength(MovableObject * e, Reader & reader);
-	static void ReadEffectAlwaysShows(MovableObject * e, Reader & reader);
-	static void ReadDamageOnCollision(MovableObject * e, Reader & reader);
-	static void ReadDamageOnPenetration(MovableObject * e, Reader & reader);
-	static void ReadWoundDamageMultiplier(MovableObject * e, Reader & reader);
-	static void ReadIgnoreTerrain(MovableObject * e, Reader & reader);
 };
 
 } // namespace RTE
