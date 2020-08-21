@@ -23,7 +23,11 @@ std::unordered_map<std::string, std::function<void(TerrainObject *, Reader &)>> 
 
 std::unordered_map<std::string, std::function<void(TerrainObject *, Reader &)>> TerrainObject::RegisterPropertyMatchers()
 {
+	std::unordered_map<std::string, std::function<void(SceneObject *, Reader &)>> parent = SceneObject::RegisterPropertyMatchers();
 	std::unordered_map<std::string, std::function<void(TerrainObject *, Reader &)>> m;
+
+	for (auto iter = parent.begin(); iter != parent.end(); ++iter)
+		m[iter->first] = iter->second;
 
 	m["FGColorFile"] = [](TerrainObject * e, Reader & reader) {
 		reader >> e->m_FGColorFile;
@@ -67,9 +71,8 @@ int TerrainObject::ReadProperty(std::string propName, Reader &reader) {
 		return 0;
 	}
 
-	return SceneObject::ReadProperty(propName, reader);
+	return Serializable::ReadProperty(propName, reader);
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Method:          Clear

@@ -30,7 +30,11 @@ std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> 
 
 std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> MovableObject::RegisterPropertyMatchers()
 {
+	std::unordered_map<std::string, std::function<void(SceneObject *, Reader &)>> parent = SceneObject::RegisterPropertyMatchers();
 	std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> m;
+
+	for (auto iter = parent.begin(); iter != parent.end(); ++iter)
+		m[iter->first] = iter->second;
 
 	m["Mass"] = [](MovableObject * e, Reader & reader) {
 		reader >> e->m_Mass;
@@ -176,7 +180,7 @@ int MovableObject::ReadProperty(std::string propName, Reader &reader) {
 		return 0;
 	}
 
-	return SceneObject::ReadProperty(propName, reader);
+	return Serializable::ReadProperty(propName, reader);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

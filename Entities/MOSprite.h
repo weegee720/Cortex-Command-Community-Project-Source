@@ -610,7 +610,9 @@ private:
 	MOSprite(const MOSprite &reference) {}
 	MOSprite & operator=(const MOSprite &rhs) {}
 
+public:
 	static std::unordered_map<std::string, std::function<void(MOSprite *, Reader &)>> RegisterPropertyMatchers();
+private:
 	static std::unordered_map<std::string, std::function<void(MOSprite *, Reader &)>> m_PropertyMatchers;
 
 };

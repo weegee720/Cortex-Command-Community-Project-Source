@@ -343,7 +343,9 @@ private:
     TerrainObject(const TerrainObject &reference) {}
     void operator=(const TerrainObject &rhs) {}
 
+public:
 	static std::unordered_map<std::string, std::function<void(TerrainObject *, Reader &)>> RegisterPropertyMatchers();
+private:
 	static std::unordered_map<std::string, std::function<void(TerrainObject *, Reader &)>> m_PropertyMatchers;
 };
 

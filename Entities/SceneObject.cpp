@@ -25,7 +25,11 @@ const string SceneObject::SOPlacer::m_sClassName = "SOPlacer";
 
 std::unordered_map<std::string, std::function<void(SceneObject *, Reader &)>> SceneObject::RegisterPropertyMatchers()
 {
+	std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> parent = Entity::RegisterPropertyMatchers();
 	std::unordered_map<std::string, std::function<void(SceneObject *, Reader &)>> m;
+
+	for (auto iter = parent.begin(); iter != parent.end(); ++iter)
+		m[iter->first] = iter->second;
 
 	m["Position"] =   [](SceneObject * e, Reader & reader) { 
 		reader >> e->m_Pos; 
@@ -298,7 +302,7 @@ int SceneObject::ReadProperty(std::string propName, Reader &reader) {
 
 	// Search for a property name match failed!
 	// TODO: write this out to some log file
-	return Entity::ReadProperty(propName, reader);
+	return Serializable::ReadProperty(propName, reader);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

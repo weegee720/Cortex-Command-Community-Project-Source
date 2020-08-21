@@ -29,7 +29,11 @@ std::unordered_map<std::string, std::function<void(BunkerAssembly *, Reader &)>>
 
 std::unordered_map<std::string, std::function<void(BunkerAssembly *, Reader &)>> BunkerAssembly::RegisterPropertyMatchers()
 {
+	std::unordered_map<std::string, std::function<void(TerrainObject *, Reader &)>> parent = TerrainObject::RegisterPropertyMatchers();
 	std::unordered_map<std::string, std::function<void(BunkerAssembly *, Reader &)>> m;
+
+	for (auto iter = parent.begin(); iter != parent.end(); ++iter)
+		m[iter->first] = iter->second;
 
 	m["FGColorFile"] =
 	m["MaterialFile"] =
@@ -113,7 +117,7 @@ int BunkerAssembly::ReadProperty(std::string propName, Reader &reader) {
 		return 0;
 	}
 
-	return TerrainObject::ReadProperty(propName, reader);
+	return Serializable::ReadProperty(propName, reader);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

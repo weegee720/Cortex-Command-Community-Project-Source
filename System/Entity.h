@@ -432,7 +432,9 @@ namespace RTE {
 		/// </summary>
 		void Clear();
 
+	public:
 		static std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> RegisterPropertyMatchers();
+	private:
 		static std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> m_PropertyMatchers;
 	};
 }

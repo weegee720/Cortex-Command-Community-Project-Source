@@ -1969,7 +1969,9 @@ private:
 	MovableObject(const MovableObject &reference) {}
 	MovableObject& operator=(const MovableObject& ref) {}
 
+public:
 	static std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> RegisterPropertyMatchers();
+private:
 	static std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> m_PropertyMatchers;
 };
 

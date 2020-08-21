@@ -25,7 +25,11 @@ std::unordered_map<std::string, std::function<void(MOSprite *, Reader &)>> MOSpr
 
 std::unordered_map<std::string, std::function<void(MOSprite *, Reader &)>> MOSprite::RegisterPropertyMatchers()
 {
+	std::unordered_map<std::string, std::function<void(MovableObject *, Reader &)>> parent = MovableObject::RegisterPropertyMatchers();
 	std::unordered_map<std::string, std::function<void(MOSprite *, Reader &)>> m;
+
+	for (auto iter = parent.begin(); iter != parent.end(); ++iter)
+		m[iter->first] = iter->second;
 
 	m["SpriteFile"] = [](MOSprite * e, Reader & reader) {
 		reader >> e->m_SpriteFile;
@@ -89,7 +93,7 @@ int MOSprite::ReadProperty(std::string propName, Reader &reader) {
 		return 0;
 	}
 
-	return MovableObject::ReadProperty(propName, reader);
+	return Serializable::ReadProperty(propName, reader);
 }
 
 

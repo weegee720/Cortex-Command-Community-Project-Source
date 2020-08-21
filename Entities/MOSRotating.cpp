@@ -45,7 +45,11 @@ std::unordered_map<std::string, std::function<void(MOSRotating *, Reader &)>> MO
 
 std::unordered_map<std::string, std::function<void(MOSRotating *, Reader &)>> MOSRotating::RegisterPropertyMatchers()
 {
+	std::unordered_map<std::string, std::function<void(MOSprite *, Reader &)>> parent = MOSprite::RegisterPropertyMatchers();
 	std::unordered_map<std::string, std::function<void(MOSRotating *, Reader &)>> m;
+
+	for (auto iter = parent.begin(); iter != parent.end(); ++iter)
+		m[iter->first] = iter->second;
 
 	m["AtomGroup"] = [](MOSRotating * e, Reader & reader) {
 		delete e->m_pAtomGroup;

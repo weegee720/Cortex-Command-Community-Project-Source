@@ -576,7 +576,9 @@ private:
 
 	void Clear();
 
+public:
 	static std::unordered_map<std::string, std::function<void(SceneObject *, Reader &)>> RegisterPropertyMatchers();
+private:
 	static std::unordered_map<std::string, std::function<void(SceneObject *, Reader &)>> m_PropertyMatchers;
 };
 
