@@ -574,8 +574,20 @@ private:
 // Arguments:       None.
 // Return value:    None.
 
-    void Clear();
+	void Clear();
 
+public:
+	static std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> GetPropertyMatchers();
+	static std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> RegisterPropertyMatchers();
+
+private:
+	static std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> m_PropertyMatchers;
+
+	static void ReadPosition(Entity * e, Reader & reader);
+	static void ReadGoldValue(Entity * e, Reader & reader);
+	static void ReadBuyable(Entity * e, Reader & reader);
+	static void ReadTeam(Entity * e, Reader & reader);
+	static void ReadPlacedByPlayer(Entity * e, Reader & reader);
 };
 
 } // namespace RTE

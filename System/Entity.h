@@ -1,6 +1,7 @@
 #ifndef _RTEENTITY_
 #define _RTEENTITY_
 
+#include "StandardIncludes.h"
 #include "Serializable.h"
 #include "RTEError.h"
 
@@ -424,12 +425,25 @@ namespace RTE {
 		Entity(const Entity &reference) {}
 		Entity & operator=(const Entity &rhs) { return *this; }
 
-	private:
 
+	private:
 		/// <summary>
 		/// Clears all the member variables of this Entity, effectively resetting the members of this abstraction level only.
 		/// </summary>
 		void Clear();
+
+	public:
+		static std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> GetPropertyMatchers();
+		static std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> RegisterPropertyMatchers();
+
+	private:
+		static std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> m_PropertyMatchers;
+
+		static void ReadCopyOf(Entity * e, Reader & reader);
+		static void ReadPresetName(Entity * e, Reader & reader);
+		static void ReadDescription(Entity * e, Reader & reader);
+		static void ReadRandomWeight(Entity * e, Reader & reader);
+		static void ReadAddToGroup(Entity * e, Reader & reader);
 	};
 }
 #endif

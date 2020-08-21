@@ -1968,6 +1968,52 @@ private:
 	// Disallow the use of some implicit methods.
 	MovableObject(const MovableObject &reference) {}
 	MovableObject& operator=(const MovableObject& ref) {}
+
+public:
+	static std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> GetPropertyMatchers();
+	static std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> RegisterPropertyMatchers();
+
+private:
+	static std::unordered_map<std::string, std::function<void(Entity *, Reader &)>> m_PropertyMatchers;
+
+	static void ReadMass(Entity * e, Reader & reader);
+	static void ReadVelocity(Entity * e, Reader & reader);
+	static void ReadScale(Entity * e, Reader & reader);
+	static void ReadGlobalAccScalar(Entity * e, Reader & reader);
+	static void ReadAirResistance(Entity * e, Reader & reader);
+	static void ReadAirThreshold(Entity * e, Reader & reader);
+	static void ReadPinStrength(Entity * e, Reader & reader);
+	static void ReadRestThreshold(Entity * e, Reader & reader);
+	static void ReadLifeTime(Entity * e, Reader & reader);
+	static void ReadSharpness(Entity * e, Reader & reader);
+	static void ReadHitsMOs(Entity * e, Reader & reader);
+	static void ReadGetsHitByMOs(Entity * e, Reader & reader);
+	static void ReadIgnoresTeamHits(Entity * e, Reader & reader);
+	static void ReadIgnoresAtomGroupHits(Entity * e, Reader & reader);
+	static void ReadIgnoresAGHitsWhenSlowerThan(Entity * e, Reader & reader);
+	static void ReadRemoveOrphanTerrainRadius(Entity * e, Reader & reader);
+	static void ReadRemoveOrphanTerrainMaxArea(Entity * e, Reader & reader);
+	static void ReadRemoveOrphanTerrainRate(Entity * e, Reader & reader);
+	static void ReadMissionCritical(Entity * e, Reader & reader);
+	static void ReadCanBeSquished(Entity * e, Reader & reader);
+	static void ReadHUDVisible(Entity * e, Reader & reader);
+	static void ReadProvidesPieMenuContext(Entity * e, Reader & reader);
+	static void ReadAddPieSlice(Entity * e, Reader & reader);
+	static void ReadScriptPath(Entity * e, Reader & reader);
+	static void ReadScreenEffect(Entity * e, Reader & reader);
+	static void ReadEffectStartTime(Entity * e, Reader & reader);
+	static void ReadEffectRotAngle(Entity * e, Reader & reader);
+	static void ReadInheritEffectRotAngle(Entity * e, Reader & reader);
+	static void ReadRandomizeEffectRotAngle(Entity * e, Reader & reader);
+	static void ReadRandomizeEffectRotAngleEveryFrame(Entity * e, Reader & reader);
+	static void ReadEffectStopTime(Entity * e, Reader & reader);
+	static void ReadEffectStartStrength(Entity * e, Reader & reader);
+	static void ReadEffectStopStrength(Entity * e, Reader & reader);
+	static void ReadEffectAlwaysShows(Entity * e, Reader & reader);
+	static void ReadDamageOnCollision(Entity * e, Reader & reader);
+	static void ReadDamageOnPenetration(Entity * e, Reader & reader);
+	static void ReadWoundDamageMultiplier(Entity * e, Reader & reader);
+	static void ReadIgnoreTerrain(Entity * e, Reader & reader);
 };
 
 } // namespace RTE
