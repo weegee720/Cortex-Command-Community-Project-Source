@@ -60,9 +60,7 @@ namespace RTE {
 		if (g_SettingsMan.SettingsNeedOverwrite()) {
 			// Overwrite Settings.ini after all the managers are created to fully populate the file. Up until this moment Settings.ini is populated only with minimal required properties to run.
 			// When the overwrite happens there is a short delay which causes the screen to remain black, so this is done here after the flip to mask that black screen.
-			Writer settingsWriter("Base.rte/Settings.ini");
-			g_SettingsMan.Save(settingsWriter);
-			settingsWriter.Destroy();
+			g_SettingsMan.UpdateSettingsFile();
 		}
 
 		// Set up the loading GUI
@@ -197,7 +195,7 @@ namespace RTE {
 					if (slashPos) { *(++slashPos) = 0; }
 
 					// If that file's directory doesn't exist yet, then create it, and all its parent directories above if need be
-					for (int nested = 0; !std::experimental::filesystem::exists(outputDirName) && slashPos; ++nested) {
+					for (int nested = 0; !std::filesystem::exists(outputDirName) && slashPos; ++nested) {
 						// Keep making new working copies of the path that we can dice up
 						strcpy_s(parentDirName, sizeof(parentDirName), outputDirName[0] == '.' ? &(outputDirName[2]) : outputDirName);
 						// Start off at the beginning
@@ -226,7 +224,7 @@ namespace RTE {
 					} else {
 						// Validate so only certain file types are extracted:  .ini .txt .lua .cfg .bmp .png .jpg .jpeg .wav .ogg .mp3
 						// Get the file extension
-						std::string fileExtension = std::experimental::filesystem::path(outputFileName).extension().string();
+						std::string fileExtension = std::filesystem::path(outputFileName).extension().string();
 						std::transform(fileExtension.begin(), fileExtension.end(), fileExtension.begin(), ::tolower);
 						const char *ext = fileExtension.c_str();
 						// Validate only certain file types to be included! .ini .txt .lua .cfg .bmp .png .jpg .jpeg .wav .ogg .mp3
