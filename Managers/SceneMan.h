@@ -1696,6 +1696,10 @@ protected:
     Scene *m_pCurrentScene;
     // Color MO layer
     SceneLayer *m_pMOColorLayer;
+
+	SceneLayer *m_pMOColorLayer_Empty;
+
+
     // MovableObject ID layer
     SceneLayer *m_pMOIDLayer;
     // All the areas drawn within on the MOID layer since last Update

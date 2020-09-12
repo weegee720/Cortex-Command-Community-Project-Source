@@ -78,6 +78,7 @@ void SceneMan::Clear()
 	m_PlaceUnits = true;
     m_pCurrentScene = 0;
     m_pMOColorLayer = 0;
+    m_pMOColorLayer_Empty = 0;
     m_pMOIDLayer = 0;
     m_MOIDDrawings.clear();
     m_pDebugLayer = 0;
@@ -220,13 +221,26 @@ int SceneMan::LoadScene(Scene *pNewScene, bool placeObjects, bool placeUnits)
 
 //    m_pCurrentScene->GetTerrain()->CleanAir();
 
-    // Re-create the MoveableObject:s color SceneLayer
-    delete m_pMOColorLayer;
-    BITMAP *pBitmap = create_bitmap_ex(8, GetSceneWidth(), GetSceneHeight());
-    clear_to_color(pBitmap, g_MaskColor);
-    m_pMOColorLayer = new SceneLayer();
-    m_pMOColorLayer->Create(pBitmap, true, Vector(), m_pCurrentScene->WrapsX(), m_pCurrentScene->WrapsY(), Vector(1.0, 1.0));
-    pBitmap = 0;
+	BITMAP *pBitmap = 0;
+
+	{
+		// Re-create the MoveableObject:s color SceneLayer
+		delete m_pMOColorLayer;
+		BITMAP *pBitmap = create_bitmap_ex(8, GetSceneWidth(), GetSceneHeight());
+		clear_to_color(pBitmap, g_MaskColor);
+		m_pMOColorLayer = new SceneLayer();
+		m_pMOColorLayer->Create(pBitmap, true, Vector(), m_pCurrentScene->WrapsX(), m_pCurrentScene->WrapsY(), Vector(1.0, 1.0));
+		pBitmap = 0;
+	}
+
+	{
+		delete m_pMOColorLayer_Empty;
+		BITMAP *pBitmap = create_bitmap_ex(8, GetSceneWidth(), GetSceneHeight());
+		clear_to_color(pBitmap, g_MaskColor);
+		m_pMOColorLayer_Empty = new SceneLayer();
+		m_pMOColorLayer_Empty->Create(pBitmap, true, Vector(), m_pCurrentScene->WrapsX(), m_pCurrentScene->WrapsY(), Vector(1.0, 1.0));
+		pBitmap = 0;
+	}
 
     // Re-create the MoveableObject:s ID SceneLayer
     delete m_pMOIDLayer;
@@ -425,6 +439,7 @@ void SceneMan::Destroy()
     delete m_pDebugLayer;
     delete m_pMOIDLayer;
     delete m_pMOColorLayer;
+    delete m_pMOColorLayer_Empty;
     delete m_pUnseenRevealSound;
 
 	destroy_bitmap(m_pOrphanSearchBitmap);
@@ -3665,7 +3680,10 @@ void SceneMan::Draw(BITMAP *pTargetBitmap, BITMAP *pTargetGUIBitmap, const Vecto
 
 void SceneMan::ClearMOColorLayer()
 {
-    clear_to_color(m_pMOColorLayer->GetBitmap(), g_MaskColor);
+    //clear_to_color(m_pMOColorLayer->GetBitmap(), g_MaskColor);
+
+	BITMAP * empty = m_pMOColorLayer_Empty->GetBitmap();
+	blit(empty, m_pMOColorLayer->GetBitmap(), 0, 0, 0, 0, empty->w, empty->h);
 
 #ifdef DEBUG_BUILD
     clear_to_color(m_pDebugLayer->GetBitmap(), g_MaskColor);
